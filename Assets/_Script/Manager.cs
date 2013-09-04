@@ -7,7 +7,7 @@ public enum Character{
 public enum Language{
 	None, Finnish, English
 }
-public static class GameManager {
+public static class Manager {
 
 	static Character _character = Character.None;
 	static Language _language = Language.None;

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class LanguageScript : MonoBehaviour {
@@ -13,7 +13,7 @@ public class LanguageScript : MonoBehaviour {
 		if(a != 0)
 		{
 			Language l = (Language)a;
-			GameManager.SetLanguage(l);
+			Manager.SetLanguage(l);
 			Application.LoadLevel("MainScreenScene");
 		}
 	}
@@ -33,13 +33,13 @@ public class LanguageScript : MonoBehaviour {
 		if(GUI.Button (finFlag,finnish))
 		{
 			PlayerPrefs.SetInt("Language",(int)Language.Finnish);
-			GameManager.SetLanguage(Language.Finnish);
+			Manager.SetLanguage(Language.Finnish);
 			Application.LoadLevel("MainScreenScene");
 		}
 		if(GUI.Button (engFlag,english))
 		{
 			PlayerPrefs.SetInt("Language",(int)Language.English);
-			GameManager.SetLanguage(Language.English);
+			Manager.SetLanguage(Language.English);
 			Application.LoadLevel("MainScreenScene");
 		}
 	}

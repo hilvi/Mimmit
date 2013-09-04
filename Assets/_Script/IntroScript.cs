@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 
@@ -110,13 +110,13 @@ public class IntroScript : MonoBehaviour {
 			if(GUI.Button(chooseBlRect,"",noStyle))
 			{
 				print ("Blonde");
-				GameManager.SetCharacter(Character.Blonde);
+				Manager.SetCharacter(Character.Blonde);
 				StartCoroutine(LaunchGame());
 			}
 			if(GUI.Button(chooseBrRect,"",noStyle))
 			{
 				print ("Brune");
-				GameManager.SetCharacter(Character.Brune);
+				Manager.SetCharacter(Character.Brune);
 				StartCoroutine(LaunchGame());
 			}
 			if(GUI.Button (backButton,"Back"))

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour {
 	{
 		_transform = Camera.main.transform;
 		
-		string path = "Sound/"+GameManager.GetLanguage().ToString()+"/"+Application.loadedLevelName;
+		string path = "Sound/"+Manager.GetLanguage().ToString()+"/"+Application.loadedLevelName;
 		Object[] clips = Resources.LoadAll(path, typeof(AudioClip));
 		for(int i = 0; i< clips.Length;i++)
 		{

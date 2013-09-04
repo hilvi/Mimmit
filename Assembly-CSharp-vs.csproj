@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{60249EEF-D6E2-7C24-5738-453FF122C368}</ProjectGuid>
+	<ProjectGuid>{CD0681C0-E4AB-28A3-DEAE-6F48806A4C20}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -44,18 +44,28 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Flips\Card.cs" />
+     <Compile Include="Assets\Scripts\Flips\FlipsGUIBackground.cs" />
+     <Compile Include="Assets\Scripts\Flips\FlipsGameManager.cs" />
+     <Compile Include="Assets\Scripts\Flips\LevelGenerator.cs" />
+     <Compile Include="Assets\Scripts\Global\GameManager.cs" />
+     <Compile Include="Assets\Scripts\Global\InGameMenuGUI.cs" />
+     <Compile Include="Assets\Scripts\Global\InputManager.cs" />
+     <Compile Include="Assets\Scripts\Global\MGUI.cs" />
+     <Compile Include="Assets\Scripts\Global\MainMenuGUI.cs" />
+     <Compile Include="Assets\Scripts\Global\ScoreGUI.cs" />
      <Compile Include="Assets\_Script\AIScript.cs" />
      <Compile Include="Assets\_Script\Animation2D.cs" />
      <Compile Include="Assets\_Script\Animator2D.cs" />
      <Compile Include="Assets\_Script\ArrowScript.cs" />
      <Compile Include="Assets\_Script\BackgroundScript.cs" />
      <Compile Include="Assets\_Script\CameraScript.cs" />
-     <Compile Include="Assets\_Script\GameManager.cs" />
      <Compile Include="Assets\_Script\INode.cs" />
      <Compile Include="Assets\_Script\IntroBackBird.cs" />
      <Compile Include="Assets\_Script\IntroScript.cs" />
      <Compile Include="Assets\_Script\LanguageScript.cs" />
      <Compile Include="Assets\_Script\LookAtScript.cs" />
+     <Compile Include="Assets\_Script\Manager.cs" />
      <Compile Include="Assets\_Script\Movement.cs" />
      <Compile Include="Assets\_Script\MovingScript.cs" />
      <Compile Include="Assets\_Script\NodeChoice.cs" />
