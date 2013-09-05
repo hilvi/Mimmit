@@ -66,6 +66,8 @@
      <Compile Include="Assets\_Script\LanguageScript.cs" />
      <Compile Include="Assets\_Script\LookAtScript.cs" />
      <Compile Include="Assets\_Script\Manager.cs" />
+     <Compile Include="Assets\_Script\MapWorldGUIScript.cs" />
+     <Compile Include="Assets\_Script\MapWorldScript.cs" />
      <Compile Include="Assets\_Script\Movement.cs" />
      <Compile Include="Assets\_Script\MovingScript.cs" />
      <Compile Include="Assets\_Script\NodeChoice.cs" />

@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour {
 	public void RestartGame() {
 		//Reset global time scale
 		Time.timeScale = 1;
-		Application.LoadLevel(MainMenuGUI.selectedGameName + "_level_" + (MainMenuGUI.currentLevel).ToString());
+		Application.LoadLevel(Application.loadedLevel);
 	}
 	
 	public bool IsGameRunning() {

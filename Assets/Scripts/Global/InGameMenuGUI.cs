@@ -17,7 +17,7 @@ public class InGameMenuGUI : MonoBehaviour {
 	public string[] gameList;
 	
 	GameManager gameManager;
-	Texture Restart, PlayButton, MainMenuButton, PauseButton, pauseTexture;
+	public Texture Restart,PlayButton,MainMenuButton,PauseButton;
 	Texture soundON, soundOff;
 	
 	int gamesNumber;
@@ -32,15 +32,9 @@ public class InGameMenuGUI : MonoBehaviour {
 	
 	
 	// Use this for initialization
-	void Start () {
-		
-		
+	void Start () 
+	{
 		gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-		PlayButton = (Texture)Resources.Load("MenuCommon/play_" + MainMenuGUI.selectedGameName);
-		MainMenuButton = (Texture)Resources.Load("MenuCommon/home_" + MainMenuGUI.selectedGameName);
-		Restart = (Texture)Resources.Load("PauseMenu/replay_" + MainMenuGUI.selectedGameName);
-		PauseButton = (Texture)Resources.Load("PauseMenu/pause_" + MainMenuGUI.selectedGameName);
-		pauseTexture = (Texture)Resources.Load("TutorialMenu/Previews/" + MainMenuGUI.selectedGameName);
 		soundON =(Texture)Resources.Load("MainMenu/Buttons/soundon");
 		soundOff =(Texture)Resources.Load("MainMenu/Buttons/soundoff");
 		
@@ -57,8 +51,6 @@ public class InGameMenuGUI : MonoBehaviour {
 	
 		currentLevel = 1;
 		creditsRect = new Rect(Screen.width - MGUI.menuButtonWidth, MGUI.menuButtonWidth*1/3, MGUI.menuButtonWidth*2/3, MGUI.menuButtonWidth*2/3);
-		
-
 	}
 	
 	void OnGUI() {		
@@ -74,7 +66,6 @@ public class InGameMenuGUI : MonoBehaviour {
 				// define the medal and show the corresponding texture
 				switch (gameManager.GetGameState()) {
 					case GameManager.GameState.Paused: 
-						GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), pauseTexture);
 						ShowBottomMenu();
 						break;
 					case GameManager.GameState.Over:
@@ -98,7 +89,7 @@ public class InGameMenuGUI : MonoBehaviour {
 			yield return null;
 		}
 		Time.timeScale = 1.0f;
-		Application.LoadLevel("MainMenu");
+		Application.LoadLevel("MapWorld");
 	}
 	IEnumerator FadeInMusic(AudioSource source){
 		if (source != null)

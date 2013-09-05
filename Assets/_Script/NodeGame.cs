@@ -8,6 +8,7 @@ public class NodeGame : INode {
 	bool isGirlOn;
 	Rect boxRect, playRect, backRect;
 	Movement movement;
+	public string gameName;
 	
 	// Use this for initialization
 	void Start () 
@@ -29,7 +30,7 @@ public class NodeGame : INode {
 		GUI.Box(boxRect, "GameName");
 		if(GUI.Button (playRect,"Play"))
 		{
-			
+			Application.LoadLevel(gameName);
 		}
 		if(GUI.Button (backRect,"Back"))
 		{

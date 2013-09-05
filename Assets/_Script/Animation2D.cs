@@ -12,6 +12,7 @@ public class Animation2D : MonoBehaviour {
 	public bool looping = true;
 	
 	float frameWidth;
+	int textureWidth;
 	int currentFrame = 0;
 	
 	bool playing = false;
@@ -38,6 +39,7 @@ public class Animation2D : MonoBehaviour {
 	void Start () {
 		currentFrame = startFrame;
 		frameWidth = frames.width / frameCount; 
+		textureWidth = frames.width;
 	}
 	
 	public void InitMaterial() {
@@ -45,27 +47,25 @@ public class Animation2D : MonoBehaviour {
 	}
 	
 	public void SetFrame(int frame) {
-		float frameRelativeWidth = frameWidth / renderer.material.GetTexture("_MainTex").width;
-		renderer.material.SetTextureOffset("_MainTex", new Vector2(frameRelativeWidth*currentFrame, 0));
+
+		float frameRelativeWidth = frameWidth / textureWidth;
+
+		float tile = frameRelativeWidth * frame;
+		renderer.material.SetTextureOffset("_MainTex", new Vector2(tile, 0));
 		renderer.material.SetTextureScale("_MainTex", new Vector2(frameRelativeWidth,1));
-		currentFrame = frame;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (playing) {
 			phase += Time.deltaTime;
-			while (phase > 1/frameRate) {
-				phase -= 1/frameRate;
-				currentFrame ++;
-				if (currentFrame > endFrame) {
-					if (looping)
-						currentFrame = startFrame;
-					else {
-						currentFrame = endFrame;
-						Stop();
-					}
+			if(phase > 1/frameRate)
+			{
+				if(++currentFrame > endFrame)
+				{
+					currentFrame = 0;
 				}
+				phase = 0;
 			}
 			SetFrame(currentFrame);
 		}

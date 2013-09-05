@@ -8,18 +8,20 @@ public enum Direction
 public class Movement : MonoBehaviour {
 
 	Transform[] path;
-	public Transform start;
+	//public Transform start;
 	int index = 0;
 	public float speed = 2.0f;
 	bool walking;
-	Animation2D anim;
-	
+	//Animation2D anim;
+	public Animator2D animator;
+	MapWorldScript map;
 	void Start () {
 		walking = false;
-		transform.position = start.position;
-		NodeChoice nodeScript = start.GetComponent<NodeChoice>();
+	//	transform.position = start.position;
+		map = GameObject.Find ("MapWorld").GetComponent<MapWorldScript>();
+		NodeChoice nodeScript = map.startPosition.GetComponent<NodeChoice>();
 		nodeScript.SetGirlOn();
-		anim = GetComponent<Animation2D>();
+		animator = GetComponent<Animator2D>();
 	}
 	
 	// Update is called once per frame
@@ -27,7 +29,7 @@ public class Movement : MonoBehaviour {
 		
 		if(!walking)
 		{
-			anim.Stop();
+			animator.PlayAnimation("idle");
 			return;
 		}
 		
@@ -35,11 +37,16 @@ public class Movement : MonoBehaviour {
 		move.z += -1f;
 		Vector3 target = path[index].position + move;
 		float dist = Vector3.Distance(transform.position, target);
+		Vector3 dir = (target - transform.position).normalized;
 		if( dist > 0.6f)
 		{
-			anim.Play();
+			Vector3 cross = Vector3.Cross(dir, Vector3.forward);
+			if(cross.y < 0) 
+				animator.PlayAnimation("walkLeft");
+			else
+				animator.PlayAnimation("walkRight");
 			
-			transform.Translate((target - transform.position).normalized * Time.deltaTime*speed);
+			transform.Translate( dir * Time.deltaTime*speed);
 		}
 		else if(++index == path.Length ){
 			walking = false;

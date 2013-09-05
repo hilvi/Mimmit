@@ -205,7 +205,7 @@ public class IntroScript : MonoBehaviour {
 			yield return null;
 		}
 		coroutineRunning = false;
-		//Application.LoadLevel("MapWorld");
+		Application.LoadLevel("MapWorld");
 	}
 	
 	IEnumerator Leaving()

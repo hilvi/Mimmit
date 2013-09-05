@@ -61,7 +61,7 @@ public class Animator2D : MonoBehaviour {
 	public void PlayAnimation(string name) {
 		PauseAnimation();
 		SwitchAnimation(name);
-		RestartAnimation();
+		//RestartAnimation();
 		ResumeAnimation();
 	}
 	

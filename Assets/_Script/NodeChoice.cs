@@ -18,13 +18,20 @@ public class NodeChoice : INode {
 	// Use this for initialization
 	void Awake () {
 		isGirlOn = false;
-		girlMove = GameObject.Find("Girl").GetComponent<Movement>();
+		GameObject g = GameObject.Find("Girl");
+		if(g != null)
+			girlMove = g.GetComponent<Movement>();
 		arrowScript = Camera.main.GetComponent<ArrowScript>();
 		for(int i = 0; i < _bool.Length ;i++)_bool[i] = false;
 		if(up.Length != 0 )_bool[0] = true; 
 		if(down.Length != 0 )_bool[1] = true; 
 		if(left.Length != 0 )_bool[2] = true; 
 		if(right.Length != 0 )_bool[3] = true;
+	}
+	void Start()
+	{
+		if(arrowScript == null) Camera.main.GetComponent<ArrowScript>();
+		if(girlMove == null)girlMove = GameObject.Find("Girl").GetComponent<Movement>();
 	}
 	
 	// Update is called once per frame
@@ -79,6 +86,7 @@ public class NodeChoice : INode {
 	public override void SetGirlOn()
 	{
 		isGirlOn = true;
+		if(arrowScript == null)print ("Nope");
 		arrowScript.SetArrow(_bool, this);
 	}
 }

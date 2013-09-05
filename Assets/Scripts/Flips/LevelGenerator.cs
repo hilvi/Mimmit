@@ -18,20 +18,8 @@ public class LevelGenerator : MonoBehaviour {
 	Material[] cardTextures;
 	
 	void Awake() {
-		
-		
 		ShuffleMaterials();
 		PlaceCards();		
-	}
-	
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 	
 	public int CardCount () {
@@ -40,10 +28,6 @@ public class LevelGenerator : MonoBehaviour {
 	
 	void ShuffleMaterials() {
 		AssignMaterials ();
-		for (int i=0; i < cardTextures.Length; i++) 
-			Debug.Log(cardTextures[i]);
-		Debug.Log(cardTextures.Length);
-		//int i;
 		Material buf;
 		
 		for (int i=0; i < cardTextures.Length; i++) { // This "shuffles" the texture array by swapping each element with another one at random
@@ -67,8 +51,7 @@ public class LevelGenerator : MonoBehaviour {
 		}
 		
 		for (i=0; i < count; i++) {
-			cardTextures[i] = 
-				textures[(i/2) % textures.Length]; 
+			cardTextures[i] = textures[(i/2) % textures.Length]; 
 			// For three suits, this expression will generate the following repeating sequence of indices: 0,0,1,1,2,2,0,0,1,1,2,2,0,0,1,1,2,2,...
 		}
 	}
@@ -87,22 +70,20 @@ public class LevelGenerator : MonoBehaviour {
 		
 		float ratio = 0.7f;
 		
-		if (colCount >= defaultRowCount) { // We want to resize the cards to fit the screen regardless of the dimensions of the field
+		if (colCount >= defaultRowCount) 
+		{ // We want to resize the cards to fit the screen regardless of the dimensions of the field
 			ratio *= defaultRowCount / colCount;
 		}
-		if (rowCount*ratio >= defaultColCount) { // The ratio is calculated in relation to the "default" dimensions (2x3)
+		if (rowCount*ratio >= defaultColCount) 
+		{ // The ratio is calculated in relation to the "default" dimensions (2x3)
 			ratio *= defaultColCount / (rowCount * ratio);
 		}
-		
-		GameObject.Find("Background").transform.localScale = // Resize the background image to fit behind the cards
-			new Vector3(colCount*ratio*cardW/10, rowCount*ratio*cardH/10, 1);
-		//Debug.Log(new Vector3(colCount*ratio*cardW/10, rowCount*ratio*cardH/10, 1));
-		
 		
 		for (j = -shiftH; j <= shiftH; j++)
 			for (i = -shiftW; i <= shiftW; i++) {
 			
 				cardPosition =  new Vector3((cardW+cardDist)*i*ratio, (cardH+cardDist)*j*ratio, 0f); // Calculate the card's position
+				print (cardPosition);
 				card = (GameObject)Instantiate(cardPrefab, cardPosition, Quaternion.identity); // Place the card prefab onto the stage
 				card.transform.localScale = new Vector3(ratio, ratio, 1); // Resize the card according to the calculated ratio
 			

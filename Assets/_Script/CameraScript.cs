@@ -3,9 +3,11 @@ using System.Collections;
 
 public class CameraScript : MonoBehaviour {
 
-	public Transform girl;
+	Transform girl;
+	public MapWorldScript map;
 	void Start () {
-	
+		GameObject g = map.GetGirl();
+		girl = g.transform;
 	}
 	
 	// Update is called once per frame
