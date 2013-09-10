@@ -8,6 +8,7 @@ public class LanguageScript : MonoBehaviour {
 	public Texture english, finnish;
 	// Use this for initialization
 	void Awake () {
+		PlayerPrefs.DeleteAll();
 		int a = PlayerPrefs.GetInt("Language");
 		if(a == 0)return;
 		if(a != 0)

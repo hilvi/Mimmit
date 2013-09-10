@@ -13,8 +13,8 @@ public class CameraScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		Vector3 vec = transform.position;
-		vec.x = girl.position.x;
-		vec.z = girl.position.z;
+		vec.x = Mathf.Clamp(girl.position.x , -20.0f, 56.0f);
+		vec.z = Mathf.Clamp(girl.position.z , -18.0f, 17.0f);
 		transform.position = vec;
 	}
 }

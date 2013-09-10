@@ -83,7 +83,6 @@ public class LevelGenerator : MonoBehaviour {
 			for (i = -shiftW; i <= shiftW; i++) {
 			
 				cardPosition =  new Vector3((cardW+cardDist)*i*ratio, (cardH+cardDist)*j*ratio, 0f); // Calculate the card's position
-				print (cardPosition);
 				card = (GameObject)Instantiate(cardPrefab, cardPosition, Quaternion.identity); // Place the card prefab onto the stage
 				card.transform.localScale = new Vector3(ratio, ratio, 1); // Resize the card according to the calculated ratio
 			

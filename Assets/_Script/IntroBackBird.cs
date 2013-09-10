@@ -11,10 +11,12 @@ public class IntroBackBird : MonoBehaviour {
 	int sign = -1;
 	// Use this for initialization
 	void Start () {
+#if UNITY_WEBPLAYER
 		float width = Screen.width;
 		float height = Screen.height;
+		position = new Rect(0 - width / 15,260, width / 15, height /15);
+#endif
 		
-		position = new Rect(0 - width / 15,height / 3, width / 15, height /15);
 		texCoord = new Rect(0 ,0, 0.5f,1f);
 		StartCoroutine(WaitForNewBird());
 	}

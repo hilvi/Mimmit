@@ -9,8 +9,6 @@ public class FlipsGameManager : GameManager {
 	public InputManager inputManager;
 	public LevelGenerator levelGenerator;
 	public GUIText statusLine;
-	
-	float goTimer;
 
 	Card firstCard = null; // Handles to the two cards the player is currently flipping
 	Card secondCard = null;
@@ -19,9 +17,6 @@ public class FlipsGameManager : GameManager {
 	int cardsGuessed = 0;
 	int flips = 0;
 	
-	float endGameTimer = -1;
-	bool doEndGame = false;
-	
 	// Use this for initialization
 	public override void Start () 
 	{
@@ -29,6 +24,7 @@ public class FlipsGameManager : GameManager {
 		cardsTotal = levelGenerator.CardCount();
 		SetGameState(GameState.Pregame);
 		statusLine.pixelOffset = new Vector2(Screen.width/2, -Screen.height /2 );
+		StartCoroutine(UpdateStatus());
 	}
 	
 	// Update is called once per frame
@@ -38,31 +34,10 @@ public class FlipsGameManager : GameManager {
 		{	
 			if (inputManager.IsEscapeButtonDown()) 
 				PauseGame();
-			revealTime -= Time.deltaTime;
-			if (revealTime <=0) 
-			{
-				goTimer = 1;
-				HideAllCards();
-				base.SetGameState(GameState.Running);
-				UpdateStatus();
-			}
-			
-			UpdateStatus();
 		}
 		
 		if (GetGameState() == GameState.Running) 
-		{
-			UpdateStatus();
-			
-			if (doEndGame) 
-			{
-				endGameTimer -= Time.deltaTime;
-				if (endGameTimer <= 0) 
-				{
-					EndGame();
-				}
-			}
-			
+		{	
 			if (inputManager.IsEscapeButtonDown()) 
 				PauseGame();
 
@@ -78,8 +53,9 @@ public class FlipsGameManager : GameManager {
 					Card card = hit.collider.gameObject.transform.parent.GetComponent<Card>();
 					if (card.IsFaceDown()) {
 						flips ++;
-						card.Rotate();
-						if (firstCard==null) firstCard = card;
+						StartCoroutine(card.Rotate());
+						if (firstCard==null) 
+							firstCard = card;
 						else {
 							secondCard = card;
 						}
@@ -98,74 +74,70 @@ public class FlipsGameManager : GameManager {
 						secondCard.Disappear();
 						if (cardsGuessed >= cardsTotal) 
 						{
-							endGameTimer = 1;
-							doEndGame = true;
 							return;
 						}
 					}else
 					{
-						firstCard.Rotate();
-						secondCard.Rotate ();
+						StartCoroutine(firstCard.Rotate());
+						StartCoroutine(secondCard.Rotate ());
 					}
 					
 					firstCard = null;
-					secondCard = null;
-					UpdateStatus();				
+					secondCard = null;			
 				}
 			}
 		}
 	}
 	
-	public float GetSuccessRatio() 
-	{
-		return (float)cardsGuessed/(float)flips;
-	}
 	
-	public void ShowAllCards() 
+	void HideAllCards() 
 	{
 		Card card;
-		foreach (GameObject cardBack in GameObject.FindGameObjectsWithTag("Card")) 
+		GameObject [] obj = GameObject.FindGameObjectsWithTag("Card");
+		foreach (GameObject cardBack in obj) 
 		{
 			card = cardBack.transform.parent.GetComponent<Card>();
-			if (card.IsFaceDown()) card.Rotate();
+			if (card.IsFaceUp()) 
+			{
+				here = true;
+				i++;
+				StartCoroutine(card.Rotate());
+			}
 		}
 	}
-	
-	
-	public void HideAllCards() 
+	public static int index = 0;
+	int i = 0;
+	bool here = false;
+	IEnumerator UpdateStatus() 
 	{
-		Card card;
-		foreach (GameObject cardBack in GameObject.FindGameObjectsWithTag("Card")) 
+		float goTimer = 1;
+		while (revealTime > 0) 
 		{
-			card = cardBack.transform.parent.GetComponent<Card>();
-			if (card.IsFaceUp()) card.Rotate();
+			revealTime -= Time.deltaTime;
+			statusLine.guiText.material.color = new Color(1f,1f,1f,1.5f - (Mathf.Ceil(revealTime) - revealTime));
+			statusLine.text = (Mathf.Ceil(revealTime)).ToString();
+			statusLine.fontSize = (int)(80 + 100*(Mathf.Ceil(revealTime) - revealTime));
+			yield return null;
 		}
-	}
-	
-	
-	public void UpdateStatus() 
-	{
-		switch (GetGameState()) 
+		
+		HideAllCards();
+		
+		base.SetGameState(GameState.Running);
+		while (goTimer > 0) 
 		{
-			case GameState.Pregame:
-				statusLine.guiText.material.color = new Color(1f,1f,1f,1.5f - (Mathf.Ceil(revealTime) - revealTime));
-				statusLine.text = (Mathf.Ceil(revealTime)).ToString();
-				statusLine.fontSize = (int)(80 + 100*(Mathf.Ceil(revealTime) - revealTime));
-			break;			
-				
-			case GameState.Running:
-				if (goTimer > 0) 
-				{
-					revealTime = goTimer;
-					statusLine.text = "Go!";
-					statusLine.guiText.material.color = new Color(1f,1f,1f,1.5f - (Mathf.Ceil(revealTime) - revealTime));
-					statusLine.fontSize = (int)(80 + 100*(Mathf.Ceil(revealTime) - revealTime));
-				goTimer -= Time.deltaTime;
-				}else 
-				{
-				statusLine.text=  "";
-				}
-				break;
-		}	
+			statusLine.text = "Go!";
+			statusLine.guiText.material.color = new Color(1f,1f,1f,goTimer);
+			statusLine.fontSize = (int)(80 + 100*(Mathf.Ceil(goTimer) - goTimer));
+			goTimer -= Time.deltaTime;
+			yield return null;
+		}
+		statusLine.gameObject.SetActive(false);	
+	}
+	void OnGUI()
+	{
+		if(here)
+			GUI.Box (new Rect(0,0,200,200),index.ToString() + " "+ i);
+		else 
+			GUI.Box (new Rect(0,0,200,200),"Not calling");
 	}
 }

@@ -74,9 +74,9 @@
      <Compile Include="Assets\_Script\NodeGame.cs" />
      <Compile Include="Assets\_Script\PathScript.cs" />
      <Compile Include="Assets\_Script\SeaMovment.cs" />
-     <Compile Include="Assets\_Script\See WayPoint.cs" />
      <Compile Include="Assets\_Script\SoundManager.cs" />
      <Compile Include="Assets\_Script\Waypoint.cs" />
+     <Compile Include="Assets\_Script\WaypointGizmo.cs" />
      <Compile Include="Assets\_Script\WaypointScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
