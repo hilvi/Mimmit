@@ -49,7 +49,8 @@ public class MapWorldGUIScript : MonoBehaviour {
 		creditsRect = new Rect(Screen.width - MGUI.menuButtonWidth, MGUI.menuButtonWidth*1/3, MGUI.menuButtonWidth*2/3, MGUI.menuButtonWidth*2/3);
 	}
 	
-	void OnGUI() {		
+	void OnGUI() 
+	{		
 		float screenUnitW = Screen.width/100;
 		GameState currentState = gameManager.GetGameState();
 		// While the game is in progress, only display the pause button
@@ -113,7 +114,8 @@ public class MapWorldGUIScript : MonoBehaviour {
 		gameManager.GoToNextLevel();
 	}
 	
-	void ShowBottomMenu(){
+	void ShowBottomMenu()
+	{
 		// Left button
 		GameState currentState = gameManager.GetGameState();
 		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) {

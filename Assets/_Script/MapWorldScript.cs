@@ -15,7 +15,10 @@ public class MapWorldScript : MonoBehaviour {
 		{
 			girl = (GameObject)Instantiate(brune);
 		}else{
-			Debug.LogError("No girl chosen in MapWorld");
+			#if UNITY_EDITOR
+			girl = (GameObject)Instantiate(brune);
+			#endif
+			//Debug.LogError("No girl chosen in MapWorld");
 		}
 		girl.name = "Girl";
 		girl.transform.position = startPosition.position;

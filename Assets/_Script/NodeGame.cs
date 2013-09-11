@@ -4,6 +4,7 @@ using System.Collections;
 public class NodeGame : INode {
 	
 	public Transform [] track;
+	public Texture2D gameTexture;
 	
 	bool isGirlOn;
 	Rect boxRect, playRect, backRect;
@@ -13,13 +14,12 @@ public class NodeGame : INode {
 	// Use this for initialization
 	void Start () 
 	{
-		float width = Screen.width / 2;
-		float height = Screen.height /3 * 2;
-		boxRect = new Rect(width - width /2, Screen.height/2 - height / 2, width, height);
-		float buttonW = Screen.width / 3;
-		float buttonH = Screen.height / 5;
-		playRect = new Rect(width - buttonW / 2, Screen.height / 2 - buttonH,buttonW, buttonH);
-		backRect = new Rect(width - buttonW / 2, Screen.height / 2,buttonW, buttonH);
+		float width = Screen.width / 3 ;
+		float height = Screen.height / 2;
+		boxRect = new Rect(Screen.width/2 - width / 2, height - (0.5f * width), width, width);
+		float buttonH = height + 0.5f * width;
+		playRect = new Rect(Screen.width / 2 - width /2, buttonH, width / 2, width / 2);
+		backRect = new Rect(Screen.width / 2, buttonH, width / 2, width / 2);
 		movement = GameObject.Find ("Girl").GetComponent<Movement>();
 	}
 	
@@ -27,7 +27,8 @@ public class NodeGame : INode {
 	void OnGUI () 
 	{
 		if(!isGirlOn)return;
-		GUI.Box(boxRect, "GameName");
+		//GUI.Box(boxRect, gameTexture);
+		GUI.DrawTexture(boxRect,gameTexture);
 		if(GUI.Button (playRect,"Play"))
 		{
 			Application.LoadLevel(gameName);
