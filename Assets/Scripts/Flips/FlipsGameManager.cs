@@ -15,7 +15,7 @@ public class FlipsGameManager : GameManager {
 	
 	int cardsTotal;
 	int cardsGuessed = 0;
-	int flips = 0;
+	Camera cam;
 	
 	// Use this for initialization
 	public override void Start () 
@@ -24,68 +24,75 @@ public class FlipsGameManager : GameManager {
 		cardsTotal = levelGenerator.CardCount();
 		SetGameState(GameState.Pregame);
 		statusLine.pixelOffset = new Vector2(Screen.width/2, -Screen.height /2 );
+		cam = Camera.main;
 		StartCoroutine(UpdateStatus());
 	}
 	
 	// Update is called once per frame
 	void Update () 
 	{
-		if (GetGameState() == GameState.Pregame) 
-		{	
-			if (inputManager.IsEscapeButtonDown()) 
-				PauseGame();
-		}
-		
-		if (GetGameState() == GameState.Running) 
-		{	
-			if (inputManager.IsEscapeButtonDown()) 
-				PauseGame();
-
-			Camera cam = Camera.main;
+		GameState currentState = GetGameState();
+		switch(currentState)
+		{
+			#region PREGAME
+		 	case GameState.Pregame:	
+				if (inputManager.IsEscapeButtonDown()) 
+					PauseGame();
+				break;
+			#endregion
+			#region RUNNING
+			case GameState.Running:
+				if (inputManager.IsEscapeButtonDown()) 
+					PauseGame();
+				Ray ray = cam.ScreenPointToRay(inputManager.GetCursorPosition());
+		   		RaycastHit hit;
 			
-			Ray ray = cam.ScreenPointToRay(inputManager.GetCursorPosition());
-	   		RaycastHit hit;
-		
-	        if (inputManager.IsButtonDown() && Physics.Raycast(ray, out hit) && !secondCard)
-			{
-				if (hit.collider.CompareTag("Card")) 
+		        if (inputManager.IsButtonDown() && Physics.Raycast(ray, out hit) && !secondCard)
 				{
-					Card card = hit.collider.gameObject.transform.parent.GetComponent<Card>();
-					if (card.IsFaceDown()) {
-						flips ++;
-						StartCoroutine(card.Rotate());
-						if (firstCard==null) 
-							firstCard = card;
-						else {
-							secondCard = card;
-						}
-					}
-				}
-			}
-			
-			if (secondCard != null) 
-			{
-				if (firstCard.IsFaceUp() && secondCard.IsFaceUp()) 
-				{
-					if (firstCard.GetSuit() == secondCard.GetSuit()) 
+					if (hit.collider.CompareTag("Card")) 
 					{
-						cardsGuessed += 2;
-						firstCard.Disappear();
-						secondCard.Disappear();
-						if (cardsGuessed >= cardsTotal) 
+						Card card = hit.collider.gameObject.transform.parent.GetComponent<Card>();
+						if (card.IsFaceDown()) 
 						{
-							return;
+							StartCoroutine(card.Rotate());
+							if (firstCard==null) 
+								firstCard = card;
+							else {
+								secondCard = card;
+							}
 						}
-					}else
-					{
-						StartCoroutine(firstCard.Rotate());
-						StartCoroutine(secondCard.Rotate ());
 					}
-					
-					firstCard = null;
-					secondCard = null;			
 				}
-			}
+				if (secondCard != null) 
+				{
+					if (firstCard.IsFaceUp() && secondCard.IsFaceUp()) 
+					{
+						if (firstCard.GetSuit() == secondCard.GetSuit()) 
+						{
+							cardsGuessed += 2;
+							firstCard.Disappear();
+							secondCard.Disappear();
+							if (cardsGuessed >= cardsTotal) 
+							{
+								SetGameState(GameState.Over);
+								return;
+							}
+						}else
+						{
+							StartCoroutine(firstCard.Rotate());
+							StartCoroutine(secondCard.Rotate ());
+						}
+						
+						firstCard = null;
+						secondCard = null;			
+					}
+				}
+				break;
+			#endregion
+			#region OVER
+			case GameState.Over:
+				break;
+			#endregion
 		}
 	}
 	
@@ -99,15 +106,11 @@ public class FlipsGameManager : GameManager {
 			card = cardBack.transform.parent.GetComponent<Card>();
 			if (card.IsFaceUp()) 
 			{
-				here = true;
-				i++;
 				StartCoroutine(card.Rotate());
 			}
 		}
 	}
-	public static int index = 0;
-	int i = 0;
-	bool here = false;
+
 	IEnumerator UpdateStatus() 
 	{
 		float goTimer = 1;
@@ -132,12 +135,5 @@ public class FlipsGameManager : GameManager {
 			yield return null;
 		}
 		statusLine.gameObject.SetActive(false);	
-	}
-	void OnGUI()
-	{
-		if(here)
-			GUI.Box (new Rect(0,0,200,200),index.ToString() + " "+ i);
-		else 
-			GUI.Box (new Rect(0,0,200,200),"Not calling");
 	}
 }

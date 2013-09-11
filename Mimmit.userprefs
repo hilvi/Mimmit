@@ -1,6 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_Script\MapWorldGUIScript.cs">
+    <Files>
+      <File FileName="Assets\Scripts\Flips\FlipsGameManager.cs" Line="5" Column="37" />
+      <File FileName="Assets\_Script\Animation2D.cs" Line="35" Column="19" />
+      <File FileName="Assets\Scripts\Global\GameManager.cs" Line="4" Column="3" />
+      <File FileName="Assets\Scripts\Flips\Card.cs" Line="52" Column="19" />
+      <File FileName="Assets\_Script\MapWorldGUIScript.cs" Line="56" Column="1" />
+      <File FileName="Assets\Scripts\Global\InGameMenuGUI.cs" Line="151" Column="5" />
+      <File FileName="Assets\Scripts\Global\ScoreGUI.cs" Line="84" Column="70" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

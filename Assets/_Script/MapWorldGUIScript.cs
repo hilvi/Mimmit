@@ -13,7 +13,7 @@ public class MapWorldGUIScript : MonoBehaviour {
 	public string[] gameList;
 	
 	GameManager gameManager;
-	public Texture /*Restart*/PlayButton,homeButton,PauseButton;
+	public Texture PlayButton,homeButton,PauseButton;
 	Texture soundON, soundOff;
 	
 	int gamesNumber;
@@ -51,27 +51,31 @@ public class MapWorldGUIScript : MonoBehaviour {
 	
 	void OnGUI() {		
 		float screenUnitW = Screen.width/100;
-		
+		GameState currentState = gameManager.GetGameState();
 		// While the game is in progress, only display the pause button
-		if ((gameManager.GetGameState() == GameManager.GameState.Running)||(gameManager.GetGameState() == GameManager.GameState.Pregame)) {
-			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) {	
+		if (currentState == GameState.Running||currentState == GameState.Pregame) 
+		{
+			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
+			{	
 				gameManager.PauseGame();
 			}
 		}
-		else {
-				// define the medal and show the corresponding texture
-				switch (gameManager.GetGameState()) {
-					case GameManager.GameState.Paused: 
-						ShowBottomMenu();
-						break;
-					case GameManager.GameState.Over:
-						if(callOnce){
-							audio.volume = 0;
-							StartCoroutine(FadeOutMusic(audioSource));
-							audio.Play();
-							StartCoroutine(FadeInMusic(audio));
-							callOnce = false;
-						}
+		else 
+		{
+			switch (currentState) 
+			{
+				case GameState.Paused: 
+					ShowBottomMenu();
+					break;
+				case GameState.Over:
+					if(callOnce)
+					{
+						audio.volume = 0;
+						StartCoroutine(FadeOutMusic(audioSource));
+						audio.Play();
+						StartCoroutine(FadeInMusic(audio));
+						callOnce = false;
+					}
 					break;
 			}
 		}	
@@ -111,52 +115,54 @@ public class MapWorldGUIScript : MonoBehaviour {
 	
 	void ShowBottomMenu(){
 		// Left button
+		GameState currentState = gameManager.GetGameState();
 		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) {
-			switch(gameManager.GetGameState()){
-				case GameManager.GameState.Paused: 
+			switch(currentState)
+			{
+				case GameState.Paused: 
 					StartCoroutine(LoadMainMenu(audioSource));
 					break;
-				case GameManager.GameState.Over:
+				case GameState.Over:
 					StartCoroutine(LoadMainMenu(audio));
 					break;
 			}
 		}
 		
-		// Middle button
-		/*if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), Restart)) {
+		/*// Middle button
+		if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), Restart)) {
 			gameManager.RestartGame();
 		}*/
 		
 		// Right button
-		if (gameManager.GetGameState() == GameManager.GameState.Over)
+		if (currentState == GameState.Over)
 			 GUI.enabled = false; // Resume button is grayed out on the loss screen
 		
 		if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), PlayButton)) {
-			if (gameManager.GetGameState()== GameManager.GameState.Paused){
+			if (currentState == GameState.Paused){
 				gameManager.UnpauseGame();
 				
 			}
-			if ((gameManager.GetGameState() == GameManager.GameState.Over)){
+			if (currentState == GameState.Over){
 				StartCoroutine(WaitAndLoadNext());
 			}
 		}
 		GUI.enabled = true;
 		
-		if(gameManager.GetGameState() == GameManager.GameState.Paused){
+		if(currentState == GameState.Paused){
 			if(isSounON == "true"){
 				
-				if (MGUI.HoveredButton(creditsRect, soundON)){
-					
+				if (MGUI.HoveredButton(creditsRect, soundON))
+				{	
 					PlayerPrefs.SetString("sound", "false");
 					isSounON = "false";
 					EnableSound();
 					
 				}
 			}
-			else{
-				
-				if (MGUI.HoveredButton(creditsRect, soundOff)){
-					
+			else
+			{
+				if (MGUI.HoveredButton(creditsRect, soundOff))
+				{
 					PlayerPrefs.SetString("sound", "true");
 					isSounON = "true";
 					EnableSound();

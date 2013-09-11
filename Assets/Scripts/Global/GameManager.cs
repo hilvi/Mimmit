@@ -1,13 +1,14 @@
 using UnityEngine;
 using System.Collections;
 
+public enum GameState { Pregame, Running, Paused, Over };
 public class GameManager : MonoBehaviour {
 	
 	public bool isLastLevel = true;
 	public int currentLevel = 1;
 	public string gameName;
 	
-	public enum GameState { Pregame, Running, Paused, Over };
+	
 	public static GameState gameState;
 	public static GameState prevGameState;
 	
@@ -73,5 +74,9 @@ public class GameManager : MonoBehaviour {
 		PauseGame();
 		SetGameState(GameState.Over);
 		Time.timeScale = 0;
+	}
+	protected void GameOverScreen(Texture2D texture)
+	{
+		
 	}
 }

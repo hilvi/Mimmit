@@ -50,7 +50,6 @@ public class Card : MonoBehaviour {
 	{
 		//Camera.main.audio.PlayOneShot(flipClick, 0.5f);
 		float timer = 0;
-		FlipsGameManager.index++;
 		while(timer < 1)
 		{
 			timer += Time.deltaTime;
