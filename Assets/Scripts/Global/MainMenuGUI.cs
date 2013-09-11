@@ -124,10 +124,10 @@ public class MainMenuGUI : MonoBehaviour {
 		else if(callOptions == true)
 		{
 			GUI.DrawTexture(gamePreviewRect,  previewTextures[1]);
-			if(Sound == true){
-				
-				if (MGUI.HoveredButton(soundButtonRect, soundON)){
-					
+			if(Sound == true)
+			{	
+				if (MGUI.HoveredButton(soundButtonRect, soundON))
+				{
 					PlayerPrefs.SetString("sound", "false");
 					Sound = false;
 					EnableSound();
@@ -142,7 +142,6 @@ public class MainMenuGUI : MonoBehaviour {
 					EnableSound();
 					
 				}
-				
 			}
 			if (MGUI.HoveredButton(creditsButtonRect, credits)) {
 				
@@ -165,19 +164,15 @@ public class MainMenuGUI : MonoBehaviour {
 		}
 	}
 	
-	void EnableSound(){
-		
-		if(AudioListener.volume == 0){
+	void EnableSound()
+	{	
+		if(AudioListener.volume == 0)
+		{
 			
 			AudioListener.volume = 1;
-		}
-			
+		}	
 		else{
 				AudioListener.volume = 0;
-		} 
-		
-					
+		} 				
 	}
-
-
 }

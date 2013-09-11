@@ -23,13 +23,9 @@ public class InGameMenuGUI : MonoBehaviour {
 	int gamesNumber;
 	
 	AudioSource audioSource;
-	bool callOnce = true;
 	
 	string isSounON;
-	Texture[] previewTextures;	
 	Rect creditsRect;
-	
-	
 	
 	// Use this for initialization
 	void Start () 
@@ -37,17 +33,6 @@ public class InGameMenuGUI : MonoBehaviour {
 		gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		soundON =(Texture)Resources.Load("MainMenu/Buttons/soundon");
 		soundOff =(Texture)Resources.Load("MainMenu/Buttons/soundoff");
-		
-		previewTextures = new Texture[1];
-		previewTextures[0] = (Texture)Resources.Load("MainMenu/Previews/brick");
-			
-		
-		audio.clip = (AudioClip)Resources.Load("Music/Medal/MedalScreen");
-		audio.volume = 0;
-		audio.loop = true;
-		audio.playOnAwake = false;
-		
-		audioSource = Camera.main.GetComponent<AudioSource>();
 	
 		currentLevel = 1;
 		creditsRect = new Rect(Screen.width - MGUI.menuButtonWidth, MGUI.menuButtonWidth*1/3, MGUI.menuButtonWidth*2/3, MGUI.menuButtonWidth*2/3);
@@ -57,8 +42,10 @@ public class InGameMenuGUI : MonoBehaviour {
 		float screenUnitW = Screen.width/100;
 		GameState currentState = gameManager.GetGameState();
 		// While the game is in progress, only display the pause button
-		if (currentState == GameState.Running||currentState == GameState.Pregame) {
-			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) {	
+		if (currentState == GameState.Running||currentState == GameState.Pregame) 
+		{
+			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
+			{	
 				gameManager.PauseGame();
 			}
 		}
@@ -69,13 +56,6 @@ public class InGameMenuGUI : MonoBehaviour {
 					ShowBottomMenu();
 					break;
 				case GameState.Over:
-					if(callOnce){
-						audio.volume = 0;
-						StartCoroutine(FadeOutMusic(audioSource));
-						audio.Play();
-						StartCoroutine(FadeInMusic(audio));
-						callOnce = false;
-					}
 					ShowBottomMenu();
 					break;
 			}
@@ -102,9 +82,11 @@ public class InGameMenuGUI : MonoBehaviour {
 	}
 	IEnumerator FadeOutMusic(AudioSource source){
 		if (source != null)
-		while(source.volume > 0){
-			source.volume -= 0.02f;	
-			yield return null;
+		{
+			while(source.volume > 0){
+				source.volume -= 0.02f;	
+				yield return null;
+			}
 		}
 	}
 	IEnumerator WaitAndLoadNext(){
@@ -117,11 +99,10 @@ public class InGameMenuGUI : MonoBehaviour {
 		// Left button
 		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
 		{
-			print ("Here");
 			switch(currentState)
 			{
 				case GameState.Paused: 
-					StartCoroutine(LoadMainMenu(audioSource));
+					StartCoroutine(LoadMainMenu(audio));
 					break;
 				case GameState.Over:
 					StartCoroutine(LoadMainMenu(audio));
@@ -130,26 +111,28 @@ public class InGameMenuGUI : MonoBehaviour {
 		}
 		
 		// Middle button
-		if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), Restart)) {
+		if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
+			Screen.width/7, Screen.width/7), Restart)) 
+		{
 			gameManager.RestartGame();
 		}
 		
 		// Right button
-		if (currentState == GameState.Over)
-			 GUI.enabled = false; // Resume button is grayed out on the loss screen
-		
-		if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), PlayButton)) {
-			if (currentState == GameState.Paused)
-			{
-				gameManager.UnpauseGame();
-				
-			}
-			else if ((currentState == GameState.Over))
-			{
-				StartCoroutine(WaitAndLoadNext());
+		// Only draw the button if the level is not the last one.
+		if(!gameManager.isLastLevel){
+			if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
+				Screen.width/7, Screen.width/7), PlayButton)) {
+				if (currentState == GameState.Paused)
+				{
+					gameManager.UnpauseGame();
+					
+				}
+				else if ((currentState == GameState.Over))
+				{
+					StartCoroutine(WaitAndLoadNext());
+				}
 			}
 		}
-		GUI.enabled = true;
 		
 		if(currentState == GameState.Paused){
 			if(isSounON == "true")
@@ -175,11 +158,10 @@ public class InGameMenuGUI : MonoBehaviour {
 		
 	}
 	void EnableSound(){	
-		if(AudioListener.volume == 0){
-			
+		if(AudioListener.volume == 0)
+		{	
 			AudioListener.volume = 1;
 		}
-			
 		else{
 				AudioListener.volume = 0;
 		} 			

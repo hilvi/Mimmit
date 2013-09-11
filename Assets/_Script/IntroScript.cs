@@ -94,8 +94,6 @@ public class IntroScript : MonoBehaviour {
 		yesButton = new Rect(width / 3, yPos + sizeBoxH / 2, sizeBoxW / 2, sizeBoxH / 2 );
 		noButton = new Rect(width / 3 + sizeBoxW / 2, yPos + sizeBoxH / 2, sizeBoxW / 2, sizeBoxH / 2 );
 #endif
-		_del = soundManager.PlayAudio;
-		StartCoroutine(Wait(1.0f,_del,"Hello"));
 	}
 	
 	void OnGUI () {
@@ -128,7 +126,7 @@ public class IntroScript : MonoBehaviour {
 			if(GUI.Button (yesButton,"YES"))
 			{
 				if(!coroutineRunning){
-					StartCoroutine (Leaving());
+					Leaving ();
 				}
 			}
 			if(GUI.Button (noButton, "NO"))
@@ -144,13 +142,11 @@ public class IntroScript : MonoBehaviour {
 			GUI.DrawTextureWithTexCoords(chooseBrRect,brune, buttonBr);
 			if(GUI.Button(chooseBlRect,"",noStyle))
 			{
-				print ("Blonde");
 				Manager.SetCharacter(Character.Blonde);
 				StartCoroutine(LaunchGame());
 			}
 			if(GUI.Button(chooseBrRect,"",noStyle))
 			{
-				print ("Brune");
 				Manager.SetCharacter(Character.Brune);
 				StartCoroutine(LaunchGame());
 			}
@@ -214,12 +210,10 @@ public class IntroScript : MonoBehaviour {
 		if(sign > 0)
 		{
 			characterSelection = false;
-			//soundManager.PlayAudio("Hello");
 			blTex = buttonBl;
 			brTex = buttonBr;
 		}else{
 			front = false;
-			soundManager.PlayAudio("Choose");
 		}
 		coroutineRunning = false;
 	}
@@ -227,13 +221,6 @@ public class IntroScript : MonoBehaviour {
 	IEnumerator LaunchGame()
 	{
 		coroutineRunning = true;
-		float timer = 0;
-		soundManager.PlayAudio("Play");
-		while(timer < soundManager.GetLength("Play"))
-		{
-			timer += Time.deltaTime;
-			yield return null;
-		}
 		while(audio.volume > 0.2f)
 		{
 			audio.volume -= Time.deltaTime * soundSpeed;
@@ -242,21 +229,12 @@ public class IntroScript : MonoBehaviour {
 		coroutineRunning = false;
 		Application.LoadLevel("MapWorld");
 	}
-	
-	IEnumerator Leaving()
+	#if UNITY_STANDALONE
+	void Leaving()
 	{
-		coroutineRunning = true;
-		float timer = 0;
-		soundManager.PlayAudio("Bye");
-		while(timer < soundManager.GetLength("Bye"))
-		{
-			timer += Time.deltaTime;
-			yield return null;
-		}
-		coroutineRunning = false;
 		Application.Quit();
 	}
-	
+	#endif
 	IEnumerator Wait(float period, Action<string> action, string str)
 	{
 		float timer = 0;

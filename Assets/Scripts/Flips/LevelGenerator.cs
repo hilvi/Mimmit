@@ -4,6 +4,7 @@ using System.Collections;
 public class LevelGenerator : MonoBehaviour {
 	
 	public GameObject cardPrefab;
+	public float ratio;
 	public int colCount = 4;
 	public int rowCount = 2;
 	public float cardDist = 0;
@@ -65,10 +66,8 @@ public class LevelGenerator : MonoBehaviour {
 		
 		float i, j;
 		
-		float shiftW = (colCount-1f)/2f; // We calculate these shifts here to reduce the calculations inside the loop
-		float shiftH = (rowCount-1f)/2f;
-		
-		float ratio = 0.7f;
+		float shiftW = (colCount - 1f) / 2f; // We calculate these shifts here to reduce the calculations inside the loop
+		float shiftH = (rowCount - 1f) / 2f;
 		
 		if (colCount >= defaultRowCount) 
 		{ // We want to resize the cards to fit the screen regardless of the dimensions of the field
@@ -81,8 +80,8 @@ public class LevelGenerator : MonoBehaviour {
 		
 		for (j = -shiftH; j <= shiftH; j++)
 			for (i = -shiftW; i <= shiftW; i++) {
-			
-				cardPosition =  new Vector3((cardW+cardDist)*i*ratio, (cardH+cardDist)*j*ratio, 0f); // Calculate the card's position
+
+				cardPosition =  new Vector3((cardW + cardDist) * i * ratio, (cardH+cardDist)* j * ratio, 0f); // Calculate the card's position
 				card = (GameObject)Instantiate(cardPrefab, cardPosition, Quaternion.identity); // Place the card prefab onto the stage
 				card.transform.localScale = new Vector3(ratio, ratio, 1); // Resize the card according to the calculated ratio
 			

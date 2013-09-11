@@ -13,14 +13,16 @@ public class GameManager : MonoBehaviour {
 	public static GameState prevGameState;
 	
 	
-	virtual protected void Awake() {		
-		MainMenuGUI.selectedGameName = gameName;
-		MainMenuGUI.currentLevel = currentLevel;
+	virtual protected void Awake() 
+	{		
+		//MainMenuGUI.selectedGameName = gameName;
+		//MainMenuGUI.currentLevel = currentLevel;
 	}
 	
 	
 	// Use this for initialization
-	public virtual void Start () {
+	public virtual void Start () 
+	{
 		SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
 		Time.timeScale = 1;
 	}
@@ -63,9 +65,10 @@ public class GameManager : MonoBehaviour {
 	public void GoToNextLevel() {
 		//Reset global time scale
 		Time.timeScale = 1;
-		if (!isLastLevel)
-			Application.LoadLevel(MainMenuGUI.selectedGameName + "_level_" + (MainMenuGUI.currentLevel+1).ToString());
-		else
+		if (!isLastLevel){
+			int i = currentLevel + 1;
+			Application.LoadLevel(gameName + i.ToString());
+		}else
 			Application.LoadLevel("CreditsScreen");	
 
 	}

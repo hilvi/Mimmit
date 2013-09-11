@@ -63,7 +63,6 @@
      <Compile Include="Assets\_Script\INode.cs" />
      <Compile Include="Assets\_Script\IntroBackBird.cs" />
      <Compile Include="Assets\_Script\IntroScript.cs" />
-     <Compile Include="Assets\_Script\LanguageScript.cs" />
      <Compile Include="Assets\_Script\LookAtScript.cs" />
      <Compile Include="Assets\_Script\Manager.cs" />
      <Compile Include="Assets\_Script\MapWorldGUIScript.cs" />

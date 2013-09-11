@@ -12,15 +12,7 @@ public class SoundManager : MonoBehaviour {
 	{
 		_transform = Camera.main.transform;
 		
-		string path = "Sound/"+Manager.GetLanguage().ToString()+"/"+Application.loadedLevelName;
-		Object[] clips = Resources.LoadAll(path, typeof(AudioClip));
-		for(int i = 0; i< clips.Length;i++)
-		{
-			AudioClip ac = (AudioClip)clips[i];
-			string[] name = ac.name.Split('(');
-			_audioDict.Add (name[0],ac);
-		}
-		path = "Sound/Effect/"+Application.loadedLevelName;
+		string path = "Sound/Effect/"+Application.loadedLevelName;
 		Object[] sounds = Resources.LoadAll(path, typeof(AudioClip));
 		for(int i = 0; i < sounds.Length;i++)
 		{
