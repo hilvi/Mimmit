@@ -71,7 +71,15 @@ public class InGameMenuGUI : MonoBehaviour {
 			}
 		}
 		Time.timeScale = 1.0f;
-		Application.LoadLevel("MapWorld");
+		ScreenChoice _choice = Manager.GetScreenChoice();
+		if(_choice == ScreenChoice.Map)
+		{
+			Application.LoadLevel("MapWorld");
+		}
+		else if(_choice == ScreenChoice.Button)
+		{
+			Application.LoadLevel("ChooseGameScene");
+		}
 	}
 	IEnumerator FadeInMusic(AudioSource source){
 		if (source != null)

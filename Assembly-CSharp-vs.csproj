@@ -60,7 +60,10 @@
      <Compile Include="Assets\_Script\ArrowScript.cs" />
      <Compile Include="Assets\_Script\BackgroundScript.cs" />
      <Compile Include="Assets\_Script\CameraScript.cs" />
+     <Compile Include="Assets\_Script\ChoiceScreenScript.cs" />
+     <Compile Include="Assets\_Script\ChooseGameScript.cs" />
      <Compile Include="Assets\_Script\INode.cs" />
+     <Compile Include="Assets\_Script\InfoScript.cs" />
      <Compile Include="Assets\_Script\IntroBackBird.cs" />
      <Compile Include="Assets\_Script\IntroScript.cs" />
      <Compile Include="Assets\_Script\LookAtScript.cs" />
@@ -69,6 +72,7 @@
      <Compile Include="Assets\_Script\MapWorldScript.cs" />
      <Compile Include="Assets\_Script\Movement.cs" />
      <Compile Include="Assets\_Script\MovingScript.cs" />
+     <Compile Include="Assets\_Script\NewBehaviourScript.cs" />
      <Compile Include="Assets\_Script\NodeChoice.cs" />
      <Compile Include="Assets\_Script\NodeGame.cs" />
      <Compile Include="Assets\_Script\PathScript.cs" />

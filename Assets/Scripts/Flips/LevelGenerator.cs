@@ -11,7 +11,7 @@ public class LevelGenerator : MonoBehaviour {
 	public Material[] textures; // List of materials for each available card suit
 	
 	const float cardW = 2.5f; // The default dimensions of a single card, used for calculations
-	const float cardH = 3.5f;
+	const float cardH = 2.5f;
 	
 	const float defaultRowCount = 3f;
 	const float defaultColCount = 2f;

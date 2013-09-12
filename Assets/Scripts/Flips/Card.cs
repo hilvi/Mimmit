@@ -27,6 +27,7 @@ public class Card : MonoBehaviour {
 		transform.position += Vector3.up*Random.Range(-randomPosition, randomPosition);
 		transform.position += Vector3.right*Random.Range(-randomPosition, randomPosition);
 		currentRotation = transform.rotation;
+		transform.localScale = new Vector3(1,0.7f,1);
 		nextRotation = Quaternion.Euler (0, 180, 0)*transform.rotation;
 		//flipClick = (AudioClip)Resources.Load("SoundFx/shuffle-01");
 		//allRotateSound = (AudioClip)Resources.Load("SoundFx/FlipTurn",(typeof(AudioClip)));

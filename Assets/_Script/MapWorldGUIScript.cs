@@ -92,7 +92,7 @@ public class MapWorldGUIScript : MonoBehaviour {
 			}
 		}
 		Time.timeScale = 1.0f;
-		Application.LoadLevel("MainScreenScene");
+		Application.LoadLevel("ChoiceScene");
 	}
 	IEnumerator FadeInMusic(AudioSource source){
 		if (source != null){

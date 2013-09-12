@@ -14,4 +14,11 @@ public class BackgroundScript : MonoBehaviour {
 		Rect rect = new Rect(-width / 2, - height / 2, width, height);
 		background.pixelInset = rect;
 	}
+	void Update()
+	{
+		if(Input.anyKey && (Application.loadedLevelName.CompareTo("MainScreenScene") == 0))
+		{
+			Application.LoadLevel("ChoiceScene");
+		}
+	}
 }
