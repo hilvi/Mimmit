@@ -4,8 +4,34 @@ using System.Collections;
 public class ChooseGameScript : MonoBehaviour {
 	
 	GUITexture background;
-	// Use this for initialization
+	
+	public Texture2D otter, hedgehog, tree, horse, owl, dragon,bear,granma,seaDragon;
 	Rect mapRect, otterRect, hedgehogRect, treeRect, horseRect, owlRect, dragonRect, bearRect,granmaRect,seaDragonRect;
+	Rect characterBoxRect;
+	public Texture2D blonde, brune, fox, boy;
+	Texture2D chosen;
+	GUIStyle noStyle = new GUIStyle();
+
+	Texture2D GetChosenCharacter ()
+	{
+		Character _character = Manager.GetCharacter();
+		switch(_character)
+		{
+			case Character.Blonde:
+				return blonde;
+			case Character.Brune:
+				return blonde;
+			case Character.Boy:
+				return blonde;
+			case Character.Fox:
+				return blonde;
+			case Character.None:
+				return blonde;
+			default:
+				return blonde;
+		}
+	}
+	
 	void Start () 
 	{
 		background = GetComponent<GUITexture>();
@@ -23,50 +49,53 @@ public class ChooseGameScript : MonoBehaviour {
 		horseRect = new Rect(300,285,_edge,_edge);
 		owlRect = new Rect(200, 185,_edge,_edge);
 		dragonRect = new Rect(320, 110,_edge,_edge);
-		bearRect = new Rect(460, 70,_edge,_edge);
+		bearRect = new Rect(460, 65,_edge,_edge);
 		granmaRect = new Rect(600,45,_edge,_edge);
 		seaDragonRect = new Rect(760,45,_edge,_edge);
+		characterBoxRect = new Rect(20,20,200,200);
+		chosen = GetChosenCharacter();
 	}
 	// Update is called once per frame
 	void OnGUI ()
 	{
+		GUI.Box (characterBoxRect,chosen,noStyle);
 		if(GUI.Button (mapRect,"Map"))
 		{
 			Application.LoadLevel("MapWorld");
 		}
-		if(GUI.Button (otterRect,"Otter"))
+		if(MGUI.HoveredButton (otterRect,otter))
 		{
 			
 		}
-		if(GUI.Button (hedgehogRect,"Hedgehog"))
+		if(MGUI.HoveredButton (hedgehogRect,hedgehog))
 		{
 			
 		}
-		if(GUI.Button (treeRect,"Tree"))
+		if(MGUI.HoveredButton (treeRect,tree))
 		{
 			
 		}
-		if(GUI.Button (horseRect,"Horse"))
+		if(MGUI.HoveredButton (horseRect,horse))
 		{
 			
 		}
-		if(GUI.Button (owlRect,"Owl"))
+		if(MGUI.HoveredButton (owlRect,owl))
 		{
 			Application.LoadLevel("Flip_1");
 		}
-		if(GUI.Button (dragonRect,"Dragon"))
+		if(MGUI.HoveredButton (dragonRect,dragon))
 		{
 			
 		}
-		if(GUI.Button (bearRect,"Bear"))
+		if(MGUI.HoveredButton (bearRect,bear))
 		{
 			
 		}
-		if(GUI.Button (granmaRect,"Granma"))
+		if(MGUI.HoveredButton (granmaRect,granma))
 		{
 			
 		}
-		if(GUI.Button (seaDragonRect,"Sea Dragon"))
+		if(MGUI.HoveredButton (seaDragonRect,seaDragon))
 		{
 			
 		}

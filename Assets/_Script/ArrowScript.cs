@@ -4,7 +4,9 @@ using System.Collections;
 public class ArrowScript : MonoBehaviour {
 	
 	Rect leftButton, rightButton, upButton, downButton;
-	public Texture2D up,down,left,right;
+	public Texture2D upGame, downGame, leftGame, rightGame;
+	Texture2D up, down, left, right;
+	public Texture2D upMove,downMove,leftMove,rightMove;
 	bool upOn, downOn, leftOn ,rightOn;
 	bool isGirlOn;
 	NodeChoice node = null;
@@ -54,8 +56,33 @@ public class ArrowScript : MonoBehaviour {
 			}
 		}
 	}
-	public void SetArrow(bool[] array, NodeChoice node)
+	public void SetArrow(bool[] array, NodeChoice node, GamePosition gamePosition)
 	{
+		if(gamePosition == GamePosition.Up)
+		{
+			up = upGame;
+		}else{
+			up = upMove;
+		}
+		if(gamePosition == GamePosition.Down)
+		{
+			down = downGame;
+		}else{
+			down = downMove;
+		}
+		if(gamePosition == GamePosition.Left)
+		{
+			left = leftGame;
+		}else{
+			left = leftMove;
+		}
+		if(gamePosition == GamePosition.Right)
+		{
+			right = rightGame;
+		}else{
+			right = rightMove;
+		}
+			
 		this.upOn = array[0];
 		this.downOn = array[1];
 		this.leftOn = array[2];

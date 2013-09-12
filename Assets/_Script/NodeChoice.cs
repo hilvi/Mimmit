@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+public enum GamePosition{
+	None, Left, Right, Up ,Down
+}
 public class NodeChoice : INode {
 	
 	public Transform[] left;
 	public Transform[] right;
 	public Transform[] up;
 	public Transform[] down;
+	public GamePosition gamePosition;
 	bool[] _bool = new bool[4];
 	
 	
@@ -16,7 +19,8 @@ public class NodeChoice : INode {
 	bool isGirlOn;
 	
 	// Use this for initialization
-	void Awake () {
+	void Awake () 
+	{
 		isGirlOn = false;
 		GameObject g = GameObject.Find("Girl");
 		if(g != null)
@@ -86,7 +90,7 @@ public class NodeChoice : INode {
 	public override void SetGirlOn()
 	{
 		isGirlOn = true;
-		if(arrowScript == null)print ("Nope");
-		arrowScript.SetArrow(_bool, this);
+		if(arrowScript == null)Debug.Log ("Nope");
+		arrowScript.SetArrow(_bool, this,gamePosition);
 	}
 }
