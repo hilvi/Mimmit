@@ -26,7 +26,12 @@ public class ArrowScript : MonoBehaviour {
 	void OnGUI()
 	{
 		if(!isGirlOn) return;
-		
+		NavigationState currentState = Manager.GetNavigationState();
+		GUI.enabled = true;
+		if(currentState == NavigationState.Pause)
+		{
+			GUI.enabled = false;
+		}
 		if(upOn){
 			if(GUI.Button(upButton,up))
 			{

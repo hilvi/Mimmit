@@ -5,6 +5,7 @@ public class Card : MonoBehaviour {
 	
 	public float randomPosition = 0.01f;
 	public float randomRotation = 3;
+	public bool randRotation = false;
 	
 	enum CardState {FaceDown, RotatingRight, RotatingLeft, FaceUp, Disappearing};
 	CardState state = CardState.FaceUp;
@@ -12,6 +13,7 @@ public class Card : MonoBehaviour {
 	Quaternion currentRotation;
 	Quaternion nextRotation;
 	Quaternion buf;
+	
 	/*AudioClip flipClick;
 	AudioClip allRotateSound;
 	AudioClip cardGoing;*/
@@ -23,7 +25,10 @@ public class Card : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		transform.rotation = Quaternion.Euler(0,0,Random.Range(-randomRotation, randomRotation));
+		if(randRotation)
+		{
+			transform.rotation = Quaternion.Euler(0,0,Random.Range(-randomRotation, randomRotation));
+		}
 		transform.position += Vector3.up*Random.Range(-randomPosition, randomPosition);
 		transform.position += Vector3.right*Random.Range(-randomPosition, randomPosition);
 		currentRotation = transform.rotation;

@@ -41,24 +41,32 @@ public class ChooseGameScript : MonoBehaviour {
 		Rect rect = new Rect(-width / 2, - height / 2, width, height);
 		background.pixelInset = rect;
 		
-		mapRect = new Rect(500,220,370,305);
+		mapRect = new Rect(500,200,300,250);
 		float _edge = 100;
-		otterRect = new Rect(40,400,_edge,_edge);
-		hedgehogRect = new Rect(200,385,_edge,_edge);
-		treeRect = new Rect(105, 285,_edge,_edge);
-		horseRect = new Rect(300,285,_edge,_edge);
-		owlRect = new Rect(200, 185,_edge,_edge);
-		dragonRect = new Rect(320, 110,_edge,_edge);
-		bearRect = new Rect(460, 65,_edge,_edge);
-		granmaRect = new Rect(600,45,_edge,_edge);
-		seaDragonRect = new Rect(760,45,_edge,_edge);
+		otterRect = new Rect(40,330,_edge,_edge);//400, 350
+		hedgehogRect = new Rect(200,330,_edge,_edge);//385 330
+		treeRect = new Rect(120, 240,_edge,_edge);// 285 250
+		horseRect = new Rect(300,240,_edge,_edge); // 285 250
+		owlRect = new Rect(210, 160,_edge,_edge);// 185 150
+		dragonRect = new Rect(325, 105,_edge,_edge);
+		float bearX = 450;
+		bearRect = new Rect(bearX, 75,_edge,_edge);
+		granmaRect = new Rect(bearX + 1.3f * _edge,50,_edge,_edge);
+		seaDragonRect = new Rect(bearX + 2.6f *_edge ,50,_edge,_edge);
 		characterBoxRect = new Rect(20,20,200,200);
 		chosen = GetChosenCharacter();
 	}
 	// Update is called once per frame
 	void OnGUI ()
 	{
+		NavigationState currentState = Manager.GetNavigationState();
+		GUI.enabled = true;
 		GUI.Box (characterBoxRect,chosen,noStyle);
+		if(currentState == NavigationState.Pause)
+		{
+			GUI.enabled = false;
+		}
+		
 		if(GUI.Button (mapRect,"Map"))
 		{
 			Application.LoadLevel("MapWorld");

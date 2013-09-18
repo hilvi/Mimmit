@@ -1,14 +1,6 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\_Script\ChooseGameScript.cs">
-    <Files>
-      <File FileName="Assets\_Script\NodeChoice.cs" Line="94" Column="48" />
-      <File FileName="Assets\_Script\ChoiceScreenScript.cs" Line="5" Column="1" />
-      <File FileName="Assets\Scripts\Global\InGameMenuGUI.cs" Line="1" Column="1" />
-      <File FileName="Assets\_Script\ChooseGameScript.cs" Line="61" Column="43" />
-      <File FileName="Assets\_Script\ArrowScript.cs" Line="62" Column="4" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>

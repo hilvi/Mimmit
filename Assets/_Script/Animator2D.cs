@@ -75,9 +75,4 @@ public class Animator2D : MonoBehaviour {
 		if (autoStart)
 			PlayAnimation(defaultAnimation);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-	}
 }

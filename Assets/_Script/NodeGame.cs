@@ -27,6 +27,12 @@ public class NodeGame : INode {
 	void OnGUI () 
 	{
 		if(!isGirlOn)return;
+		GUI.enabled = true;
+		NavigationState currentState = Manager.GetNavigationState();
+		if(currentState == NavigationState.Pause)
+		{
+			GUI.enabled = false;
+		}
 		//GUI.Box(boxRect, gameTexture);
 		GUI.DrawTexture(boxRect,gameTexture);
 		if(GUI.Button (playRect,"Play"))

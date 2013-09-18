@@ -2,9 +2,8 @@
 using System.Collections;
 
 public class BackgroundScript : MonoBehaviour {
+
 	GUITexture background;
-	// Use this for initialization
-	
 	void Start () 
 	{
 		background = GetComponent<GUITexture>();
@@ -13,12 +12,5 @@ public class BackgroundScript : MonoBehaviour {
 		float height = Screen.height;
 		Rect rect = new Rect(-width / 2, - height / 2, width, height);
 		background.pixelInset = rect;
-	}
-	void Update()
-	{
-		if(Input.anyKey && (Application.loadedLevelName.CompareTo("MainScreenScene") == 0))
-		{
-			Application.LoadLevel("ChoiceScene");
-		}
 	}
 }

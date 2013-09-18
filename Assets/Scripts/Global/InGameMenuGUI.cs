@@ -79,6 +79,8 @@ public class InGameMenuGUI : MonoBehaviour {
 		else if(_choice == ScreenChoice.Button)
 		{
 			Application.LoadLevel("ChooseGameScene");
+		}else{
+			Application.LoadLevel("ChooseGameScene");
 		}
 	}
 	IEnumerator FadeInMusic(AudioSource source){
@@ -103,8 +105,45 @@ public class InGameMenuGUI : MonoBehaviour {
 	}
 	
 	void ShowBottomMenu(){
+		// Left button always show when menu is on
+		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
+		{
+			StartCoroutine(LoadMainMenu(audio));
+		}
+		// Middle Button always show when menu is on
+		if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
+			Screen.width/7, Screen.width/7), Restart)) 
+		{
+			gameManager.RestartGame();
+		}
 		GameState currentState = gameManager.GetGameState();
-		// Left button
+		if(currentState == GameState.Paused)
+		{
+			if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
+				Screen.width/7, Screen.width/7), PlayButton))
+			{
+				gameManager.UnpauseGame();
+			}
+		}
+		/*else if(currentState == GameState.Pregame)
+		{}
+		else if(currentState == GameState.Running)
+		{}*/
+		else if(currentState == GameState.Over)
+		{
+			if(!gameManager.isLastLevel){
+				if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
+					Screen.width/7, Screen.width/7), PlayButton) && !gameManager.isLastLevel) 
+				{
+						StartCoroutine(WaitAndLoadNext());		
+				}
+			}else{
+				float width = Screen.width / 3;
+				float height = Screen.height / 3;
+				GUI.Box (new Rect(Screen.width/2 - width /2, Screen.height / 2 - height / 2 ,width,height), "Moi Moi");
+			}
+		}
+		/*// Left button
 		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
 		{
 			switch(currentState)
@@ -116,16 +155,11 @@ public class InGameMenuGUI : MonoBehaviour {
 					StartCoroutine(LoadMainMenu(audio));
 					break;
 			}
-		}
+		}*/
 		
-		// Middle button
-		if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
-			Screen.width/7, Screen.width/7), Restart)) 
-		{
-			gameManager.RestartGame();
-		}
 		
-		// Right button
+		
+		/*// Right button
 		// Only draw the button if the level is not the last one.
 		if(!gameManager.isLastLevel){
 			if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
@@ -140,7 +174,7 @@ public class InGameMenuGUI : MonoBehaviour {
 					StartCoroutine(WaitAndLoadNext());
 				}
 			}
-		}
+		}*/
 		
 		if(currentState == GameState.Paused){
 			if(isSounON == "true")
@@ -162,6 +196,18 @@ public class InGameMenuGUI : MonoBehaviour {
 					EnableSound();
 				}
 			}
+			/*if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
+				Screen.width/7, Screen.width/7), PlayButton)) {
+				if (currentState == GameState.Paused)
+				{
+					gameManager.UnpauseGame();
+					
+				}
+				else if ((currentState == GameState.Over))
+				{
+					StartCoroutine(WaitAndLoadNext());
+				}
+			}*/
 		}
 		
 	}

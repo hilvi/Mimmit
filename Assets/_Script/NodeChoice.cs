@@ -41,6 +41,9 @@ public class NodeChoice : INode {
 	// Update is called once per frame
 	void Update () {
 		if(!isGirlOn)return;
+		NavigationState currentState = Manager.GetNavigationState();
+		print (currentState);
+		if(currentState == NavigationState.Pause)return;
 		
 		if(Input.GetKeyDown(KeyCode.UpArrow))
 		{

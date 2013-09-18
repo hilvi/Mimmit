@@ -19,14 +19,14 @@ public class ChoiceScreenScript : MonoBehaviour
 		background.pixelInset = rect;
 		
 		float halfWidth = Screen.width / 2;
-		int _x = 175; int _y = 187; int _width = 150;
+		int _y = 187; int _width = 150;
 		float margin = 8;
 		blondeRect 	= new Rect(halfWidth - 2 * _width - 3*margin ,_y,_width,_width);
 		bruneRect 	= new Rect(halfWidth - _width - margin,_y,_width,_width);
 		foxRect 	= new Rect(halfWidth+margin,_y,_width,_width);
 		boyRect 	= new Rect(halfWidth+margin * 3 +  _width,_y,_width,_width);
 		
-		float _height = 100; float _ySecondButtons = 421;
+  		float _ySecondButtons = 421;
 		mapRect = new Rect(halfWidth -  1.5f * _width, _ySecondButtons,_width,_width);
 		buttonRect = new Rect(halfWidth + 0.5f * _width,_ySecondButtons,_width,_width);
 	}

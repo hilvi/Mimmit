@@ -15,9 +15,9 @@ public class Movement : MonoBehaviour {
 	//Animation2D anim;
 	public Animator2D animator;
 	MapWorldScript map;
-	void Start () {
+	void Start () 
+	{
 		walking = false;
-	//	transform.position = start.position;
 		map = GameObject.Find ("MapWorld").GetComponent<MapWorldScript>();
 		NodeChoice nodeScript = map.startPosition.GetComponent<NodeChoice>();
 		nodeScript.SetGirlOn();
@@ -25,8 +25,14 @@ public class Movement : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
+	void Update () 
+	{
+		NavigationState currentState = Manager.GetNavigationState();
+		if(currentState == NavigationState.Pause)
+		{
+			animator.PauseAnimation();
+			return;
+		}
 		if(!walking)
 		{
 			animator.PlayAnimation("idle");

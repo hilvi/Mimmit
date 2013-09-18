@@ -31,7 +31,8 @@ public class LevelGenerator : MonoBehaviour {
 		AssignMaterials ();
 		Material buf;
 		
-		for (int i=0; i < cardTextures.Length; i++) { // This "shuffles" the texture array by swapping each element with another one at random
+		for (int i=0; i < cardTextures.Length; i++) 
+		{ // This "shuffles" the texture array by swapping each element with another one at random
 			int newPos = Random.Range (0, cardTextures.Length - 1);
 			buf = cardTextures[newPos];
 			cardTextures[newPos] = cardTextures[i];
@@ -39,19 +40,22 @@ public class LevelGenerator : MonoBehaviour {
 		}
 	}
 	
-	void AssignMaterials() { // This method fills the card texture array with the available suit textures
+	void AssignMaterials() 
+	{ // This method fills the card texture array with the available suit textures
 		int count = CardCount ();
 		cardTextures = new Material[count];
 		int i;
 		Material buf;
-		for (i=0; i < textures.Length; i++) {
+		for (i=0; i < textures.Length; i++) 
+		{
 			int newPos = Random.Range (0, textures.Length - 1);
 			buf = textures[newPos];
 			textures[newPos] = textures[i];
 			textures[i] = buf; 
 		}
 		
-		for (i=0; i < count; i++) {
+		for (i=0; i < count; i++) 
+		{
 			cardTextures[i] = textures[(i/2) % textures.Length]; 
 			// For three suits, this expression will generate the following repeating sequence of indices: 0,0,1,1,2,2,0,0,1,1,2,2,0,0,1,1,2,2,...
 		}
