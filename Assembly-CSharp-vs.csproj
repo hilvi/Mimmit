@@ -54,11 +54,9 @@
      <Compile Include="Assets\Scripts\Global\MGUI.cs" />
      <Compile Include="Assets\Scripts\Global\MainMenuGUI.cs" />
      <Compile Include="Assets\Scripts\Global\ScoreGUI.cs" />
-     <Compile Include="Assets\_Script\AIScript.cs" />
-     <Compile Include="Assets\_Script\Animation2D.cs" />
-     <Compile Include="Assets\_Script\Animator2D.cs" />
      <Compile Include="Assets\_Script\ArrowScript.cs" />
      <Compile Include="Assets\_Script\BackgroundScript.cs" />
+     <Compile Include="Assets\_Script\BannerScript.cs" />
      <Compile Include="Assets\_Script\CameraScript.cs" />
      <Compile Include="Assets\_Script\ChoiceScreenScript.cs" />
      <Compile Include="Assets\_Script\ChooseGameScript.cs" />
@@ -66,22 +64,23 @@
      <Compile Include="Assets\_Script\INode.cs" />
      <Compile Include="Assets\_Script\InfoScript.cs" />
      <Compile Include="Assets\_Script\IntroBackBird.cs" />
-     <Compile Include="Assets\_Script\IntroScript.cs" />
-     <Compile Include="Assets\_Script\LookAtScript.cs" />
      <Compile Include="Assets\_Script\Manager.cs" />
      <Compile Include="Assets\_Script\MapWorldScript.cs" />
      <Compile Include="Assets\_Script\Movement.cs" />
-     <Compile Include="Assets\_Script\MovingScript.cs" />
      <Compile Include="Assets\_Script\NavigationGUIScript.cs" />
      <Compile Include="Assets\_Script\NewBehaviourScript.cs" />
      <Compile Include="Assets\_Script\NodeChoice.cs" />
      <Compile Include="Assets\_Script\NodeGame.cs" />
      <Compile Include="Assets\_Script\PathScript.cs" />
-     <Compile Include="Assets\_Script\SeaMovment.cs" />
      <Compile Include="Assets\_Script\SoundManager.cs" />
      <Compile Include="Assets\_Script\Waypoint.cs" />
      <Compile Include="Assets\_Script\WaypointGizmo.cs" />
      <Compile Include="Assets\_Script\WaypointScript.cs" />
+     <Compile Include="Assets\_Script\_Animation\Animation2D.cs" />
+     <Compile Include="Assets\_Script\_Animation\Animator2D.cs" />
+     <Compile Include="Assets\_Script\_DiffGame\LeftPicScript.cs" />
+     <Compile Include="Assets\_Script\_DiffGame\RightPicScript.cs" />
+     <Compile Include="Assets\_Script\_MainScreen\KeepCamScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

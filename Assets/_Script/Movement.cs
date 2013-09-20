@@ -30,7 +30,7 @@ public class Movement : MonoBehaviour {
 		NavigationState currentState = Manager.GetNavigationState();
 		if(currentState == NavigationState.Pause)
 		{
-			animator.PauseAnimation();
+			animator.StopAnimation();
 			return;
 		}
 		if(!walking)
@@ -54,7 +54,8 @@ public class Movement : MonoBehaviour {
 			
 			transform.Translate( dir * Time.deltaTime*speed);
 		}
-		else if(++index == path.Length ){
+		else if(++index == path.Length )
+		{
 			walking = false;
 			INode nodeScript = path[index - 1].GetComponent<INode>();
 			nodeScript.SetGirlOn();

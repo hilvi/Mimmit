@@ -6,7 +6,18 @@ public class NavigationGUIScript : MonoBehaviour {
 	
 	AudioSource audioSource;
 	
-	
+	void Awake()
+	{
+		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
+		foreach(Camera c in cams)
+		{
+			if(c.gameObject != this.gameObject)
+			{
+				
+				Destroy (c.gameObject);
+			}
+		}
+	}
 	// Use this for initialization
 	void Start () 
 	{

@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class SoundManager : MonoBehaviour {
+public class SoundManager : MonoBehaviour 
+{
 	
 	Dictionary<string,AudioClip> _audioDict = new Dictionary<string, AudioClip>();
 	Transform _transform;
@@ -13,12 +14,12 @@ public class SoundManager : MonoBehaviour {
 		_transform = Camera.main.transform;
 		
 		string path = "Sound/Effect/"+Application.loadedLevelName;
-		Object[] sounds = Resources.LoadAll(path, typeof(AudioClip));
+		string[] words = path.Split('_');
+		Object[] sounds = Resources.LoadAll(words[0], typeof(AudioClip));
 		for(int i = 0; i < sounds.Length;i++)
 		{
 			AudioClip ac = (AudioClip)sounds[i];
-			string[] name = ac.name.Split('(');
-			_audioDict.Add (name[0],ac);
+			_audioDict.Add (ac.name,ac);
 		}
 	}
 	

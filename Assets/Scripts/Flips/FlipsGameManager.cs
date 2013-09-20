@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(SoundManager))]
+[RequireComponent(typeof(InputManager))]
+[RequireComponent(typeof(LevelGenerator))]
 public class FlipsGameManager : GameManager {
 	
 	public float revealTime = 3; // The time, in seconds, for which the cards are revealed at the beginning of the level
@@ -9,6 +12,7 @@ public class FlipsGameManager : GameManager {
 	public InputManager inputManager;
 	public LevelGenerator levelGenerator;
 	public GUIText statusLine;
+	public SoundManager sound;
 
 	Card firstCard = null; // Handles to the two cards the player is currently flipping
 	Card secondCard = null;
@@ -55,6 +59,7 @@ public class FlipsGameManager : GameManager {
 						if (card.IsFaceDown()) 
 						{
 							StartCoroutine(card.Rotate());
+							sound.PlayAudio("MemorySwift");
 							if (firstCard==null) 
 								firstCard = card;
 							else {
@@ -72,6 +77,7 @@ public class FlipsGameManager : GameManager {
 							cardsGuessed += 2;
 							firstCard.Disappear();
 							secondCard.Disappear();
+							sound.PlayAudio("MemoryFound");
 							if (cardsGuessed >= cardsTotal) 
 							{
 								SetGameState(GameState.Over);
@@ -81,6 +87,7 @@ public class FlipsGameManager : GameManager {
 						{
 							StartCoroutine(firstCard.Rotate());
 							StartCoroutine(secondCard.Rotate ());
+							sound.PlayAudio("MemoryReturn");
 						}
 						
 						firstCard = null;

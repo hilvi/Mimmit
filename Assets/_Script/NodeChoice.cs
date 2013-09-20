@@ -42,7 +42,6 @@ public class NodeChoice : INode {
 	void Update () {
 		if(!isGirlOn)return;
 		NavigationState currentState = Manager.GetNavigationState();
-		print (currentState);
 		if(currentState == NavigationState.Pause)return;
 		
 		if(Input.GetKeyDown(KeyCode.UpArrow))

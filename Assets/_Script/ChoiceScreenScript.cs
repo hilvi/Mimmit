@@ -9,6 +9,15 @@ public class ChoiceScreenScript : MonoBehaviour
 	// Use this for initialization
 	Rect blondeRect, bruneRect, foxRect , boyRect, mapRect, buttonRect; 
 	bool characterChosen = false;
+	public GameObject cam;
+	void Awake()
+	{
+		Object o = FindObjectOfType(typeof(Camera));
+		if(o == null)
+		{
+			Instantiate (cam, new Vector3 (0,0,0), Quaternion.identity);
+		}
+	}
 	void Start () 
 	{
 		background = GetComponent<GUITexture>();

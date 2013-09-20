@@ -5,6 +5,7 @@ public class CameraScript : MonoBehaviour {
 
 	Transform girl;
 	public MapWorldScript map;
+	
 	void Start () {
 		GameObject g = map.GetGirl();
 		girl = g.transform;

@@ -6,7 +6,6 @@ public class Card : MonoBehaviour {
 	public float randomPosition = 0.01f;
 	public float randomRotation = 3;
 	public bool randRotation = false;
-	
 	enum CardState {FaceDown, RotatingRight, RotatingLeft, FaceUp, Disappearing};
 	CardState state = CardState.FaceUp;
 	
@@ -34,9 +33,6 @@ public class Card : MonoBehaviour {
 		currentRotation = transform.rotation;
 		transform.localScale = new Vector3(1,0.7f,1);
 		nextRotation = Quaternion.Euler (0, 180, 0)*transform.rotation;
-		//flipClick = (AudioClip)Resources.Load("SoundFx/shuffle-01");
-		//allRotateSound = (AudioClip)Resources.Load("SoundFx/FlipTurn",(typeof(AudioClip)));
-		//cardGoing = (AudioClip)Resources.Load ("SoundFx/FlipSwift",(typeof(AudioClip)));
 	}
 	
 	// Update is called once per frame
@@ -92,6 +88,5 @@ public class Card : MonoBehaviour {
 	
 	public void Disappear() {
 		state = CardState.Disappearing;
-		//Camera.main.audio.PlayOneShot(cardGoing, 0.5f);
 	}
 }

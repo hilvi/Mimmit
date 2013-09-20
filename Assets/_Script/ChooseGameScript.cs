@@ -49,6 +49,7 @@ public class ChooseGameScript : MonoBehaviour {
 		horseRect = new Rect(300,240,_edge,_edge); // 285 250
 		owlRect = new Rect(210, 160,_edge,_edge);// 185 150
 		dragonRect = new Rect(325, 105,_edge,_edge);
+		
 		float bearX = 450;
 		bearRect = new Rect(bearX, 75,_edge,_edge);
 		granmaRect = new Rect(bearX + 1.3f * _edge,50,_edge,_edge);
