@@ -1,17 +1,6 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Flips\FlipsGameManager.cs">
-    <Files>
-      <File FileName="Assets\_Script\Movement.cs" Line="38" Column="22" />
-      <File FileName="Assets\_Script\NodeChoice.cs" Line="1" Column="1" />
-      <File FileName="Assets\_Script\BackgroundScript.cs" Line="11" Column="3" />
-      <File FileName="Assets\_Script\_DiffGame\LeftPicScript.cs" Line="12" Column="38" />
-      <File FileName="Assets\_Script\_DiffGame\RightPicScript.cs" Line="11" Column="21" />
-      <File FileName="Assets\_Script\SoundManager.cs" Line="17" Column="36" />
-      <File FileName="Assets\Scripts\Flips\FlipsGameManager.cs" Line="62" Column="1" />
-      <File FileName="Assets\Scripts\Flips\Card.cs" Line="35" Column="66" />
-    </Files>
-  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace />
+  <MonoDevelop.Ide.Workbench />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
