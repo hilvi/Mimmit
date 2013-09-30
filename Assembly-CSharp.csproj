@@ -78,6 +78,7 @@
      <Compile Include="Assets\_Script\WaypointScript.cs" />
      <Compile Include="Assets\_Script\_Animation\Animation2D.cs" />
      <Compile Include="Assets\_Script\_Animation\Animator2D.cs" />
+     <Compile Include="Assets\_Script\_Animation\GUIAnimation.cs" />
      <Compile Include="Assets\_Script\_DiffGame\LeftPicScript.cs" />
      <Compile Include="Assets\_Script\_DiffGame\RightPicScript.cs" />
      <Compile Include="Assets\_Script\_MainScreen\KeepCamScript.cs" />
