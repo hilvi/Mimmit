@@ -15,27 +15,28 @@ public class InGameMenuGUI : MonoBehaviour {
 	public static int currentLevel = 1;
 	public static string selectedGameName;
 	public string[] gameList;
-	
+	public static GameObject music;
 	GameManager gameManager;
 	public Texture Restart,PlayButton,MainMenuButton,PauseButton;
-	Texture soundON, soundOff;
+	//Texture soundON, soundOff;
 	
 	int gamesNumber;
 	
 	AudioSource audioSource;
 	
 	string isSounON;
-	Rect creditsRect;
+	//Rect creditsRect;
 	
 	// Use this for initialization
 	void Start () 
 	{
+		print (Application.loadedLevelName);
 		gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-		soundON =(Texture)Resources.Load("MainMenu/Buttons/soundon");
-		soundOff =(Texture)Resources.Load("MainMenu/Buttons/soundoff");
+		//soundON =(Texture)Resources.Load("MainMenu/Buttons/soundon");
+		//soundOff =(Texture)Resources.Load("MainMenu/Buttons/soundoff");
 	
 		currentLevel = 1;
-		creditsRect = new Rect(Screen.width - MGUI.menuButtonWidth, MGUI.menuButtonWidth*1/3, MGUI.menuButtonWidth*2/3, MGUI.menuButtonWidth*2/3);
+		//creditsRect = new Rect(Screen.width - MGUI.menuButtonWidth, MGUI.menuButtonWidth*1/3, MGUI.menuButtonWidth*2/3, MGUI.menuButtonWidth*2/3);
 	}
 	
 	void OnGUI() {		
@@ -44,7 +45,7 @@ public class InGameMenuGUI : MonoBehaviour {
 		// While the game is in progress, only display the pause button
 		if (currentState == GameState.Running||currentState == GameState.Pregame) 
 		{
-			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
+			if (GUI.Button(new Rect(Screen.width - screenUnitW*11, 2, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
 			{	
 				gameManager.PauseGame();
 			}
@@ -82,6 +83,8 @@ public class InGameMenuGUI : MonoBehaviour {
 		}else{
 			Application.LoadLevel("ChooseGameScene");
 		}
+		music = null;
+		Destroy (source.gameObject);
 	}
 	IEnumerator FadeInMusic(AudioSource source){
 		if (source != null)
@@ -108,7 +111,8 @@ public class InGameMenuGUI : MonoBehaviour {
 		// Left button always show when menu is on
 		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
 		{
-			StartCoroutine(LoadMainMenu(audio));
+			GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
+			StartCoroutine(LoadMainMenu(obj.audio));
 		}
 		// Middle Button always show when menu is on
 		if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
@@ -135,7 +139,7 @@ public class InGameMenuGUI : MonoBehaviour {
 				if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
 					Screen.width/7, Screen.width/7), PlayButton) && !gameManager.isLastLevel) 
 				{
-						StartCoroutine(WaitAndLoadNext());		
+						gameManager.GoToNextLevel();		
 				}
 			}else{
 				float width = Screen.width / 3;
@@ -176,7 +180,7 @@ public class InGameMenuGUI : MonoBehaviour {
 			}
 		}*/
 		
-		if(currentState == GameState.Paused){
+		/*if(currentState == GameState.Paused){
 			if(isSounON == "true")
 			{	
 				if (MGUI.HoveredButton(creditsRect, soundON)){
@@ -207,8 +211,8 @@ public class InGameMenuGUI : MonoBehaviour {
 				{
 					StartCoroutine(WaitAndLoadNext());
 				}
-			}*/
-		}
+			}
+		}*/
 		
 	}
 	void EnableSound(){	

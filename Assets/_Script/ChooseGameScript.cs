@@ -6,11 +6,15 @@ public class ChooseGameScript : MonoBehaviour {
 	GUITexture background;
 	
 	public Texture2D otter, hedgehog, tree, horse, owl, dragon,bear,granma,seaDragon;
-	Rect mapRect, otterRect, hedgehogRect, treeRect, horseRect, owlRect, dragonRect, bearRect,granmaRect,seaDragonRect;
+	Rect /*mapRect,*/ otterRect, hedgehogRect, treeRect, horseRect, owlRect, dragonRect, bearRect,granmaRect,seaDragonRect;
 	Rect characterBoxRect;
 	public Texture2D blonde, brune, fox, boy;
+	public GameObject camPrefab;
 	Texture2D chosen;
 	GUIStyle noStyle = new GUIStyle();
+	Camera cam;
+	public AudioClip audioPress;
+	AudioSource audioSource;
 
 	Texture2D GetChosenCharacter ()
 	{
@@ -20,18 +24,29 @@ public class ChooseGameScript : MonoBehaviour {
 			case Character.Blonde:
 				return blonde;
 			case Character.Brune:
-				return blonde;
+				return brune;
 			case Character.Boy:
-				return blonde;
+				return boy;
 			case Character.Fox:
-				return blonde;
+				return fox;
 			case Character.None:
 				return blonde;
 			default:
 				return blonde;
 		}
 	}
-	
+	void Awake()
+	{
+		Object o = FindObjectOfType(typeof(Camera));
+		if(o == null)
+		{
+			GameObject c = (GameObject)Instantiate (camPrefab, new Vector3 (0,0,0), Quaternion.identity);
+			cam = c.camera;
+		}else
+		{
+			cam = (Camera)o;
+		}
+	}
 	void Start () 
 	{
 		background = GetComponent<GUITexture>();
@@ -41,7 +56,7 @@ public class ChooseGameScript : MonoBehaviour {
 		Rect rect = new Rect(-width / 2, - height / 2, width, height);
 		background.pixelInset = rect;
 		
-		mapRect = new Rect(500,200,300,250);
+		//mapRect = new Rect(500,200,300,250);
 		float _edge = 100;
 		otterRect = new Rect(40,330,_edge,_edge);//400, 350
 		hedgehogRect = new Rect(200,330,_edge,_edge);//385 330
@@ -56,7 +71,12 @@ public class ChooseGameScript : MonoBehaviour {
 		seaDragonRect = new Rect(bearX + 2.6f *_edge ,50,_edge,_edge);
 		characterBoxRect = new Rect(20,20,200,200);
 		chosen = GetChosenCharacter();
+		audioSource = GetComponent<AudioSource>();
+		audioSource.clip = audioPress;
 	}
+
+	
+	
 	// Update is called once per frame
 	void OnGUI ()
 	{
@@ -68,10 +88,10 @@ public class ChooseGameScript : MonoBehaviour {
 			GUI.enabled = false;
 		}
 		
-		if(GUI.Button (mapRect,"Map"))
+		/*if(GUI.Button (mapRect,"Map"))
 		{
 			Application.LoadLevel("MapWorld");
-		}
+		}*/
 		if(MGUI.HoveredButton (otterRect,otter))
 		{
 			
@@ -90,7 +110,8 @@ public class ChooseGameScript : MonoBehaviour {
 		}
 		if(MGUI.HoveredButton (owlRect,owl))
 		{
-			Application.LoadLevel("Flip_1");
+			audioSource.Play ();
+			StartCoroutine(FadeOutAndLoad("Flip_1"));
 		}
 		if(MGUI.HoveredButton (dragonRect,dragon))
 		{
@@ -108,5 +129,15 @@ public class ChooseGameScript : MonoBehaviour {
 		{
 			
 		}
+	}
+	IEnumerator FadeOutAndLoad (string scene)
+	{
+		AudioSource source = cam.audio;
+		while(source.volume > 0.2f || audioSource.isPlaying)
+		{
+			source.volume -= Time.deltaTime*0.2f;
+			yield return null;
+		}
+		Application.LoadLevel(scene);
 	}
 }

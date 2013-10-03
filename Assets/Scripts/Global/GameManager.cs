@@ -25,6 +25,15 @@ public class GameManager : MonoBehaviour {
 	{
 		SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
 		Time.timeScale = 1;
+		
+		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
+		foreach(Camera c in cams)
+		{
+			if(c.gameObject.CompareTag("SoundCam"))
+			{
+				Destroy (c.gameObject);
+			}
+		}
 	}
 	
 	public void SetGameState(GameState s) {
@@ -51,7 +60,8 @@ public class GameManager : MonoBehaviour {
 		Time.timeScale = 1;
 	}
 	
-	public void RestartGame() {
+	public void RestartGame() 
+	{
 		//Reset global time scale
 		Time.timeScale = 1;
 		Application.LoadLevel(Application.loadedLevel);

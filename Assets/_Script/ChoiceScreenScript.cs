@@ -5,11 +5,13 @@ public class ChoiceScreenScript : MonoBehaviour
 {
 	
 	public Texture2D blonde, brunette, fox, boy, map, button;
+	public AudioClip audioPress;
 	GUITexture background;
 	// Use this for initialization
 	Rect blondeRect, bruneRect, foxRect , boyRect, mapRect, buttonRect; 
 	bool characterChosen = false;
 	public GameObject cam;
+	AudioSource audioSource;
 	void Awake()
 	{
 		Object o = FindObjectOfType(typeof(Camera));
@@ -20,6 +22,8 @@ public class ChoiceScreenScript : MonoBehaviour
 	}
 	void Start () 
 	{
+		audioSource = GetComponent<AudioSource>();
+		audioSource.clip = audioPress;
 		background = GetComponent<GUITexture>();
 		// Setting background to full screen
 		float width = Screen.width;
@@ -36,8 +40,8 @@ public class ChoiceScreenScript : MonoBehaviour
 		boyRect 	= new Rect(halfWidth+margin * 3 +  _width,_y,_width,_width);
 		
   		float _ySecondButtons = 421;
-		mapRect = new Rect(halfWidth -  1.5f * _width, _ySecondButtons,_width,_width);
-		buttonRect = new Rect(halfWidth + 0.5f * _width,_ySecondButtons,_width,_width);
+		mapRect = new Rect(halfWidth -  0.5f * _width, _ySecondButtons,_width,_width);
+		//buttonRect = new Rect(halfWidth + 0.5f * _width,_ySecondButtons,_width,_width);
 	}
 	
 
@@ -45,36 +49,50 @@ public class ChoiceScreenScript : MonoBehaviour
 	{
 		if(MGUI.HoveredButton(blondeRect,blonde))
 		{
+			audioSource.Play();
 			Manager.SetCharacter(Character.Blonde);
 			characterChosen = true;
 		}
 		if(MGUI.HoveredButton(bruneRect,brunette))
 		{
+			audioSource.Play();
 			Manager.SetCharacter(Character.Brune);
 			characterChosen = true;
 		}
 		if(MGUI.HoveredButton(foxRect,fox))
 		{
+			audioSource.Play();
 			Manager.SetCharacter(Character.Fox);
-			//characterChosen = true;
+			characterChosen = true;
 		}
 		if(MGUI.HoveredButton(boyRect,boy))
 		{
+			audioSource.Play();
 			Manager.SetCharacter(Character.Boy);
-			//characterChosen = true;
+			characterChosen = true;
 		}
 		if(characterChosen)
 		{
 			if(MGUI.HoveredButton(mapRect,map))
 			{
-				Manager.SetScreenChoice(ScreenChoice.Map);
-				Application.LoadLevel("MapWorld");
+				StartCoroutine(SoundAndLoad());
 			}
-			if(GUI.Button(buttonRect,"ButtonScreenScene"))
+			/*if(GUI.Button(buttonRect,"ButtonScreenScene"))
 			{
 				Manager.SetScreenChoice(ScreenChoice.Button);
 				Application.LoadLevel("ChooseGameScene");
-			}
+			}*/
 		}
+		
+	}
+	IEnumerator SoundAndLoad()
+	{
+		audioSource.Play();
+		while(audioSource.isPlaying)
+		{
+			yield return null;
+		}		
+		Manager.SetScreenChoice(ScreenChoice.Button);
+		Application.LoadLevel("ChooseGameScene");
 	}
 }

@@ -8,7 +8,7 @@ public class NavigationGUIScript : MonoBehaviour {
 	
 	void Awake()
 	{
-		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
+		/*Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
 		foreach(Camera c in cams)
 		{
 			if(c.gameObject != this.gameObject)
@@ -16,12 +16,12 @@ public class NavigationGUIScript : MonoBehaviour {
 				
 				Destroy (c.gameObject);
 			}
-		}
+		}*/
 	}
 	// Use this for initialization
 	void Start () 
 	{
-		audioSource = Camera.main.GetComponent<AudioSource>();
+		//audioSource = cam.GetComponent<AudioSource>();
 	}
 	
 	void OnGUI() 
@@ -43,7 +43,7 @@ public class NavigationGUIScript : MonoBehaviour {
 	}
 
 	
-	IEnumerator LoadMainMenu(AudioSource source){
+	/*IEnumerator LoadMainMenu(AudioSource source){
 		if (audioSource != null)
 		{
 			while(audioSource.volume > 0){
@@ -51,17 +51,22 @@ public class NavigationGUIScript : MonoBehaviour {
 				yield return null;
 			}
 		}
-		Time.timeScale = 1.0f;
+		
 		Manager.SetNavigationState(NavigationState.Running);
 		Application.LoadLevel("ChoiceScene");
-	}
+	}*/
 	
 	void ShowBottomMenu()
 	{
 		// Left button
 		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) 
 		{
-			StartCoroutine(LoadMainMenu(audioSource));
+			//StartCoroutine(LoadMainMenu(audioSource));
+			
+			Application.LoadLevel("ChoiceScene");
+			Time.timeScale = 1.0f;
+			Manager.SetNavigationState(NavigationState.Running);
+			
 		}
 		// Right button
 		if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), PlayButton)) {

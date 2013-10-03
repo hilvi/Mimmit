@@ -7,11 +7,10 @@ public class SoundManager : MonoBehaviour
 {
 	
 	Dictionary<string,AudioClip> _audioDict = new Dictionary<string, AudioClip>();
-	Transform _transform;
+	public AudioSource audioSource;
 
 	void Awake () 
 	{
-		_transform = Camera.main.transform;
 		
 		string path = "Sound/Effect/"+Application.loadedLevelName;
 		string[] words = path.Split('_');
@@ -22,19 +21,12 @@ public class SoundManager : MonoBehaviour
 			_audioDict.Add (ac.name,ac);
 		}
 	}
-	
-	public void PlayAudio(string audioName, Vector3 position)
-	{
-		if(_audioDict.ContainsKey(audioName))
-		{
-			AudioSource.PlayClipAtPoint(_audioDict[audioName],position);
-		}
-	}
 	public void PlayAudio(string audioName)
 	{
 		if(_audioDict.ContainsKey(audioName))
 		{
-			AudioSource.PlayClipAtPoint(_audioDict[audioName],_transform.position);
+			audioSource.clip = _audioDict[audioName];
+			audioSource.Play();
 		}
 	}
 	

@@ -20,11 +20,19 @@ public class FlipsGameManager : GameManager {
 	int cardsTotal;
 	int cardsGuessed = 0;
 	Camera cam;
+	public GameObject musicObject;
+	static GameObject obj;
 	
 	// Use this for initialization
 	public override void Start () 
 	{
 		base.Start ();
+		//obj = null;
+		//obj = GameObject.FindGameObjectWithTag("SoundCam");
+		if(InGameMenuGUI.music == null)
+		{
+		  	InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
+		}
 		cardsTotal = levelGenerator.CardCount();
 		SetGameState(GameState.Pregame);
 		statusLine.pixelOffset = new Vector2(Screen.width/2, -Screen.height /2 );
