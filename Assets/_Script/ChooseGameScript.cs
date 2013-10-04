@@ -56,19 +56,24 @@ public class ChooseGameScript : MonoBehaviour {
 		Rect rect = new Rect(-width / 2, - height / 2, width, height);
 		background.pixelInset = rect;
 		
-		//mapRect = new Rect(500,200,300,250);
-		float _edge = 100;
-		otterRect = new Rect(40,330,_edge,_edge);//400, 350
-		hedgehogRect = new Rect(200,330,_edge,_edge);//385 330
-		treeRect = new Rect(120, 240,_edge,_edge);// 285 250
-		horseRect = new Rect(300,240,_edge,_edge); // 285 250
-		owlRect = new Rect(210, 160,_edge,_edge);// 185 150
-		dragonRect = new Rect(325, 105,_edge,_edge);
 		
-		float bearX = 450;
-		bearRect = new Rect(bearX, 75,_edge,_edge);
-		granmaRect = new Rect(bearX + 1.3f * _edge,50,_edge,_edge);
-		seaDragonRect = new Rect(bearX + 2.6f *_edge ,50,_edge,_edge);
+		float __startY = 50f;
+		float __edge = 110;
+		float __size = 130;
+		float __margin = (__size - __edge ) / 2;
+		float __startX = (960 - __size * 4f)/2f;
+		owlRect = 		new Rect(__startX + 1.5f * __size + __margin, __startY + __margin,__edge,__edge);
+	
+		treeRect = 		new Rect(__startX + __size + __margin, __startY + __size + __margin,__edge,__edge);// 285 250
+		otterRect = 	new Rect(__startX + 2f * __size + __margin, __startY + __size + __margin,__edge,__edge);
+		
+		hedgehogRect = 	new Rect(__startX + 0.5f  *__size+__margin, __startY + 2f * __size+ __margin,__edge,__edge);
+		horseRect = 	new Rect(__startX + 1.5f  *__size + __margin, __startY + 2f * __size + __margin,__edge,__edge);
+		dragonRect =	new Rect(__startX + 2.5f  *__size+ __margin, __startY + 2f * __size + __margin,__edge,__edge);
+		
+		bearRect =	 	new Rect(__startX + 0.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
+		granmaRect = 	new Rect(__startX + 1.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
+		seaDragonRect = new Rect(__startX + 2.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
 		characterBoxRect = new Rect(20,20,200,200);
 		chosen = GetChosenCharacter();
 		audioSource = GetComponent<AudioSource>();

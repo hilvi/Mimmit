@@ -33,7 +33,7 @@ public class LevelGenerator : MonoBehaviour {
 		
 		for (int i=0; i < cardTextures.Length; i++) 
 		{ // This "shuffles" the texture array by swapping each element with another one at random
-			int newPos = Random.Range (0, cardTextures.Length - 1);
+			int newPos = Random.Range (0, cardTextures.Length);
 			buf = cardTextures[newPos];
 			cardTextures[newPos] = cardTextures[i];
 			cardTextures[i] = buf;

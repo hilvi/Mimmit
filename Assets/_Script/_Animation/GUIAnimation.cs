@@ -199,4 +199,9 @@ public class GUIAnimation : MonoBehaviour {
 	{
 		return _playing;
 	}
+	public void PauseAtEnd()
+	{
+		_currentFrameX = frameX - 1;
+		_currentFrameY = frameY - 1;
+	}
 }
