@@ -37,9 +37,9 @@ public class DiffGameManager : GameManager
 		if(InGameMenuGUI.music == null)
 		{
 		  	InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
+			InGameMenuGUI.music.audio.clip = music;
+			InGameMenuGUI.music.audio.Play ();
 		}
-		InGameMenuGUI.music.audio.clip = music;
-		InGameMenuGUI.music.audio.Play ();
 	}
 	
 	// Update is called once per frame
@@ -101,6 +101,14 @@ public class DiffGameManager : GameManager
 		if(err5Found){GUI.Box (err5,tick,nostyle);}
 		if(err6Found){GUI.Box (err6,tick,nostyle);}
 		if(err7Found){GUI.Box (err7,tick,nostyle);}
-		
+#if UNITY_EDITOR
+		GUI.Box(err1,"1");
+		GUI.Box(err2,"2");
+		GUI.Box(err3,"3");
+		GUI.Box(err4,"4");
+		GUI.Box(err5,"5");
+		GUI.Box(err6,"6");
+		GUI.Box(err7,"7");
+#endif
 	}
 }

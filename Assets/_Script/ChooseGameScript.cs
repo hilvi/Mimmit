@@ -97,6 +97,16 @@ public class ChooseGameScript : MonoBehaviour {
 		{
 			Application.LoadLevel("MapWorld");
 		}*/
+		if(MGUI.HoveredButton (owlRect,owl))
+		{
+			audioSource.Play ();
+			StartCoroutine(FadeOutAndLoad("Flip_1"));
+		}
+		if(MGUI.HoveredButton (treeRect,tree))
+		{
+			audioSource.Play ();
+			StartCoroutine(FadeOutAndLoad("Diff_1"));
+		}
 		if(MGUI.HoveredButton (otterRect,otter))
 		{
 			
@@ -105,19 +115,12 @@ public class ChooseGameScript : MonoBehaviour {
 		{
 			
 		}
-		if(MGUI.HoveredButton (treeRect,tree))
-		{
-			
-		}
+		
 		if(MGUI.HoveredButton (horseRect,horse))
 		{
 			
 		}
-		if(MGUI.HoveredButton (owlRect,owl))
-		{
-			audioSource.Play ();
-			StartCoroutine(FadeOutAndLoad("Flip_1"));
-		}
+		
 		if(MGUI.HoveredButton (dragonRect,dragon))
 		{
 			
