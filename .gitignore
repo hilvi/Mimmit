@@ -1,4 +1,19 @@
 #################
+## Unity
+#################
+Temp/
+Library/
+ 
+#################
+## Mono
+#################
+*.userprefs
+*.csproj
+*.pidb
+*.sln
+*.unityproj
+
+#################
 ## Eclipse
 #################
 
@@ -57,7 +72,6 @@ build/
 *_i.c
 *_p.c
 *.ilk
-*.meta
 *.obj
 *.pch
 *.pdb
