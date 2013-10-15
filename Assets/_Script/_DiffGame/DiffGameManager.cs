@@ -8,12 +8,13 @@ public class DiffGameManager : GameManager
 	public Texture2D tick;
 	public Texture2D cross;
 	public float clickSize;
-	GUIStyle nostyle = new GUIStyle();
 	public GUIText text;
 	int errorLeft;
 	public GameObject musicObject;
-	static GameObject obj;
 	public AudioClip music;
+	public AudioClip missSound;
+	public AudioClip hitSound;
+	AudioSource audioSource;
 	List<Rect> misses = new List<Rect>();
 	List<Rect> hits = new List<Rect>();
 	Rect gameArea;
@@ -41,6 +42,7 @@ public class DiffGameManager : GameManager
 			InGameMenuGUI.music.audio.Play ();
 			InGameMenuGUI.music.audio.loop = true;
 		}
+		audioSource = GetComponent<AudioSource>();
 	}
 	
 	void Hit(Vector2 pos)
@@ -54,10 +56,14 @@ public class DiffGameManager : GameManager
 					click.center = err.center;
 					hits.Add(click);
 					errorLeft--;
+					audioSource.clip = hitSound;
+					audioSource.Play();
 				}
 				return;
 			}
 		}
+		audioSource.clip = missSound;
+		audioSource.Play();
 		click.center = pos;
 		misses.Add (click);
 	}
@@ -67,7 +73,7 @@ public class DiffGameManager : GameManager
 	{
 		if(Input.GetMouseButtonDown(0)) {
 			Vector2 pos = InputManager.MouseScreenToGUI();
-			if(GetGameState() != GameState.Paused &&  GetGameState() != GameState.Over &&gameArea.Contains(pos)) {
+			if(GetGameState() != GameState.Paused &&  GetGameState() != GameState.Over && gameArea.Contains(pos)) {
 				Hit(pos);
 			}
 		}
