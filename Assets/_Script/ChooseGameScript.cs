@@ -107,6 +107,9 @@ public class ChooseGameScript : MonoBehaviour {
 			audioSource.Play ();
 			StartCoroutine(FadeOutAndLoad("Diff_1"));
 		}
+		
+		//Unfinished games
+		GUI.enabled = false;
 		if(MGUI.HoveredButton (otterRect,otter))
 		{
 			
@@ -137,6 +140,7 @@ public class ChooseGameScript : MonoBehaviour {
 		{
 			
 		}
+		GUI.enabled = true;
 	}
 	IEnumerator FadeOutAndLoad (string scene)
 	{
