@@ -4,31 +4,33 @@ using System.Collections.Generic;
 
 public class ColoringGameManager : GameManager {
 	
-	// Base regions
+	#region CHOSEN_CHAR_REGION_VARS
 	public Rect chosenCharRegion;		// 20,20,160,160
+	#endregion
+	#region PICTURE_SELECT_REGION_VARS
 	public Rect pictureSelectRegion;	// 20,200,160,380
-	public Rect pictureRegion;			// 200,20,560,560
-	public Rect toolbarRegion;			// 780,20,160,560
-	
-	// Picture select regions
 	public Rect selectUpBtnRegion;		// 20,200,160,40
 	public Rect selectDownBtnRegion;	// 20,540,160,40
 	public Rect[] selectPictureRegion;	// 
-	private int pictureOffset;
+	private int pictureIndexOffset;
 	private List<string> pictureNames;
-	
-	// Toolbar button regions
+	#endregion
+	#region PICTURE_REGION_VARS
+	public Rect pictureRegion;			// 200,20,560,560
+	private Texture2D picture;
+	#endregion
+	#region TOOLBAR_REGION_VARS
+	public Rect toolbarRegion;			// 780,20,160,560
 	public Rect eraseToolRegion;		// 800,40,120,120
 	public Rect undoToolRegion;			// 800,180,120,120
 	public Rect[] colorPalletteRegion;	// anchor: 800,320 size:60,60
-	
-	private Texture2D picture;
+	#endregion
 	
 	public override void Start () {
 		base.Start();
 		SetGameState(GameState.Running);
-		
-		// TODO, remove this, debugging
+
+		#region DEBUG_GRID_TEXTURE
 		picture = new Texture2D(560, 560);
 		for (int x = 0; x < 560; x++) {
 			for (int y = 0; y < 560; y++) {
@@ -39,15 +41,15 @@ public class ColoringGameManager : GameManager {
 			}
 		}
 		picture.Apply();
-		
-		// TODO, remove this, debugging
-		pictureOffset = 0;
+		#endregion
+		#region DEBUG_GEN_PICTURE_NAMES
+		pictureIndexOffset = 0;
 		pictureNames = new List<string>();
 		for (int i = 1; i <= 10; i++) {
 			pictureNames.Add("Picture"+i.ToString());
 		}
-		
-		// Picture selection panel init
+		#endregion
+		#region DEBUG_PICTURE_SELECTION_LAYOUT
 		// TODO, possibly make more elegant, ugly constants and non-integer values
 		float vertical = 252.5f;
 		selectPictureRegion = new Rect[4];
@@ -55,8 +57,8 @@ public class ColoringGameManager : GameManager {
 			selectPictureRegion[i] = new Rect(67.5f, vertical, 65f, 65f);
 			vertical += 70f;
 		}
-		
-		// Color palette panel init
+		#endregion
+		#region DEBUG_COLOR_PALLETTE_LAYOUT
 		// TODO, possibly make more elegant, ugly constants
 		colorPalletteRegion = new Rect[8];
 		Vector2 paletteAnchor = new Vector2(800f, 320f);
@@ -68,6 +70,7 @@ public class ColoringGameManager : GameManager {
 				colorPalletteRegion[y*2+x] = new Rect(xx, yy, 60f - minimize.x, 60f - minimize.y);
 			}
 		}
+		#endregion
 	}
 	
 	void Update () {
@@ -76,29 +79,29 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	void OnGUI () {
-		// Base layer
+		#region BASE_LAYER
 		GUI.Box(chosenCharRegion, "chosenChar");
 		GUI.Box(pictureSelectRegion, "pictureSelect");
 		GUI.DrawTexture(pictureRegion, picture, ScaleMode.StretchToFill, true);
 		GUI.Box(toolbarRegion, "toolbar");
-		
-		// Select buttons
+		#endregion
+		#region PICTURE_SELECT_LAYER
 		GUI.Box(selectUpBtnRegion, "up");
 		GUI.Box(selectDownBtnRegion, "down");
-
 		for (int i = 0; i < 4; i++) {
-			GUI.Box(selectPictureRegion[i], pictureNames[pictureOffset + i]);	
+			GUI.Box(selectPictureRegion[i], pictureNames[pictureIndexOffset + i]);	
 		}
-		
-		// Toolbar buttons
+		#endregion
+		#region TOOLBAR_LAYER
 		GUI.Box(eraseToolRegion, "eraseTool");
 		GUI.Box(undoToolRegion, "undoTool");
-		
 		foreach(Rect r in colorPalletteRegion) {
 			GUI.Box(r, "color");
 		}
+		#endregion
 	}
 	
+	#region CURSOR_HANDLING_FUNCTIONS
 	private void HandleMouseClick() {
 		Vector2 mousePosition = Input.mousePosition;
 		mousePosition.y = Screen.height - mousePosition.y; // y-axis flips
@@ -121,12 +124,12 @@ public class ColoringGameManager : GameManager {
 	
 	private void HandlePictureSelectionClick(Vector2 position) {
 		if (selectUpBtnRegion.Contains(position)) {
-			pictureOffset--;
+			pictureIndexOffset--;
 		} else if (selectDownBtnRegion.Contains(position)) {
-			pictureOffset++;
+			pictureIndexOffset++;
 		}
 		
-		pictureOffset = Mathf.Clamp(pictureOffset, 0, pictureNames.Count - 4);
+		pictureIndexOffset = Mathf.Clamp(pictureIndexOffset, 0, pictureNames.Count - 4);
 	}
 	
 	private void HandlePictureClick(Vector2 position) {
@@ -145,6 +148,7 @@ public class ColoringGameManager : GameManager {
 		//TODO
 		Debug.Log("clicked on toolbar");
 	}
+	#endregion
 	
 	/*
 	 * Recursive flood fill algorithm
