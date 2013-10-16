@@ -67,7 +67,7 @@ public class ColoringGameManager : GameManager {
 	private void HandlePictureClick() {		
 		Vector2 t = Input.mousePosition - 
 			new Vector3(pictureRegion.x, pictureRegion.y, 0); // Offset origin
-		floodFill(Mathf.CeilToInt(t.x), Mathf.CeilToInt(t.y), Color.white, Color.blue);
+		floodFill(Mathf.FloorToInt(t.x), Mathf.FloorToInt(t.y), Color.white, Color.blue);
 		picture.Apply();
 	}
 	
