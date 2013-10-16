@@ -76,7 +76,7 @@ public class ScoreGUI : MonoBehaviour {
 		}
 	}
 	
-	public void EnableTimer(bool enable = true) {
+	public void EnableTimer(bool enable) {
 		timerEnabled = true;
 	}
 	
