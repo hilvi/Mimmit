@@ -3,11 +3,16 @@ using System.Collections;
 
 public class ColoringGameManager : GameManager {
 	
-	// Defined regions
+	// Base regions
 	public Rect chosenCharRegion;		// 20,20,160,160
 	public Rect pictureSelectRegion;	// 20,200,160,380
 	public Rect pictureRegion;			// 200,20,560,560
 	public Rect toolbarRegion;			// 780,20,160,560
+	
+	// Toolbar button regions
+	public Rect eraseToolRegion;		// 800,40,120,120
+	public Rect undoToolRegion;			// 800,180,120,120
+	public Rect[] colorPalletteRegion;	// anchor: 800,320 size:60,60
 	
 	private Texture2D picture;
 	
@@ -26,6 +31,17 @@ public class ColoringGameManager : GameManager {
 			}
 		}
 		picture.Apply();
+		
+		colorPalletteRegion = new Rect[8];
+		Vector2 anchor = new Vector2(800f, 320f);
+		Vector2 minimize = new Vector2(10f, 10f);
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 2; x++)  {
+				float xx = (anchor.x + x * 60f) + (minimize.x/2f);
+				float yy = (anchor.y + y * 60f) + (minimize.y/2f);
+				colorPalletteRegion[y*2+x] = new Rect(xx, yy, 60f - minimize.x, 60f - minimize.y);
+			}
+		}
 	}
 	
 	void Update () {
@@ -34,10 +50,19 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	void OnGUI () {
+		// Base layer
 		GUI.Box(chosenCharRegion, "chosenChar");
 		GUI.Box(pictureSelectRegion, "pictureSelect");
 		GUI.DrawTexture(pictureRegion, picture, ScaleMode.StretchToFill, true);
 		GUI.Box(toolbarRegion, "toolbar");
+		
+		// Toolbar buttons
+		GUI.Box(eraseToolRegion, "eraseTool");
+		GUI.Box(undoToolRegion, "undoTool");
+		
+		foreach(Rect r in colorPalletteRegion) {
+			GUI.Box(r, "color");
+		}
 	}
 	
 	private void HandleMouseClick() {
