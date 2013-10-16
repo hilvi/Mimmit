@@ -107,13 +107,13 @@ public class ChooseGameScript : MonoBehaviour {
 			audioSource.Play ();
 			StartCoroutine(FadeOutAndLoad("Diff_1"));
 		}
-		
-		//Unfinished games
-		GUI.enabled = false;
 		if(MGUI.HoveredButton (otterRect,otter))
 		{
-			
+			audioSource.Play();
+			StartCoroutine(FadeOutAndLoad("Coloring_1"));
 		}
+		//Unfinished games
+		GUI.enabled = false;
 		if(MGUI.HoveredButton (hedgehogRect,hedgehog))
 		{
 			
