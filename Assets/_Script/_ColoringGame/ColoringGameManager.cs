@@ -133,6 +133,8 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	private void HandlePictureClick(Vector2 position) {
+		position.y = Screen.height - position.y; // y-axis flips yet again
+		
 		// Convert global cursor position to local texture position
 		Vector2 t = position - 
 			new Vector2(pictureRegion.x, pictureRegion.y); // Offset origin
