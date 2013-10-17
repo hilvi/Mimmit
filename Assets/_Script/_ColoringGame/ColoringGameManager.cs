@@ -123,13 +123,23 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	private void HandlePictureSelectionClick(Vector2 position) {
+		// Navigation buttons
 		if (selectUpBtnRegion.Contains(position)) {
 			pictureIndexOffset--;
 		} else if (selectDownBtnRegion.Contains(position)) {
 			pictureIndexOffset++;
 		}
 		
+		// Prevent index overflow
 		pictureIndexOffset = Mathf.Clamp(pictureIndexOffset, 0, pictureNames.Count - 4);
+		
+		// Picture selection
+		for (int i = 0; i < 4; i++) {
+			if (selectPictureRegion[i].Contains(position)) {
+				// TODO load new picture
+				Debug.Log("selected picture"+pictureNames[pictureIndexOffset + i]);
+			}
+		}
 	}
 	
 	private void HandlePictureClick(Vector2 position) {
