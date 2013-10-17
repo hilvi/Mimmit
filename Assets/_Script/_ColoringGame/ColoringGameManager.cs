@@ -4,22 +4,18 @@ using System.Collections.Generic;
 
 public class ColoringGameManager : GameManager {
 	
-	#region CHOSEN_CHAR_REGION_VARS
 	public Rect chosenCharRegion;		// 20,20,160,160
-	#endregion
-	#region PICTURE_SELECT_REGION_VARS
+
 	public Rect pictureSelectRegion;	// 20,200,160,380
 	public Rect selectUpBtnRegion;		// 20,200,160,40
 	public Rect selectDownBtnRegion;	// 20,540,160,40
 	public Rect[] selectPictureRegion;	// 
 	private int pictureIndexOffset;
 	private List<string> pictureNames;
-	#endregion
-	#region PICTURE_REGION_VARS
+
 	public Rect pictureRegion;			// 200,20,560,560
 	private Texture2D picture;
-	#endregion
-	#region TOOLBAR_REGION_VARS
+
 	public Rect toolbarRegion;			// 780,20,160,560
 	public Rect eraseToolRegion;		// 800,40,120,120
 	public Rect undoToolRegion;			// 800,180,120,120
@@ -38,7 +34,7 @@ public class ColoringGameManager : GameManager {
 	
 	private Dictionary<int, PaintBrush> colorPallette; // start from top-left, row order
 	private PaintBrush currentBrush;
-	#endregion
+
 	
 	public override void Start () {
 		base.Start();
@@ -97,7 +93,6 @@ public class ColoringGameManager : GameManager {
 		colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
 		
 		currentBrush = colorPallette[0]; // Set default brush 
-		
 		#endregion
 	}
 	
