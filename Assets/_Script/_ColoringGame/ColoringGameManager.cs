@@ -24,6 +24,20 @@ public class ColoringGameManager : GameManager {
 	public Rect eraseToolRegion;		// 800,40,120,120
 	public Rect undoToolRegion;			// 800,180,120,120
 	public Rect[] colorPalletteRegion;	// anchor: 800,320 size:60,60
+	
+	private class PaintBrush {
+		public string name;
+		public Color color;
+		
+		public PaintBrush(string name, Color color) {
+			this.name = name;
+			this.color = color;
+		}
+		
+	}
+	
+	private Dictionary<int, PaintBrush> colorPallette; // start from top-left, row order
+	private PaintBrush currentBrush;
 	#endregion
 	
 	public override void Start () {
@@ -70,6 +84,20 @@ public class ColoringGameManager : GameManager {
 				colorPalletteRegion[y*2+x] = new Rect(xx, yy, 60f - minimize.x, 60f - minimize.y);
 			}
 		}
+		
+		// Setup colors
+		colorPallette = new Dictionary<int, PaintBrush>();
+		colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
+		colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
+		colorPallette.Add(2, new PaintBrush("Cyan", Color.cyan));
+		colorPallette.Add(3, new PaintBrush("Red", Color.red));
+		colorPallette.Add(4, new PaintBrush("Green", Color.green));
+		colorPallette.Add(5, new PaintBrush("Yellow", Color.yellow));
+		colorPallette.Add(6, new PaintBrush("Grey", new Color(0.330f, 0.330f, 0.330f)));
+		colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
+		
+		currentBrush = colorPallette[0]; // Set default brush 
+		
 		#endregion
 	}
 	
@@ -95,8 +123,9 @@ public class ColoringGameManager : GameManager {
 		#region TOOLBAR_LAYER
 		GUI.Box(eraseToolRegion, "eraseTool");
 		GUI.Box(undoToolRegion, "undoTool");
-		foreach(Rect r in colorPalletteRegion) {
-			GUI.Box(r, "color");
+
+		for (int i = 0; i < colorPalletteRegion.Length; i++) {
+			GUI.Box(colorPalletteRegion[i], colorPallette[i].name);
 		}
 		#endregion
 	}
@@ -149,16 +178,37 @@ public class ColoringGameManager : GameManager {
 		Vector2 t = position - 
 			new Vector2(pictureRegion.x, pictureRegion.y); // Offset origin
 		
-		// TODO change replacement color to whatever player has selected
-		floodFill((int)t.x, (int)t.y, Color.white, Color.blue);
+		// Get color of pixel under cursor
+		Color cursorColor = picture.GetPixel((int)t.x, (int)t.y);
+		
+		// Ignore black pixels
+		// Using distance function, because of floating-point precision issue
+		if (Vector4.Distance(cursorColor, Color.black) < 0.1f) {
+			Debug.Log("color is black, return");
+			return;
+		}
+		// Ignore pixel colors that are same as current brush color
+		if (Vector4.Distance(cursorColor, currentBrush.color) < 0.1f) {
+			Debug.Log("identical color, return");
+			return;
+		}
+		
+		// Begin flood fill
+		floodFill((int)t.x, (int)t.y, cursorColor, currentBrush.color);
 		
 		// Save picture after setPixel operations
 		picture.Apply();
 	}
 	
 	private void HandleToolbarClick(Vector2 position) {
-		//TODO
-		Debug.Log("clicked on toolbar");
+		for (int i = 0; i < colorPalletteRegion.Length; i++) {
+			if (colorPalletteRegion[i].Contains(position)) {
+				Debug.Log ("selected"+colorPallette[i].name);
+				
+				// Set new brush
+				currentBrush = colorPallette[i];
+			}
+		}
 	}
 	#endregion
 	
@@ -169,7 +219,7 @@ public class ColoringGameManager : GameManager {
 	private void floodFill(int x, int y, Color target, Color replacement) {
 		if (picture.GetPixel(x, y) != target)
 			return;
-		
+
 		picture.SetPixel(x, y, replacement);
 		
 		floodFill(x - 1, y, target, replacement);
