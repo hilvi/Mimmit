@@ -10,11 +10,11 @@ public class ColoringGameManager : GameManager {
 	public Rect selectUpBtnRegion;		// 20,200,160,40
 	public Rect selectDownBtnRegion;	// 20,540,160,40
 	public Rect[] selectPictureRegion;	// 
-	private int pictureIndexOffset;
-	private List<string> pictureNames;
+	private int _pictureIndexOffset;
+	private List<string> _pictureNames;
 
 	public Rect pictureRegion;			// 200,20,560,560
-	private Texture2D picture;
+	private Texture2D _picture;
 
 	public Rect toolbarRegion;			// 780,20,160,560
 	public Rect eraseToolRegion;		// 800,40,120,120
@@ -29,34 +29,32 @@ public class ColoringGameManager : GameManager {
 			this.name = name;
 			this.color = color;
 		}
-		
 	}
 	
-	private Dictionary<int, PaintBrush> colorPallette; // start from top-left, row order
-	private PaintBrush currentBrush;
-
+	private Dictionary<int, PaintBrush> _colorPallette; // start from top-left, row order
+	private PaintBrush _currentBrush;
 	
 	public override void Start () {
 		base.Start();
 		SetGameState(GameState.Running);
 
 		#region DEBUG_GRID_TEXTURE
-		picture = new Texture2D(560, 560);
+		_picture = new Texture2D(560, 560);
 		for (int x = 0; x < 560; x++) {
 			for (int y = 0; y < 560; y++) {
 				if (x % 40 == 0 || y % 40 == 0)
-					picture.SetPixel(x, y, Color.black);
+					_picture.SetPixel(x, y, Color.black);
 				else
-					picture.SetPixel(x, y, Color.white);
+					_picture.SetPixel(x, y, Color.white);
 			}
 		}
-		picture.Apply();
+		_picture.Apply();
 		#endregion
 		#region DEBUG_GEN_PICTURE_NAMES
-		pictureIndexOffset = 0;
-		pictureNames = new List<string>();
+		_pictureIndexOffset = 0;
+		_pictureNames = new List<string>();
 		for (int i = 1; i <= 10; i++) {
-			pictureNames.Add("Picture"+i.ToString());
+			_pictureNames.Add("Picture"+i.ToString());
 		}
 		#endregion
 		#region DEBUG_PICTURE_SELECTION_LAYOUT
@@ -82,37 +80,37 @@ public class ColoringGameManager : GameManager {
 		}
 		
 		// Setup colors
-		colorPallette = new Dictionary<int, PaintBrush>();
-		colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
-		colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
-		colorPallette.Add(2, new PaintBrush("Cyan", Color.cyan));
-		colorPallette.Add(3, new PaintBrush("Red", Color.red));
-		colorPallette.Add(4, new PaintBrush("Green", Color.green));
-		colorPallette.Add(5, new PaintBrush("Yellow", Color.yellow));
-		colorPallette.Add(6, new PaintBrush("Grey", new Color(0.330f, 0.330f, 0.330f)));
-		colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
+		_colorPallette = new Dictionary<int, PaintBrush>();
+		_colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
+		_colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
+		_colorPallette.Add(2, new PaintBrush("Cyan", Color.cyan));
+		_colorPallette.Add(3, new PaintBrush("Red", Color.red));
+		_colorPallette.Add(4, new PaintBrush("Green", Color.green));
+		_colorPallette.Add(5, new PaintBrush("Yellow", Color.yellow));
+		_colorPallette.Add(6, new PaintBrush("Grey", new Color(0.330f, 0.330f, 0.330f)));
+		_colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
 		
-		currentBrush = colorPallette[0]; // Set default brush 
+		_currentBrush = _colorPallette[0]; // Set default brush 
 		#endregion
 	}
 	
 	void Update () {
 		if (Input.GetMouseButtonDown(0)) 
-			HandleMouseClick();
+			_HandleMouseClick();
 	}
 	
 	void OnGUI () {
 		#region BASE_LAYER
 		GUI.Box(chosenCharRegion, "chosenChar");
 		GUI.Box(pictureSelectRegion, "pictureSelect");
-		GUI.DrawTexture(pictureRegion, picture, ScaleMode.StretchToFill, true);
+		GUI.DrawTexture(pictureRegion, _picture, ScaleMode.StretchToFill, true);
 		GUI.Box(toolbarRegion, "toolbar");
 		#endregion
 		#region PICTURE_SELECT_LAYER
 		GUI.Box(selectUpBtnRegion, "up");
 		GUI.Box(selectDownBtnRegion, "down");
 		for (int i = 0; i < 4; i++) {
-			GUI.Box(selectPictureRegion[i], pictureNames[pictureIndexOffset + i]);	
+			GUI.Box(selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
 		}
 		#endregion
 		#region TOOLBAR_LAYER
@@ -120,61 +118,61 @@ public class ColoringGameManager : GameManager {
 		GUI.Box(undoToolRegion, "undoTool");
 
 		for (int i = 0; i < colorPalletteRegion.Length; i++) {
-			GUI.Box(colorPalletteRegion[i], colorPallette[i].name);
+			GUI.Box(colorPalletteRegion[i], _colorPallette[i].name);
 		}
 		#endregion
 	}
 	
 	#region CURSOR_HANDLING_FUNCTIONS
-	private void HandleMouseClick() {
-		Vector2 mousePosition = Input.mousePosition;
-		mousePosition.y = Screen.height - mousePosition.y; // y-axis flips
+	private void _HandleMouseClick() {
+		Vector2 __p = Input.mousePosition;
+		__p.y = Screen.height - __p.y; // y-axis flips
 		
-		if (chosenCharRegion.Contains(mousePosition)) {
-			HandleChosenCharClick(mousePosition);
-		} else if (pictureSelectRegion.Contains(mousePosition)) {
-			HandlePictureSelectionClick(mousePosition);
-		} else if (pictureRegion.Contains(mousePosition)) {
-			HandlePictureClick(mousePosition);
-		} else if (toolbarRegion.Contains(mousePosition)) {
-			HandleToolbarClick(mousePosition);
+		if (chosenCharRegion.Contains(__p)) {
+			_HandleChosenCharClick(__p);
+		} else if (pictureSelectRegion.Contains(__p)) {
+			_HandlePictureSelectionClick(__p);
+		} else if (pictureRegion.Contains(__p)) {
+			_HandlePictureClick(__p);
+		} else if (toolbarRegion.Contains(__p)) {
+			_HandleToolbarClick(__p);
 		}
 	}
 	
-	private void HandleChosenCharClick(Vector2 position) {
+	private void _HandleChosenCharClick(Vector2 position) {
 		//TODO
 		Debug.Log("clicked on chosen char");
 	}
 	
-	private void HandlePictureSelectionClick(Vector2 position) {
+	private void _HandlePictureSelectionClick(Vector2 position) {
 		// Navigation buttons
 		if (selectUpBtnRegion.Contains(position)) {
-			pictureIndexOffset--;
+			_pictureIndexOffset--;
 		} else if (selectDownBtnRegion.Contains(position)) {
-			pictureIndexOffset++;
+			_pictureIndexOffset++;
 		}
 		
 		// Prevent index overflow
-		pictureIndexOffset = Mathf.Clamp(pictureIndexOffset, 0, pictureNames.Count - 4);
+		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 4);
 		
 		// Picture selection
 		for (int i = 0; i < 4; i++) {
 			if (selectPictureRegion[i].Contains(position)) {
 				// TODO load new picture
-				Debug.Log("selected picture"+pictureNames[pictureIndexOffset + i]);
+				Debug.Log("selected picture"+_pictureNames[_pictureIndexOffset + i]);
 			}
 		}
 	}
 	
-	private void HandlePictureClick(Vector2 position) {
+	private void _HandlePictureClick(Vector2 position) {
 		position.y = Screen.height - position.y; // y-axis flips yet again
 		
 		// Convert global cursor position to local texture position
-		Vector2 t = position - 
+		Vector2 __p = position - 
 			new Vector2(pictureRegion.x, pictureRegion.y); // Offset origin
 		
 		// Get color of pixel under cursor
-		Color cursorColor = picture.GetPixel((int)t.x, (int)t.y);
+		Color cursorColor = _picture.GetPixel((int)__p.x, (int)__p.y);
 		
 		// Ignore black pixels
 		// Using distance function, because of floating-point precision issue
@@ -183,25 +181,25 @@ public class ColoringGameManager : GameManager {
 			return;
 		}
 		// Ignore pixel colors that are same as current brush color
-		if (Vector4.Distance(cursorColor, currentBrush.color) < 0.1f) {
+		if (Vector4.Distance(cursorColor, _currentBrush.color) < 0.1f) {
 			Debug.Log("identical color, return");
 			return;
 		}
 		
 		// Begin flood fill
-		floodFill((int)t.x, (int)t.y, cursorColor, currentBrush.color);
+		_FloodFill((int)__p.x, (int)__p.y, cursorColor, _currentBrush.color);
 		
 		// Save picture after setPixel operations
-		picture.Apply();
+		_picture.Apply();
 	}
 	
-	private void HandleToolbarClick(Vector2 position) {
+	private void _HandleToolbarClick(Vector2 position) {
 		for (int i = 0; i < colorPalletteRegion.Length; i++) {
 			if (colorPalletteRegion[i].Contains(position)) {
-				Debug.Log ("selected"+colorPallette[i].name);
+				Debug.Log ("selected"+_colorPallette[i].name);
 				
 				// Set new brush
-				currentBrush = colorPallette[i];
+				_currentBrush = _colorPallette[i];
 			}
 		}
 	}
@@ -211,16 +209,16 @@ public class ColoringGameManager : GameManager {
 	 * Recursive flood fill algorithm
 	 * http://en.wikipedia.org/wiki/Flood_fill
 	 */ 
-	private void floodFill(int x, int y, Color target, Color replacement) {
-		if (picture.GetPixel(x, y) != target)
+	private void _FloodFill(int x, int y, Color target, Color replacement) {
+		if (_picture.GetPixel(x, y) != target)
 			return;
 
-		picture.SetPixel(x, y, replacement);
+		_picture.SetPixel(x, y, replacement);
 		
-		floodFill(x - 1, y, target, replacement);
-		floodFill(x + 1, y, target, replacement);
-		floodFill(x, y - 1, target, replacement);
-		floodFill(x, y + 1, target, replacement);
+		_FloodFill(x - 1, y, target, replacement);
+		_FloodFill(x + 1, y, target, replacement);
+		_FloodFill(x, y - 1, target, replacement);
+		_FloodFill(x, y + 1, target, replacement);
 		return;
 	}
 }
