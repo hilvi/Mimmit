@@ -42,7 +42,7 @@ public class ColoringGameManager : GameManager {
 		_picture = new Texture2D(560, 560);
 		for (int x = 0; x < 560; x++) {
 			for (int y = 0; y < 560; y++) {
-				if (x % 40 == 0 || y % 40 == 0)
+				if (x % 200 == 0 || y % 200 == 0)
 					_picture.SetPixel(x, y, Color.black);
 				else
 					_picture.SetPixel(x, y, Color.white);
@@ -187,7 +187,7 @@ public class ColoringGameManager : GameManager {
 		}
 		
 		// Begin flood fill
-		_FloodFill((int)__p.x, (int)__p.y, cursorColor, _currentBrush.color);
+		_picture.FloodFillArea((int)__p.x, (int)__p.y, _currentBrush.color);
 		
 		// Save picture after setPixel operations
 		_picture.Apply();
@@ -204,21 +204,4 @@ public class ColoringGameManager : GameManager {
 		}
 	}
 	#endregion
-	
-	/*
-	 * Recursive flood fill algorithm
-	 * http://en.wikipedia.org/wiki/Flood_fill
-	 */ 
-	private void _FloodFill(int x, int y, Color target, Color replacement) {
-		if (_picture.GetPixel(x, y) != target)
-			return;
-
-		_picture.SetPixel(x, y, replacement);
-		
-		_FloodFill(x - 1, y, target, replacement);
-		_FloodFill(x + 1, y, target, replacement);
-		_FloodFill(x, y - 1, target, replacement);
-		_FloodFill(x, y + 1, target, replacement);
-		return;
-	}
 }
