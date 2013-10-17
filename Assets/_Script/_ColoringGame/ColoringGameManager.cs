@@ -33,6 +33,7 @@ public class ColoringGameManager : GameManager {
 	
 	private Dictionary<int, PaintBrush> _colorPallette; // start from top-left, row order
 	private PaintBrush _currentBrush;
+	private PaintBrush _eraseBrush;
 	
 	public override void Start () {
 		base.Start();
@@ -91,6 +92,7 @@ public class ColoringGameManager : GameManager {
 		_colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
 		
 		_currentBrush = _colorPallette[0]; // Set default brush 
+		_eraseBrush = new PaintBrush("Erase", Color.white);
 		#endregion
 	}
 	
@@ -194,6 +196,17 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	private void _HandleToolbarClick(Vector2 position) {
+		if (eraseToolRegion.Contains(position)) {
+			// Select erase tool
+			_currentBrush = _eraseBrush;
+		}
+		
+		if (undoToolRegion.Contains(position)) {
+			// TODO
+			Debug.Log("undo last change");
+		}
+		
+		// Color pallette
 		for (int i = 0; i < colorPalletteRegion.Length; i++) {
 			if (colorPalletteRegion[i].Contains(position)) {
 				Debug.Log ("selected"+_colorPallette[i].name);
