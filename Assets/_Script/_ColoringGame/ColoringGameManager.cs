@@ -21,6 +21,19 @@ public class ColoringGameManager : GameManager {
 	public Rect undoToolRegion;			// 800,180,120,120
 	public Rect[] colorPalletteRegion;	// anchor: 800,320 size:60,60
 	
+	private class PaintEvent {
+		public int x, y;
+		public Color prevColor;
+		
+		public PaintEvent(int x, int y, Color prevColor) {
+			this.x = x;
+			this.y = y;
+			this.prevColor = prevColor;
+		}
+	}
+	
+	private Stack<PaintEvent> _paintEvents;
+	
 	private class PaintBrush {
 		public string name;
 		public Color color;
@@ -80,7 +93,7 @@ public class ColoringGameManager : GameManager {
 			}
 		}
 		
-		// Setup colors
+		// Setup color pallette
 		_colorPallette = new Dictionary<int, PaintBrush>();
 		_colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
 		_colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
@@ -93,6 +106,9 @@ public class ColoringGameManager : GameManager {
 		
 		_currentBrush = _colorPallette[0]; // Set default brush 
 		_eraseBrush = new PaintBrush("Erase", Color.white);
+		
+		_paintEvents = new Stack<PaintEvent>();
+		
 		#endregion
 	}
 	
@@ -193,6 +209,10 @@ public class ColoringGameManager : GameManager {
 		
 		// Save picture after setPixel operations
 		_picture.Apply();
+		
+		// Create & store paint event
+		PaintEvent __e = new PaintEvent((int)__p.x, (int)__p.y, cursorColor);
+		_paintEvents.Push(__e);
 	}
 	
 	private void _HandleToolbarClick(Vector2 position) {
@@ -202,8 +222,16 @@ public class ColoringGameManager : GameManager {
 		}
 		
 		if (undoToolRegion.Contains(position)) {
-			// TODO
-			Debug.Log("undo last change");
+			// No events, return
+			if (_paintEvents.Count == 0)
+				return;
+			
+			// Pick most recent event
+			PaintEvent __e = _paintEvents.Pop();
+			// Re-fill previous area with old color
+			_picture.FloodFillArea(__e.x, __e.y, __e.prevColor);
+			// Save picture after fill operation
+			_picture.Apply();
 		}
 		
 		// Color pallette
