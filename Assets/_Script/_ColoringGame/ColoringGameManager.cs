@@ -138,7 +138,7 @@ public class ColoringGameManager : GameManager {
 			new Vector2(pictureRegion.x, pictureRegion.y); // Offset origin
 		
 		// TODO change replacement color to whatever player has selected
-		floodFill(Mathf.FloorToInt(t.x), Mathf.FloorToInt(t.y), Color.white, Color.blue);
+		floodFill((int)t.x, (int)t.y, Color.white, Color.blue);
 		
 		// Save picture after setPixel operations
 		picture.Apply();
