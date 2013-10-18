@@ -12,17 +12,14 @@ public class HorseCharacterController : MonoBehaviour {
 	private CharacterController _controller;
 	private Vector3 _movement;
 	private float _currentSpeed;
-	public float currentSpeed{
-		set{_currentSpeed = value;}
-	}
 	
-	void Start () {
+	void Start () 
+	{
 		_controller = GetComponent<CharacterController>();
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
 	}
 	
-	// Update is called once per frame
 	void Update () 
 	{
 		if(_controller.isGrounded) 
@@ -44,7 +41,7 @@ public class HorseCharacterController : MonoBehaviour {
 	/// </summary>
 	public void EnterMudConfiguration()
 	{
-		currentSpeed = mudSpeed;
+		_currentSpeed = mudSpeed;
 	}
 	
 	/// <summary>
@@ -53,6 +50,6 @@ public class HorseCharacterController : MonoBehaviour {
 	/// </summary>
 	public void ExitMudConfiguration()
 	{
-		currentSpeed = runningSpeed;
+		_currentSpeed = runningSpeed;
 	}
 }

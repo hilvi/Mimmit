@@ -3,24 +3,21 @@ using System.Collections;
 
 public enum GameState { Pregame, Running, Paused, Over };
 public class GameManager : MonoBehaviour {
-	
+	#region MEMBERS
 	public bool isLastLevel = true;
 	public int currentLevel = 1;
 	public string gameName;
 	
-	
 	public static GameState gameState;
 	public static GameState prevGameState;
+	#endregion
 	
-	
+	#region UNITY_METHODS
 	virtual protected void Awake() 
 	{		
-		//MainMenuGUI.selectedGameName = gameName;
-		//MainMenuGUI.currentLevel = currentLevel;
+
 	}
 	
-	
-	// Use this for initialization
 	public virtual void Start () 
 	{
 		SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
@@ -35,27 +32,34 @@ public class GameManager : MonoBehaviour {
 			}
 		}
 	}
+	#endregion
 	
-	public void SetGameState(GameState s) {
+	#region METHODS
+	public void SetGameState(GameState s) 
+	{
 		GameManager.gameState = s;
 	}
 	
-	public GameState GetGameState() {
+	public GameState GetGameState() 
+	{
 		return GameManager.gameState;
 	}
 	
-	public void PauseGame() {
+	public void PauseGame() 
+	{
 		GameManager.prevGameState = GetGameState();
 		GameManager.gameState = GameState.Paused;
 		Time.timeScale = 0;
 	}
 	
-	public void UnpauseGame() {
+	public void UnpauseGame() 
+	{
 		GameManager.gameState = GameManager.prevGameState;
 		Time.timeScale = 1;
 	}
 	
-	public void ResumeGame() {
+	public void ResumeGame() 
+	{
 		GameManager.gameState = GameState.Running;
 		Time.timeScale = 1;
 	}
@@ -67,12 +71,14 @@ public class GameManager : MonoBehaviour {
 		Application.LoadLevel(Application.loadedLevel);
 	}
 	
-	public bool IsGameRunning() {
+	public bool IsGameRunning() 
+	{
 		if (GetGameState() == GameState.Running) return true;
 		return false;
 	}
 	
-	public void GoToNextLevel() {
+	public void GoToNextLevel() 
+	{
 		//Reset global time scale
 		Time.timeScale = 1;
 		if (!isLastLevel){
@@ -83,13 +89,11 @@ public class GameManager : MonoBehaviour {
 
 	}
 	
-	public void EndGame() {
+	public void EndGame() 
+	{
 		PauseGame();
 		SetGameState(GameState.Over);
 		Time.timeScale = 0;
 	}
-	protected void GameOverScreen(Texture2D texture)
-	{
-		
-	}
+	#endregion
 }

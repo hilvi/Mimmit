@@ -22,7 +22,9 @@ public class ColoringGameManager : GameManager {
 	private PaintToolbar _toolbar;
 	#endregion
 
-	public override void Start () {
+	#region UNITY_METHODS
+	public override void Start () 
+	{
 		base.Start();
 		SetGameState(GameState.Running);
 		
@@ -44,13 +46,15 @@ public class ColoringGameManager : GameManager {
 		#endif
 	}
 	
-	void Update () {
+	void Update () 
+	{
 		if (Input.GetMouseButtonDown(0)) 
 			_HandleMouseClick();
 	}
 	
-	void OnGUI () {
-		#if DEVELOPER_MODE
+	void OnGUI () 
+	{
+		#if UNITY_EDITOR
 		GUI.Box(chosenCharRegion, "chosenChar");
 		
 		_pictureSelector.OnGui();
@@ -58,16 +62,20 @@ public class ColoringGameManager : GameManager {
 		_toolbar.OnGUI();
 		#endif
 	}
+	#endregion
 	
-	public void ResetPictureToOriginal() {
-		#if DEVELOPER_MODE
+	#region METHODS
+	public void ResetPictureToOriginal() 
+	{
+		#if UNITY_EDITOR
 		_frame.Picture = _CreateDebugGridTexture(560, 560, 40, 40);
 		#else
 		// TODO, reload current active picture to original state
 		#endif
 	}
 	
-	public Texture2D GetPictureFromFrame() {
+	public Texture2D GetPictureFromFrame() 
+	{
 		return _frame.Picture;
 	}
 
@@ -91,7 +99,8 @@ public class ColoringGameManager : GameManager {
 		Debug.Log("clicked on chosen char");
 	}
 
-	private Texture2D _CreateDebugGridTexture(int width, int height, int gridWidth, int gridHeight) {
+	private Texture2D _CreateDebugGridTexture(int width, int height, int gridWidth, int gridHeight) 
+	{
 		Texture2D __picture = new Texture2D(width, height);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -104,4 +113,5 @@ public class ColoringGameManager : GameManager {
 		__picture.Apply();
 		return __picture;
 	}
+	#endregion
 }

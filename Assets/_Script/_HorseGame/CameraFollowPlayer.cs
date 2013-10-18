@@ -13,7 +13,7 @@ public class CameraFollowPlayer : MonoBehaviour {
 	{
 		_transform = GetComponent<Transform>();
 	}
-	// Update is called once per frame
+
 	void Update () 
 	{
 		Vector3 __vec = _transform.position;

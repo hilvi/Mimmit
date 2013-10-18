@@ -12,37 +12,32 @@ public class InGameMenuGUI : MonoBehaviour
 	public float gamePreviewWidthToScreenWidthRatio = 0.75f;
 	public float barHeightToScreenHeightRatio = 0.25f;
 	public float gamePreviewArrowHeightRation = 0.2f;//  height ration of the white speach arrow pointing to character to total height of preview screen
+	public Texture Restart,PlayButton,MainMenuButton,PauseButton;
 	public static int currentLevel = 1;
 	public static string selectedGameName;
-	public string[] gameList;
 	public static GameObject music;
-	GameManager gameManager;
-	public Texture Restart,PlayButton,MainMenuButton,PauseButton;
-	bool callOnce = false;
-
 	
-	int gamesNumber;
-	
-	AudioSource audioSource;
-	
-	string isSounON;
+	private GameManager _gameManager;
+	private bool _callOnce = false;
+	private int _gamesNumber;
+	private AudioSource _audioSource;
 	
 	// Use this for initialization
 	void Start () 
 	{
-		gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+		_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		currentLevel = 1;
 	}
 	
 	void OnGUI() {		
 		float screenUnitW = Screen.width/100;
-		GameState currentState = gameManager.GetGameState();
+		GameState currentState = _gameManager.GetGameState();
 		// While the game is in progress, only display the pause button
 		if (currentState == GameState.Running||currentState == GameState.Pregame) 
 		{
 			if (GUI.Button(new Rect(Screen.width - screenUnitW*11, 2, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
 			{	
-				gameManager.PauseGame();
+				_gameManager.PauseGame();
 			}
 		}
 		else {
@@ -116,12 +111,12 @@ public class InGameMenuGUI : MonoBehaviour
 	IEnumerator WaitAndLoadNext()
 	{
 		yield return StartCoroutine(FadeOutMusic(audio));
-		gameManager.GoToNextLevel();
+		_gameManager.GoToNextLevel();
 	}
 		
 	void ShowBottomMenu()
 	{
-		GameState currentState = gameManager.GetGameState();
+		GameState currentState = _gameManager.GetGameState();
 		
 		if(currentState == GameState.Paused)
 		{
@@ -134,17 +129,17 @@ public class InGameMenuGUI : MonoBehaviour
 			if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
 				Screen.width/7, Screen.width/7), Restart)) 
 			{
-				gameManager.RestartGame();
+				_gameManager.RestartGame();
 			}
 			if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
 				Screen.width/7, Screen.width/7), PlayButton))
 			{
-				gameManager.UnpauseGame();
+				_gameManager.UnpauseGame();
 			}
 		}
 		else if(currentState == GameState.Over)
 		{
-			if(!gameManager.isLastLevel)
+			if(!_gameManager.isLastLevel)
 			{
 				if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
 			{
@@ -155,18 +150,18 @@ public class InGameMenuGUI : MonoBehaviour
 			if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
 				Screen.width/7, Screen.width/7), Restart)) 
 			{
-				gameManager.RestartGame();
+				_gameManager.RestartGame();
 			}
 				if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
-					Screen.width/7, Screen.width/7), PlayButton) && !gameManager.isLastLevel) 
+					Screen.width/7, Screen.width/7), PlayButton) && !_gameManager.isLastLevel) 
 				{
-						gameManager.GoToNextLevel();		
+						_gameManager.GoToNextLevel();		
 				}
 			}else
 			{
-				if(!callOnce)
+				if(!_callOnce)
 				{
-					callOnce = true;
+					_callOnce = true;
 					GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
 					StartCoroutine(LoadWinScene(obj.audio));
 				}
