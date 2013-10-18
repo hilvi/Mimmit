@@ -18,7 +18,7 @@ public class ColoringGameManager : GameManager {
 
 	public Rect toolbarRegion;			// 780,20,160,560
 	public Rect eraseToolRegion;		// 800,40,120,120
-	public Rect undoToolRegion;			// 800,180,120,120
+	public Rect resetToolRegion;		// 800,180,120,120
 	public Rect[] colorPalletteRegion;	// anchor: 800,320 size:60,60
 	#endregion
 	
@@ -27,19 +27,7 @@ public class ColoringGameManager : GameManager {
 	private List<string> _pictureNames = new List<string>();
 	
 	private Texture2D _picture;
-	
-	private struct PaintEvent {
-		public int x, y;
-		public Color prevColor;
-		
-		public PaintEvent(int x, int y, Color prevColor) {
-			this.x = x;
-			this.y = y;
-			this.prevColor = prevColor;
-		}
-	}
-	private Stack<PaintEvent> _paintEvents = new Stack<PaintEvent>();
-	
+
 	private struct PaintBrush {
 		public string name;
 		public Color color;
@@ -89,7 +77,7 @@ public class ColoringGameManager : GameManager {
 		}
 
 		GUI.Box(eraseToolRegion, "eraseTool");
-		GUI.Box(undoToolRegion, "undoTool");
+		GUI.Box(resetToolRegion, "resetTool");
 
 		for (int i = 0; i < colorPalletteRegion.Length; i++) {
 			GUI.Box(colorPalletteRegion[i], _colorPallette[i].name);
@@ -168,10 +156,6 @@ public class ColoringGameManager : GameManager {
 		
 		// Save picture after setPixel operations
 		_picture.Apply();
-		
-		// Create & store paint event
-		PaintEvent __e = new PaintEvent((int)__p.x, (int)__p.y, cursorColor);
-		_paintEvents.Push(__e);
 	}
 	
 	private void _HandleToolbarClick(Vector2 position) {
@@ -180,17 +164,8 @@ public class ColoringGameManager : GameManager {
 			_currentBrush = _eraseBrush;
 		}
 		
-		if (undoToolRegion.Contains(position)) {
-			// No events, return
-			if (_paintEvents.Count == 0)
-				return;
-			
-			// Pick most recent event
-			PaintEvent __e = _paintEvents.Pop();
-			// Re-fill previous area with old color
-			_picture.FloodFillArea(__e.x, __e.y, __e.prevColor);
-			// Save picture after fill operation
-			_picture.Apply();
+		if (resetToolRegion.Contains(position)) {
+			_ResetPictureToOriginal(out _picture);		
 		}
 		
 		// Color pallette
@@ -243,9 +218,7 @@ public class ColoringGameManager : GameManager {
 		_eraseBrush = new PaintBrush("Erase", Color.white);
 	}
 	
-	private Texture2D _CreateDebugGridTexture(int width, int height, 
-		int gridWidth, int gridHeight) 
-	{
+	private Texture2D _CreateDebugGridTexture(int width, int height, int gridWidth, int gridHeight) {
 		Texture2D __picture = new Texture2D(width, height);
 		for (int x = 0; x < width; x++) {
 			for (int y = 0; y < height; y++) {
@@ -259,7 +232,11 @@ public class ColoringGameManager : GameManager {
 		return __picture;
 	}
 	
-	private void _ResetPictureToOriginal() {
-		
+	private void _ResetPictureToOriginal(out Texture2D picture) {
+		#if DEVELOPER_MODE
+		picture = _CreateDebugGridTexture(560, 560, 40, 40);
+		#else
+		// TODO, reload current active picture to original state
+		#endif
 	}
 }
