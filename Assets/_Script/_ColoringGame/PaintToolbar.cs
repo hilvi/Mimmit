@@ -22,8 +22,8 @@ public class PaintToolbar
 		_manager = manager;
 		_toolbarRegion = region;
 
-		_eraseToolRegion = new Rect(800,40,120,120);
-		_resetToolRegion = new Rect(800,180,120,120);
+		_eraseToolRegion = new Rect(820,120,80,80);
+		_resetToolRegion = new Rect(820,220,80,80);
 		
 		// TODO, possibly make more elegant, ugly constants
 		_colorPalletteRegion = new Rect[8];

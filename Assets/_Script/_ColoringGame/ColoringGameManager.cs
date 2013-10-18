@@ -10,7 +10,10 @@ public class ColoringGameManager : GameManager {
 	public Rect chosenCharRegion;		// 20,20,160,160
 	public Rect pictureSelectRegion;	// 20,200,160,380
 	public Rect pictureRegion;			// 200,20,560,560
-	public Rect toolbarRegion;			// 780,20,160,560
+	public Rect toolbarRegion;			// 780,100,160,480
+	
+	public GameObject musicObject;
+	public AudioClip music;
 	#endregion
 	
 	#region PRIVATE
@@ -22,6 +25,13 @@ public class ColoringGameManager : GameManager {
 	public override void Start () {
 		base.Start();
 		SetGameState(GameState.Running);
+		
+		if(InGameMenuGUI.music == null)
+		{
+		  	InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
+			InGameMenuGUI.music.audio.clip = music;
+			InGameMenuGUI.music.audio.Play();
+		}
 		
 		_pictureSelector = new PictureSelector(this, pictureSelectRegion);
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
