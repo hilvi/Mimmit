@@ -1,27 +1,34 @@
-﻿using UnityEngine;
+﻿#define DEVELOPER_MODE
+
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 public class ColoringGameManager : GameManager {
 	
+	#region PUBLIC
 	public Rect chosenCharRegion;		// 20,20,160,160
 
 	public Rect pictureSelectRegion;	// 20,200,160,380
 	public Rect selectUpBtnRegion;		// 20,200,160,40
 	public Rect selectDownBtnRegion;	// 20,540,160,40
 	public Rect[] selectPictureRegion;	// 
-	private int _pictureIndexOffset;
-	private List<string> _pictureNames;
 
 	public Rect pictureRegion;			// 200,20,560,560
-	private Texture2D _picture;
 
 	public Rect toolbarRegion;			// 780,20,160,560
 	public Rect eraseToolRegion;		// 800,40,120,120
 	public Rect undoToolRegion;			// 800,180,120,120
 	public Rect[] colorPalletteRegion;	// anchor: 800,320 size:60,60
+	#endregion
 	
-	private class PaintEvent {
+	#region PRIVATE
+	private int _pictureIndexOffset = 0;
+	private List<string> _pictureNames = new List<string>();
+	
+	private Texture2D _picture;
+	
+	private struct PaintEvent {
 		public int x, y;
 		public Color prevColor;
 		
@@ -31,10 +38,9 @@ public class ColoringGameManager : GameManager {
 			this.prevColor = prevColor;
 		}
 	}
+	private Stack<PaintEvent> _paintEvents = new Stack<PaintEvent>();
 	
-	private Stack<PaintEvent> _paintEvents;
-	
-	private class PaintBrush {
+	private struct PaintBrush {
 		public string name;
 		public Color color;
 		
@@ -43,73 +49,26 @@ public class ColoringGameManager : GameManager {
 			this.color = color;
 		}
 	}
+	private Dictionary<int, PaintBrush> _colorPallette = new Dictionary<int, PaintBrush>(); 
 	
-	private Dictionary<int, PaintBrush> _colorPallette; // start from top-left, row order
 	private PaintBrush _currentBrush;
 	private PaintBrush _eraseBrush;
+	#endregion
 	
 	public override void Start () {
 		base.Start();
 		SetGameState(GameState.Running);
+		
+		#if DEVELOPER_MODE
+		_picture = _CreateDebugGridTexture(560, 560, 40, 40);
 
-		#region DEBUG_GRID_TEXTURE
-		_picture = new Texture2D(560, 560);
-		for (int x = 0; x < 560; x++) {
-			for (int y = 0; y < 560; y++) {
-				if (x % 200 == 0 || y % 200 == 0)
-					_picture.SetPixel(x, y, Color.black);
-				else
-					_picture.SetPixel(x, y, Color.white);
-			}
-		}
-		_picture.Apply();
-		#endregion
-		#region DEBUG_GEN_PICTURE_NAMES
-		_pictureIndexOffset = 0;
-		_pictureNames = new List<string>();
 		for (int i = 1; i <= 10; i++) {
 			_pictureNames.Add("Picture"+i.ToString());
 		}
-		#endregion
-		#region DEBUG_PICTURE_SELECTION_LAYOUT
-		// TODO, possibly make more elegant, ugly constants and non-integer values
-		float vertical = 252.5f;
-		selectPictureRegion = new Rect[4];
-		for (int i = 0; i < 4; i++) {
-			selectPictureRegion[i] = new Rect(67.5f, vertical, 65f, 65f);
-			vertical += 70f;
-		}
-		#endregion
-		#region DEBUG_COLOR_PALLETTE_LAYOUT
-		// TODO, possibly make more elegant, ugly constants
-		colorPalletteRegion = new Rect[8];
-		Vector2 paletteAnchor = new Vector2(800f, 320f);
-		Vector2 minimize = new Vector2(10f, 10f);
-		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 2; x++)  {
-				float xx = (paletteAnchor.x + x * 60f) + (minimize.x/2f);
-				float yy = (paletteAnchor.y + y * 60f) + (minimize.y/2f);
-				colorPalletteRegion[y*2+x] = new Rect(xx, yy, 60f - minimize.x, 60f - minimize.y);
-			}
-		}
-		
-		// Setup color pallette
-		_colorPallette = new Dictionary<int, PaintBrush>();
-		_colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
-		_colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
-		_colorPallette.Add(2, new PaintBrush("Cyan", Color.cyan));
-		_colorPallette.Add(3, new PaintBrush("Red", Color.red));
-		_colorPallette.Add(4, new PaintBrush("Green", Color.green));
-		_colorPallette.Add(5, new PaintBrush("Yellow", Color.yellow));
-		_colorPallette.Add(6, new PaintBrush("Grey", new Color(0.330f, 0.330f, 0.330f)));
-		_colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
-		
-		_currentBrush = _colorPallette[0]; // Set default brush 
-		_eraseBrush = new PaintBrush("Erase", Color.white);
-		
-		_paintEvents = new Stack<PaintEvent>();
-		
-		#endregion
+		#endif
+
+		_InitToolbar(new Vector2(800f, 320f), new Vector2(10f, 10f));
+		_InitPictureSelector();
 	}
 	
 	void Update () {
@@ -118,27 +77,27 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	void OnGUI () {
-		#region BASE_LAYER
+		#if DEVELOPER_MODE
 		GUI.Box(chosenCharRegion, "chosenChar");
 		GUI.Box(pictureSelectRegion, "pictureSelect");
-		GUI.DrawTexture(pictureRegion, _picture, ScaleMode.StretchToFill, true);
 		GUI.Box(toolbarRegion, "toolbar");
-		#endregion
-		#region PICTURE_SELECT_LAYER
+
 		GUI.Box(selectUpBtnRegion, "up");
 		GUI.Box(selectDownBtnRegion, "down");
 		for (int i = 0; i < 4; i++) {
 			GUI.Box(selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
 		}
-		#endregion
-		#region TOOLBAR_LAYER
+
 		GUI.Box(eraseToolRegion, "eraseTool");
 		GUI.Box(undoToolRegion, "undoTool");
 
 		for (int i = 0; i < colorPalletteRegion.Length; i++) {
 			GUI.Box(colorPalletteRegion[i], _colorPallette[i].name);
-		}
-		#endregion
+		}	
+		#endif
+		
+		if (_picture != null)
+			GUI.DrawTexture(pictureRegion, _picture, ScaleMode.StretchToFill, true);
 	}
 	
 	#region CURSOR_HANDLING_FUNCTIONS
@@ -245,4 +204,62 @@ public class ColoringGameManager : GameManager {
 		}
 	}
 	#endregion
+	
+	private void _InitPictureSelector() {
+		// TODO, possibly make more elegant, ugly constants and non-integer values
+		float __v = 252.5f; // Vertical coordinate
+		selectPictureRegion = new Rect[4];
+		for (int i = 0; i < 4; i++) {
+			selectPictureRegion[i] = new Rect(67.5f, __v, 65f, 65f);
+			__v += 70f;
+		}
+		
+		// TODO, load picture thumbnails here
+	}
+	
+	private void _InitToolbar(Vector2 paletteAnchor, Vector2 buttonInset) {
+		// TODO, possibly make more elegant, ugly constants
+		colorPalletteRegion = new Rect[8];
+		for (int y = 0; y < 4; y++) {
+			for (int x = 0; x < 2; x++)  {
+				float xx = (paletteAnchor.x + x * 60f) + (buttonInset.x / 2f);
+				float yy = (paletteAnchor.y + y * 60f) + (buttonInset.y / 2f);
+				colorPalletteRegion[y * 2 + x] = 
+					new Rect(xx, yy, 60f - buttonInset.x, 60f - buttonInset.y);
+			}
+		}
+		
+		// Setup color pallette. Start from top-left, row-major order
+		_colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
+		_colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
+		_colorPallette.Add(2, new PaintBrush("Cyan", Color.cyan));
+		_colorPallette.Add(3, new PaintBrush("Red", Color.red));
+		_colorPallette.Add(4, new PaintBrush("Green", Color.green));
+		_colorPallette.Add(5, new PaintBrush("Yellow", Color.yellow));
+		_colorPallette.Add(6, new PaintBrush("Grey", new Color(0.330f, 0.330f, 0.330f)));
+		_colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
+		
+		_currentBrush = _colorPallette[0]; // Set default brush 
+		_eraseBrush = new PaintBrush("Erase", Color.white);
+	}
+	
+	private Texture2D _CreateDebugGridTexture(int width, int height, 
+		int gridWidth, int gridHeight) 
+	{
+		Texture2D __picture = new Texture2D(width, height);
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				if (x % gridWidth == 0 || y % gridHeight == 0)
+					__picture.SetPixel(x, y, Color.black);
+				else
+					__picture.SetPixel(x, y, Color.white);
+			}
+		}
+		__picture.Apply();
+		return __picture;
+	}
+	
+	private void _ResetPictureToOriginal() {
+		
+	}
 }
