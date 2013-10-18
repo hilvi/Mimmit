@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEditor;
 using System.IO;
 
 public class PaintToolbar
@@ -95,7 +94,8 @@ public class PaintToolbar
 	}
 	
 	private void _SavePicture() {
-		Texture2D __t = _manager.GetPictureFromFrame();
+		// Removed for now since we should use some Js methods instead
+		/*Texture2D __t = _manager.GetPictureFromFrame();
 		
 		if (__t ==  null)
 			return;
@@ -110,9 +110,8 @@ public class PaintToolbar
 		if (__path.Length != 0) {
 			byte[] __pngBytes = __t.EncodeToPNG();
 			//File.WriteAllBytes(__path, __pngBytes); // Make sure PC platform is chosen to use this
-
 			Debug.Log(__path);
-		}
+		}*/
 	}
 }
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PaintFrame
 {
-	private ColoringGameManager _manager;
+	private ColoringGameManager _manager; 
 	
 	private Rect _pictureRegion;
 	

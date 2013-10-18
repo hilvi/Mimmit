@@ -54,7 +54,7 @@ public class ColoringGameManager : GameManager {
 	
 	void OnGUI () 
 	{
-		#if UNITY_EDITOR
+		#if DEVELOPER_MODE
 		GUI.Box(chosenCharRegion, "chosenChar");
 		
 		_pictureSelector.OnGui();
@@ -67,7 +67,7 @@ public class ColoringGameManager : GameManager {
 	#region METHODS
 	public void ResetPictureToOriginal() 
 	{
-		#if UNITY_EDITOR
+		#if DEVELOPER_MODE
 		_frame.Picture = _CreateDebugGridTexture(560, 560, 40, 40);
 		#else
 		// TODO, reload current active picture to original state
