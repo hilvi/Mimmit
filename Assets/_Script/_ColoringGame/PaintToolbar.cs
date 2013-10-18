@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
+using System.IO;
 
 public class PaintToolbar
 {
@@ -12,6 +14,7 @@ public class PaintToolbar
 	private Rect _toolbarRegion;		// 780,20,160,560
 	private Rect _eraseToolRegion;		// 800,40,120,120
 	private Rect _resetToolRegion;		// 800,180,120,120
+	private Rect _saveToolRegion;		// 
 	private Rect[] _colorPalletteRegion;	// anchor: 800,320 size:60,60
 	
 	private Dictionary<int, PaintBrush> _colorPallette = new Dictionary<int, PaintBrush>(); 
@@ -24,6 +27,7 @@ public class PaintToolbar
 
 		_eraseToolRegion = new Rect(820,120,80,80);
 		_resetToolRegion = new Rect(820,220,80,80);
+		_saveToolRegion = new Rect(800,40,40,40);
 		
 		// TODO, possibly make more elegant, ugly constants
 		_colorPalletteRegion = new Rect[8];
@@ -54,6 +58,7 @@ public class PaintToolbar
 		GUI.Box(_toolbarRegion, "toolbar");
 		GUI.Box(_eraseToolRegion, "eraseTool");
 		GUI.Box(_resetToolRegion, "resetTool");
+		GUI.Box(_saveToolRegion, "save");
 
 		for (int i = 0; i < _colorPalletteRegion.Length; i++) {
 			GUI.Box(_colorPalletteRegion[i], _colorPallette[i].name);
@@ -72,6 +77,12 @@ public class PaintToolbar
 			Debug.Log ("selected reset tool");
 		}
 		
+		if (_saveToolRegion.Contains(position)) {
+			// TODO, open save dialog
+			_SavePicture();
+			Debug.Log ("Save picture");
+		}
+		
 		// Color pallette
 		for (int i = 0; i < _colorPalletteRegion.Length; i++) {
 			if (_colorPalletteRegion[i].Contains(position)) {
@@ -80,6 +91,27 @@ public class PaintToolbar
 				
 				Debug.Log ("selected"+_colorPallette[i].name);
 			}
+		}
+	}
+	
+	private void _SavePicture() {
+		Texture2D __t = _manager.GetPictureFromFrame();
+		
+		if (__t ==  null)
+			return;
+		
+		string __path = EditorUtility.SaveFilePanel(
+			"Save picture as PNG",
+			"",
+			"picture.png",
+			"png");
+		
+
+		if (__path.Length != 0) {
+			byte[] __pngBytes = __t.EncodeToPNG();
+			//File.WriteAllBytes(__path, __pngBytes); // Make sure PC platform is chosen to use this
+
+			Debug.Log(__path);
 		}
 	}
 }

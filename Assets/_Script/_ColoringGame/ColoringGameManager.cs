@@ -66,6 +66,10 @@ public class ColoringGameManager : GameManager {
 		// TODO, reload current active picture to original state
 		#endif
 	}
+	
+	public Texture2D GetPictureFromFrame() {
+		return _frame.Picture;
+	}
 
 	private void _HandleMouseClick() {
 		Vector2 __p = Input.mousePosition;
