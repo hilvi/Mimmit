@@ -20,7 +20,10 @@ public class Animator2D : MonoBehaviour {
 		}
 		SwitchAnimation(defaultAnimation);		
 	}
-	
+	void Update()
+	{
+		PlayAnimation(defaultAnimation);
+	}
 	/// <summary>
 	/// Plays the given animation if it exists.
 	/// </summary>
