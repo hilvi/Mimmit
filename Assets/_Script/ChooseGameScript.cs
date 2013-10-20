@@ -112,6 +112,11 @@ public class ChooseGameScript : MonoBehaviour {
 			audioSource.Play();
 			StartCoroutine(FadeOutAndLoad("Coloring_1"));
 		}
+		if(MGUI.HoveredButton (horseRect,horse))
+		{
+			audioSource.Play();
+			StartCoroutine(FadeOutAndLoad("Horse_1"));
+		}
 		//Unfinished games
 		GUI.enabled = false;
 		if(MGUI.HoveredButton (hedgehogRect,hedgehog))
@@ -119,10 +124,7 @@ public class ChooseGameScript : MonoBehaviour {
 			
 		}
 		
-		if(MGUI.HoveredButton (horseRect,horse))
-		{
-			
-		}
+		
 		
 		if(MGUI.HoveredButton (dragonRect,dragon))
 		{

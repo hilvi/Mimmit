@@ -52,4 +52,8 @@ public class HorseCharacterController : MonoBehaviour {
 	{
 		_currentSpeed = runningSpeed;
 	}
+	public void SetSpeed(float speed)
+	{
+		_currentSpeed = speed;
+	}
 }

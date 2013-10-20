@@ -20,13 +20,18 @@ public class BirdScript : MonoBehaviour {
 	void Update () 
 	{	
 		_transform.Translate(_translation * Time.deltaTime);
+		
+	}
+	void OnTriggerEnter(Collider col)
+	{
+		
 	}
 	#endregion
 	
 	#region METHODS
-	void OnTriggerEnter(Collider col)
+	public void SetSpeed(float speed)
 	{
-		
+		_translation.x = speed;
 	}
 	#endregion
 }

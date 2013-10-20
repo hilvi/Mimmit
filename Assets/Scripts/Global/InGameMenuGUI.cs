@@ -123,7 +123,13 @@ public class InGameMenuGUI : MonoBehaviour
 			if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
 			{
 				GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
-				StartCoroutine(LoadMainMenu(obj.audio));
+				//Only for debug for horse game since SoundCam object is not there yet.
+				if(obj != null)
+					StartCoroutine(LoadMainMenu(obj.audio));
+				else{
+					Time.timeScale = 1.0f;
+					Application.LoadLevel("ChooseGameScene");
+				}
 			}
 			// Middle Button always show when menu is on
 			if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
