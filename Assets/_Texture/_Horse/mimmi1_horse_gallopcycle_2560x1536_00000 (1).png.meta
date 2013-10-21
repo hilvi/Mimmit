@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: cb90c0c311ba83141bafa17544f3091f
+guid: 96d13f076ea6a894d8c00ef3899f98d6
 TextureImporter:
   serializedVersion: 2
   mipmaps:
@@ -32,5 +32,9 @@ TextureImporter:
   compressionQuality: 50
   alphaIsTransparency: 0
   textureType: -1
-  buildTargetSettings: []
+  buildTargetSettings:
+  - buildTarget: Web
+    maxTextureSize: 1024
+    textureFormat: -1
+    compressionQuality: 50
   userData: 

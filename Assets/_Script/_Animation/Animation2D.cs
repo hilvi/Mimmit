@@ -2,16 +2,21 @@ using UnityEngine;
 using System.Collections;
 [System.Serializable]
 public class Animation2D :MonoBehaviour{
-	
+	#region MEMBERS
 	public string animName;
 	public Texture2D frames;
-	public int frameCount;
+	public int frameX;
+	public int frameY;
 	public int startFrame = 1;
 	public int endFrame = 0;
 	public float frameRate = 1;
 	public bool looping = true;
 	
 	float _frameWidth;
+	float _frameHeight;
+	int _textureWidth;
+	int _textureHeight;
+	#region PROPERTIES
 	public float frameWidth
 	{
 		get
@@ -19,7 +24,7 @@ public class Animation2D :MonoBehaviour{
 			return _frameWidth;
 		}
 	}
-	int _textureWidth;
+	
 	public float textureWidth
 	{
 		get
@@ -27,27 +32,40 @@ public class Animation2D :MonoBehaviour{
 			return _textureWidth;
 		}
 	}
-	
-	// Use this for initialization
-	void Start () 
+	public float frameHeight
 	{
-		_frameWidth = frames.width / frameCount; 
-		_textureWidth = frames.width;
+		get
+		{
+			return _frameHeight;
+		}
 	}
 	
+	public float textureHeight
+	{
+		get
+		{
+			return _textureHeight;
+		}
+	}
+	#endregion
+	#endregion
+	
+	#region UNITY_METHODS
+	void Start () 
+	{
+		_frameWidth = frames.width / frameX; 
+		_textureWidth = frames.width;
+		_frameHeight = frames.height / frameY; 
+		_textureHeight = frames.height;
+	}
+	#endregion
+	
+	#region METHODS
 	public string GetName() 
 	{
 		return animName;
 	}
 		
-	public void InitMaterial() 
-	{
-		renderer.material.SetTexture("_MainTex", frames);
-	}
 	
-	public void SetAnimationRenderer(float tile, float frameWidth)
-	{
-		renderer.material.SetTextureOffset("_MainTex", new Vector2(tile, 0));
-		renderer.material.SetTextureScale("_MainTex", new Vector2(frameWidth,1));
-	}
+	#endregion
 }

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 
 public class DiffGameManager : GameManager 
@@ -52,11 +52,11 @@ public class DiffGameManager : GameManager
 	{
 		if(Input.GetMouseButtonDown(0)) {
 			Vector2 pos = InputManager.MouseScreenToGUI();
-			if(GetGameState() != GameState.Paused &&  GetGameState() != GameState.Over && _gameArea.Contains(pos)) {
+			if(GetGameState() != GameState.Paused &&  GetGameState() != GameState.Won && _gameArea.Contains(pos)) {
 				Hit(pos);
 			}
 		}
-		if(errorLeft == 0)SetGameState(GameState.Over);
+		if(errorLeft == 0)SetGameState(GameState.Won);
 		text.text = errorLeft.ToString (); 
 	}
 	

@@ -8,6 +8,7 @@ public class HorseCharacterController : MonoBehaviour {
 	public float runningSpeed = 5;
 	public float jumpSpeed = 10;
 	public float mudSpeed = 2;
+	public Animator2D anim;
 	
 	private CharacterController _controller;
 	private Vector3 _movement;
@@ -24,11 +25,17 @@ public class HorseCharacterController : MonoBehaviour {
 	{
 		if(_controller.isGrounded) 
 		{
-			if(Input.GetButtonDown("Jump")) {
+			anim.PlayAnimation("Run");
+			if(Input.GetButtonDown("Jump")) 
+			{	
 				_movement.y = jumpSpeed;
 			}
-		}else 
+			
+		}else
+		{ 
+			anim.PlayAnimation("Jump");
 			_movement.y -= gravity * Time.deltaTime;
+		}
 		
 		_movement.x = _currentSpeed;
 		_controller.Move(_movement*Time.deltaTime);

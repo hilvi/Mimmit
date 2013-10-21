@@ -4,13 +4,19 @@ using System.Collections.Generic;
 
 public class Animator2D : MonoBehaviour {
 	
-	public string defaultAnimation = "idle";
+	#region MEMBERS
+	private int _currentFrameX = 0;
+	private int _currentFrameY = 0;
+	private float _phase = 0;
+	private Animation2D _currentAnimation;
+	private Dictionary<string, Animation2D> _animDict = new Dictionary<string, Animation2D>();
+	private bool _playing;
 	
-	Animation2D currentAnimation;
-	Dictionary<string, Animation2D> _animDict = new Dictionary<string, Animation2D>();
-	float phase = 0;
-	int currentFrame = 0;
+	//public string defaultAnimation = "idle";
+	public Renderer rendererObj;
+	#endregion
 	
+	#region UNITY_METHODS
 	void Start()
 	{
 		Animation2D []_animations = GetComponents<Animation2D>();
@@ -18,12 +24,17 @@ public class Animator2D : MonoBehaviour {
 		{
 			_animDict.Add (a.animName, a);
 		}
-		SwitchAnimation(defaultAnimation);		
+		//SwitchAnimation(defaultAnimation);		
 	}
+	
 	void Update()
 	{
-		PlayAnimation(defaultAnimation);
+		if(!_playing)return;
+		PlayAnimation(_currentAnimation.animName);
 	}
+	#endregion
+	
+	#region METHODS
 	/// <summary>
 	/// Plays the given animation if it exists.
 	/// </summary>
@@ -32,32 +43,18 @@ public class Animator2D : MonoBehaviour {
 	/// </param>
 	public void PlayAnimation(string animationName) 
 	{
-		if(animationName != currentAnimation.animName)
+		if(_currentAnimation == null)SwitchAnimation(animationName);
+		if(animationName != _currentAnimation.animName)
 		{
 			SwitchAnimation(animationName);
 		}
-		else if(currentAnimation == null)
+		_phase += Time.deltaTime *_currentAnimation.frameRate;
+		if(_phase > 1)
 		{
-			Debug.LogError("No animation is currently assigned to the current animation variable");	
-			return;
+			_SetCursor();
+			_phase = 0;
 		}
-		phase += Time.deltaTime;
-		if(phase > 1 / currentAnimation.frameRate)
-		{
-			if(++currentFrame > currentAnimation.endFrame)
-			{
-				if(currentAnimation.looping == true)
-				{
-					currentFrame = 0;
-				}
-				else
-				{
-					return;
-				}
-			}
-			phase = 0;
-		}
-		SetFrame(currentFrame);
+		SetFrame(_currentFrameX,_currentFrameY);
 	}
 	
 	public void StopAnimation() 
@@ -67,32 +64,60 @@ public class Animator2D : MonoBehaviour {
 	
 	public Animation2D GetCurrentAnimation() 
 	{
-		return currentAnimation;
+		return _currentAnimation;
 	}
 	
 	public void SetLooping(bool looping) 
 	{
-		if (currentAnimation)
+		if (_currentAnimation)
 		{
-			currentAnimation.looping = looping;
+			_currentAnimation.looping = looping;
 		}
-	}
-	
+	}	
 	
 	void SwitchAnimation(string animationName) 
 	{
 		if(_animDict.ContainsKey(animationName))
 		{
-			currentAnimation = _animDict[animationName];
-			currentFrame = currentAnimation.startFrame;
-			currentAnimation.InitMaterial();
+			_currentAnimation = _animDict[animationName];
+			_currentFrameX = 0;
+			_currentFrameY = _currentAnimation.frameY - 1;
+			InitMaterial();
+			_playing = true;
 		}	
 	}
 	
-	void SetFrame(int frame) 
+	void SetFrame(int frameX, int frameY) 
 	{
-		float frameRelativeWidth = currentAnimation.frameWidth / currentAnimation.textureWidth;
-		float tile = frameRelativeWidth * frame;
-		currentAnimation.SetAnimationRenderer(tile,frameRelativeWidth);
+		float __frameRelativeWidth = _currentAnimation.frameWidth / _currentAnimation.textureWidth;
+		float __frameRelativeHeight = _currentAnimation.frameHeight / _currentAnimation.textureHeight;
+		float __tileX = __frameRelativeWidth * frameX;
+		float __tileY = __frameRelativeHeight * frameY;
+
+		renderer.material.SetTextureOffset("_MainTex", new Vector2(__tileX, __tileY));
+		renderer.material.SetTextureScale("_MainTex", new Vector2(__frameRelativeWidth,__frameRelativeHeight));
 	}
+	
+	public void InitMaterial() 
+	{
+		renderer.material.SetTexture("_MainTex",_currentAnimation.frames);
+	}
+	void _SetCursor()
+	{
+		if(++_currentFrameX < _currentAnimation.frameX)return;
+		_currentFrameX = 0;
+		if(_currentAnimation.frameY <= 1)return;
+		if(--_currentFrameY >= 0)return;
+		if(!_currentAnimation.looping)
+		{
+			_playing = false; 
+			_currentFrameY = 0;
+			_currentFrameX = 0;
+			//SwitchAnimation(defaultAnimation);
+			return;
+		}
+		_currentFrameX = 0;
+		_currentFrameY = _currentAnimation.frameY - 1;
+	}
+	#endregion
 }

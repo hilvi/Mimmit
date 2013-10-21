@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public enum GameState { Pregame, Running, Paused, Over };
+public enum GameState { Pregame, Running, Paused, Won, Lost };
 public class GameManager : MonoBehaviour {
 	#region MEMBERS
 	public bool isLastLevel = true;
@@ -92,7 +92,7 @@ public class GameManager : MonoBehaviour {
 	public void EndGame() 
 	{
 		PauseGame();
-		SetGameState(GameState.Over);
+		SetGameState(GameState.Won);
 		Time.timeScale = 0;
 	}
 	#endregion

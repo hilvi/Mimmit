@@ -13,7 +13,6 @@ public class MudScript : MonoBehaviour {
 	void OnTriggerEnter()
 	{
 		horseScript.EnterMudConfiguration();
-		print ("Call");
 	}
 	void OnTriggerExit()
 	{

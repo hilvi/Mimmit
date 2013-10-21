@@ -92,7 +92,7 @@ public class FlipsGameManager : GameManager {
 							sound.PlayAudio("MemoryFound");
 							if (cardsGuessed >= cardsTotal) 
 							{
-								SetGameState(GameState.Over);
+								SetGameState(GameState.Won);
 								return;
 							}
 						}else
@@ -109,12 +109,16 @@ public class FlipsGameManager : GameManager {
 				break;
 			#endregion
 			#region OVER
-			case GameState.Over:
+			case GameState.Won:
 				break;
 			#endregion
 		}
 	}
-	
+	void OnGUI()
+	{
+		float fps  = 1/Time.deltaTime;
+		GUI.Box (new Rect(0,0,100,50),fps.ToString());
+	}
 	
 	void HideAllCards() 
 	{
