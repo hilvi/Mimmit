@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+guid: 3ed8e05d06e5bc24c98e6e2c0437b360
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - blonde: {fileID: 2800000, guid: e704e5d9d0449644dbf1bfd6bd8196ff, type: 3}
+  - brune: {fileID: 2800000, guid: abcdfaaa0b3035d499a6fab73c529a15, type: 3}
+  - fox: {fileID: 2800000, guid: a964afd5d6a55a84b92791aa715d04b6, type: 3}
+  - boy: {fileID: 2800000, guid: eac4e2373acde4842b7cb42ebc1b15d0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

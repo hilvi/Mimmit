@@ -20,6 +20,8 @@ public class ColoringGameManager : GameManager {
 	private PictureSelector _pictureSelector;
 	private PaintFrame _frame;
 	private PaintToolbar _toolbar;
+
+	private CharacterWidgetScript _characterWidget;
 	#endregion
 
 	#region UNITY_METHODS
@@ -38,7 +40,9 @@ public class ColoringGameManager : GameManager {
 		_pictureSelector = new PictureSelector(this, pictureSelectRegion);
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
 			new Vector2(800f, 320f), new Vector2(10f, 10f));
-
+		
+		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
+		
 		#if DEVELOPER_MODE
 		_frame = new PaintFrame(this, pictureRegion, _CreateDebugGridTexture(560, 560, 40, 40));
 		#else
@@ -49,7 +53,10 @@ public class ColoringGameManager : GameManager {
 	void Update () 
 	{
 		if (Input.GetMouseButtonDown(0)) 
+		{
 			_HandleMouseClick();
+			_characterWidget.TriggerHappyEmotion();
+		}
 	}
 	
 	void OnGUI () 
