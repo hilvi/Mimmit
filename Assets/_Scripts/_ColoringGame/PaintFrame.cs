@@ -3,23 +3,36 @@ using UnityEngine;
 
 public class PaintFrame
 {
+	#region PRIVATE
 	private ColoringGameManager _manager; 
-	
 	private Rect _pictureRegion;
+	private Texture2D _volatilePicture;
+	#endregion
 	
-	public Texture2D Picture {
-		get; set;	
+	public Texture2D VolatilePicture {
+		get {
+			return _volatilePicture;
+		}
+		
+		set {
+			Color[] __c = value.GetPixels();
+			Texture2D __t = new Texture2D(value.width, value.height);
+			__t.SetPixels(__c);
+			__t.Apply();
+			_volatilePicture = __t;
+		}
 	}
 	
+	#region METHODS
 	public PaintFrame (ColoringGameManager manager, Rect region, Texture2D picture) {
 		_manager = manager;
 		_pictureRegion = region;
-		Picture = picture;
+		VolatilePicture = picture;
 	}
 	
 	public void OnGUI() {
-		if (Picture != null)
-			GUI.DrawTexture(_pictureRegion, Picture, ScaleMode.StretchToFill, true);
+		if (VolatilePicture != null)
+			GUI.DrawTexture(_pictureRegion, VolatilePicture, ScaleMode.StretchToFill, true);
 	}
 	
 	public void Paint(Vector2 position, Color color) {
@@ -30,7 +43,7 @@ public class PaintFrame
 			new Vector2(_pictureRegion.x, _pictureRegion.y); // Offset origin
 		
 		// Get color of pixel under cursor
-		Color cursorColor = Picture.GetPixel((int)__p.x, (int)__p.y);
+		Color cursorColor = VolatilePicture.GetPixel((int)__p.x, (int)__p.y);
 		
 		// Ignore black pixels
 		// Using distance function, because of floating-point precision issue
@@ -45,11 +58,12 @@ public class PaintFrame
 		}
 		
 		// Begin flood fill
-		Picture.FloodFillArea((int)__p.x, (int)__p.y, color);
+		VolatilePicture.FloodFillArea((int)__p.x, (int)__p.y, color);
 		
 		// Save picture after setPixel operations
-		Picture.Apply();
+		VolatilePicture.Apply();
 	}
+	#endregion
 }
 
 

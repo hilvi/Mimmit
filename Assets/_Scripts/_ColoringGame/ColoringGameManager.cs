@@ -1,4 +1,4 @@
-﻿#define DEVELOPER_MODE
+﻿//#define DEVELOPER_MODE
 
 using UnityEngine;
 using System.Collections;
@@ -14,6 +14,12 @@ public class ColoringGameManager : GameManager {
 	
 	public GameObject musicObject;
 	public AudioClip music;
+	
+	/*
+	 * These pictures will be read/write unlocked, so we always 
+	 * have to make a copy before modifying any of them.
+	 */ 
+	public Texture2D[] cachedPictures; 
 	#endregion
 	
 	#region PRIVATE
@@ -46,7 +52,7 @@ public class ColoringGameManager : GameManager {
 		#if DEVELOPER_MODE
 		_frame = new PaintFrame(this, pictureRegion, _CreateDebugGridTexture(560, 560, 40, 40));
 		#else
-		// TODO, Load default image
+		_frame = new PaintFrame(this, pictureRegion, cachedPictures[0]);
 		#endif
 	}
 	
@@ -61,13 +67,11 @@ public class ColoringGameManager : GameManager {
 	
 	void OnGUI () 
 	{
-		#if DEVELOPER_MODE
 		GUI.Box(chosenCharRegion, "chosenChar");
-		
+
 		_pictureSelector.OnGui();
 		_frame.OnGUI();
 		_toolbar.OnGUI();
-		#endif
 	}
 	#endregion
 	
@@ -75,17 +79,23 @@ public class ColoringGameManager : GameManager {
 	public void ResetPictureToOriginal() 
 	{
 		#if DEVELOPER_MODE
-		_frame.Picture = _CreateDebugGridTexture(560, 560, 40, 40);
+		_frame.VolatilePicture = _CreateDebugGridTexture(560, 560, 40, 40);
 		#else
-		// TODO, reload current active picture to original state
+		_frame.VolatilePicture = cachedPictures[0];
 		#endif
 	}
 	
 	public Texture2D GetPictureFromFrame() 
 	{
-		return _frame.Picture;
+		return _frame.VolatilePicture;
 	}
-
+	
+	public void LoadPictureByIndex(int index) {
+		Debug.Log("Loading picture index: " + index.ToString());
+		
+		_frame.VolatilePicture = cachedPictures[index];
+	}
+	
 	private void _HandleMouseClick() {
 		Vector2 __p = Input.mousePosition;
 		__p.y = Screen.height - __p.y; // y-axis flips

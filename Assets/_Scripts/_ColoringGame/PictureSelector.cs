@@ -13,17 +13,19 @@ public class PictureSelector
 	private Rect[] _selectPictureRegion;	// 
 	
 	private int _pictureIndexOffset = 0;
+	private const int _pictureCount = 11;
 	private List<string> _pictureNames = new List<string>();
 	#endregion
 	
 	public PictureSelector (ColoringGameManager manager, Rect region) {
+		_manager = manager;
 		_pictureSelectRegion = region;
 		
 		_pictureSelectRegion = new Rect(20,200,160,380);
 		_selectUpBtnRegion = new Rect(20,200,160,40);
 		_selectDownBtnRegion = new Rect(20,540,160,40);
 		
-		for (int i = 1; i <= 10; i++) {
+		for (int i = 0; i < _pictureCount; i++) {
 			_pictureNames.Add("Picture"+i.ToString());
 		}
 		
@@ -62,7 +64,8 @@ public class PictureSelector
 		for (int i = 0; i < 4; i++) {
 			if (_selectPictureRegion[i].Contains(position)) {
 				// TODO load new picture
-				Debug.Log("selected picture"+_pictureNames[_pictureIndexOffset + i]);
+				//Debug.Log("selected picture"+_pictureNames[_pictureIndexOffset + i]);
+				_manager.LoadPictureByIndex(_pictureIndexOffset + i);
 			}
 		}
 	}
