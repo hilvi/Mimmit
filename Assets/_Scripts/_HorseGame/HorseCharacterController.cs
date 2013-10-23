@@ -24,12 +24,11 @@ public class HorseCharacterController : MonoBehaviour {
 	void Update () 
 	{
 		if(_controller.isGrounded) 
-		{
-			Debug.Log(_controller.velocity.x);
+		{ 
 			if(_controller.velocity.x != 0)
 				anim.PlayAnimation("Run");
 			else
-				anim.StopAnimation();
+				anim.PlayAnimation("Idle");
 			if(Input.GetButtonDown("Jump")) 
 			{	
 				_movement.y = jumpSpeed;

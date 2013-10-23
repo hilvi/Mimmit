@@ -9,6 +9,7 @@ public class HorseGameManager : GameManager {
 	private bool _birdFinished = false;
 	private bool _gameOver;
 	private Rect _boxRect;
+	private CharacterWidgetScript _characterWidget;
 	
 	public HorseCharacterController horseScript;
 	public BirdScript birdScript;
@@ -26,6 +27,7 @@ public class HorseGameManager : GameManager {
 			InGameMenuGUI.music.audio.clip = music;
 			InGameMenuGUI.music.audio.Play();
 		}
+		_characterWidget = GetComponent<CharacterWidgetScript>();
 		SetGameState(GameState.Running);
 		float __width = Screen.width / 2;
 		float __height = Screen.height / 2;
@@ -37,10 +39,12 @@ public class HorseGameManager : GameManager {
 		if(!_gameOver)return;
 		if(_winner == Winner.Player)
 		{
+			_characterWidget.TriggerHappyEmotion();
 			SetGameState(GameState.Won);
 		}
 		else if(_winner == Winner.Bird)
-		{			
+		{
+			_characterWidget.TriggerSadEmotion();
 			SetGameState(GameState.Lost);
 		}
 	}
