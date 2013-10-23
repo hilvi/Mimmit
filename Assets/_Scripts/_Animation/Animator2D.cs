@@ -59,7 +59,10 @@ public class Animator2D : MonoBehaviour {
 	
 	public void StopAnimation() 
 	{
-
+		_playing = false;
+		_currentFrameY = 0;
+		_currentFrameX = 0;
+		SetFrame (_currentFrameX,_currentFrameY);
 	}
 	
 	public Animation2D GetCurrentAnimation() 
