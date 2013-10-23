@@ -94,24 +94,32 @@ public class PaintToolbar
 	}
 	
 	private void _SavePicture() {
-		// Removed for now since we should use some Js methods instead
-		/*Texture2D __t = _manager.GetPictureFromFrame();
-		
-		if (__t ==  null)
+		Texture2D __t = _manager.GetPictureFromFrame();
+		if (__t == null)
 			return;
 		
-		string __path = EditorUtility.SaveFilePanel(
-			"Save picture as PNG",
-			"",
-			"picture.png",
-			"png");
+		// Encode texture to byte array
+		byte[] __pngData = __t.EncodeToPNG();
 		
-
-		if (__path.Length != 0) {
-			byte[] __pngBytes = __t.EncodeToPNG();
-			//File.WriteAllBytes(__path, __pngBytes); // Make sure PC platform is chosen to use this
-			Debug.Log(__path);
-		}*/
+		// Further encode that to Base64 (html-friendly format)
+		string __b64 = EncodePNGToBase64(__pngData);
+		
+		/* Invoke JS-function showImageWindow()
+		 * Example implementation thanks to Petri:
+		 * 
+         *	<script type="text/javascript">
+	     *      function showImageWindow(imageData) {
+	     *          var win =  window.open("", "", "width=600, height=600");
+	     *          win.document.body.innerHTML = '<img src="' + imageData + '">';
+	     *      }
+	     *  </script>
+	     */
+		Application.ExternalCall("showImageWindow", __b64);
+	}
+	
+	private string EncodePNGToBase64(byte[] pngData) {
+  		return "data:image/png;base64," +
+    		Convert.ToBase64String(pngData, Base64FormattingOptions.None);
 	}
 }
 
