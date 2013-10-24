@@ -50,6 +50,7 @@ public class ColoringGameManager : GameManager {
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 		
 		#if DEVELOPER_MODE
+		pictureRegion = new Rect(200, 20, 560, 560);
 		_frame = new PaintFrame(this, pictureRegion, _CreateDebugGridTexture(560, 560, 40, 40));
 		#else
 		_frame = new PaintFrame(this, pictureRegion, cachedPictures[0]);
