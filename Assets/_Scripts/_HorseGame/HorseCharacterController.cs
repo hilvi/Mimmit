@@ -14,6 +14,7 @@ public class HorseCharacterController : MonoBehaviour {
 	private CharacterController _controller;
 	private Vector3 _movement;
 	private float _currentSpeed;
+	private bool _sideStepping;
 	Transform _plane;
 	
 	void Start () 
@@ -38,7 +39,7 @@ public class HorseCharacterController : MonoBehaviour {
 				anim.PlayAnimation("Run");
 			else
 				anim.PlayAnimation("Idle");
-			if(Input.GetButtonDown("Jump")) 
+			if(Input.GetButtonDown("Jump") && !_sideStepping) 
 			{	
 				_movement.y = jumpSpeed;
 			}
@@ -85,5 +86,6 @@ public class HorseCharacterController : MonoBehaviour {
 		transform.position = __tmp;
 		
 		sideStep *= -1;
+		_sideStepping = !_sideStepping;
 	}
 }
