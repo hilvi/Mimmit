@@ -45,7 +45,7 @@ public class ColoringGameManager : GameManager {
 			InGameMenuGUI.music.audio.Play();
 		}
 		
-		_pictureSelector = new PictureSelector(this, pictureSelectRegion);
+		_pictureSelector = new PictureSelector(this, pictureSelectRegion, cachedPictures);
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
 			new Vector2(800f, 325f), new Vector2(10f, 10f),
 			paintBrushTextures, eraserTexture);
