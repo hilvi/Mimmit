@@ -4,7 +4,7 @@ using UnityEngine;
 public class PaintFrame
 {
 	#region PRIVATE
-	private ColoringGameManager _manager; 
+	//private ColoringGameManager _manager; 
 	private Rect _pictureRegion;
 	private Texture2D _volatilePicture;
 	#endregion
@@ -25,7 +25,7 @@ public class PaintFrame
 	
 	#region METHODS
 	public PaintFrame (ColoringGameManager manager, Rect region, Texture2D picture) {
-		_manager = manager;
+		//_manager = manager;
 		_pictureRegion = region;
 		VolatilePicture = picture;
 	}
