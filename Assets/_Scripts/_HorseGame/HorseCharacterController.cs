@@ -23,7 +23,7 @@ public class HorseCharacterController : MonoBehaviour {
 		_plane = transform.Find("Plane");
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
-		_controller.radius = 0.1f;
+		//_controller.radius = 0.1f;
 	}
 	
 	void Update () 
