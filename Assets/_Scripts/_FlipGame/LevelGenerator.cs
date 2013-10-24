@@ -87,11 +87,14 @@ public class LevelGenerator : MonoBehaviour {
 
 				cardPosition =  new Vector3((cardW + cardDist) * i * ratio, (cardH+cardDist)* j * ratio, 0f); // Calculate the card's position
 				card = (GameObject)Instantiate(cardPrefab, cardPosition, Quaternion.identity); // Place the card prefab onto the stage
-				card.transform.localScale = new Vector3(ratio, ratio, 1); // Resize the card according to the calculated ratio
+
 			
 				cardBack = card.transform.Find("Face"); 
 				cardBack.renderer.material = new Material(Shader.Find("Diffuse"));
 				cardBack.renderer.material = cardTextures[count]; // Apply the appropriate material to the card's face
+				
+				cardBack.transform.localScale *= ratio; // Resize the card according to the calculated ratio
+				card.transform.Find ("Back").localScale *= ratio;
 				
 				card.GetComponent<Card>().SetSuit(cardTextures[count].name); // Save the card's suit in the card object (used to determine the card's suit later)
 			
