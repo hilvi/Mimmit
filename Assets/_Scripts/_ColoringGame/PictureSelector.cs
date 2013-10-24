@@ -41,12 +41,14 @@ public class PictureSelector
 	}
 	
 	public void OnGui() {
+		#if UNITY_EDITOR
 		GUI.Box(_pictureSelectRegion, "pictureSelect");
 		GUI.Box(_selectUpBtnRegion, "up");
 		GUI.Box(_selectDownBtnRegion, "down");
 		for (int i = 0; i < 4; i++) {
 			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
 		}
+		#endif
 	}
 	
 	public void HandleMouse(Vector2 position) {

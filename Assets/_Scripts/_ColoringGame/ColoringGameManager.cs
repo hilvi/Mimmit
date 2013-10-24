@@ -71,8 +71,10 @@ public class ColoringGameManager : GameManager {
 	
 	void OnGUI () 
 	{
+		#if UNITY_EDITOR
 		GUI.Box(chosenCharRegion, "chosenChar");
-
+		#endif
+		
 		_pictureSelector.OnGui();
 		_frame.OnGUI();
 		_toolbar.OnGUI();
