@@ -20,6 +20,8 @@ public class ColoringGameManager : GameManager {
 	 * have to make a copy before modifying any of them.
 	 */ 
 	public Texture2D[] cachedPictures; 
+	public Texture2D[] paintBrushTextures;
+	public Texture2D eraserTexture;
 	#endregion
 	
 	#region PRIVATE
@@ -43,9 +45,10 @@ public class ColoringGameManager : GameManager {
 			InGameMenuGUI.music.audio.Play();
 		}
 		
-		_pictureSelector = new PictureSelector(this, pictureSelectRegion);
+		_pictureSelector = new PictureSelector(this, pictureSelectRegion, cachedPictures);
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
-			new Vector2(800f, 320f), new Vector2(10f, 10f));
+			new Vector2(800f, 325f), new Vector2(10f, 10f),
+			paintBrushTextures, eraserTexture);
 		
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 		
@@ -68,8 +71,10 @@ public class ColoringGameManager : GameManager {
 	
 	void OnGUI () 
 	{
+		#if UNITY_EDITOR
 		GUI.Box(chosenCharRegion, "chosenChar");
-
+		#endif
+		
 		_pictureSelector.OnGui();
 		_frame.OnGUI();
 		_toolbar.OnGUI();

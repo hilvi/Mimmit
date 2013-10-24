@@ -15,11 +15,13 @@ public class PictureSelector
 	private int _pictureIndexOffset = 0;
 	private const int _pictureCount = 11;
 	private List<string> _pictureNames = new List<string>();
+	private Texture2D[] _thumbnails;
 	#endregion
 	
-	public PictureSelector (ColoringGameManager manager, Rect region) {
+	public PictureSelector (ColoringGameManager manager, Rect region, Texture2D[] thumbnails) {
 		_manager = manager;
 		_pictureSelectRegion = region;
+		_thumbnails = thumbnails;
 		
 		_pictureSelectRegion = new Rect(20,200,160,380);
 		_selectUpBtnRegion = new Rect(20,200,160,40);
@@ -41,11 +43,17 @@ public class PictureSelector
 	}
 	
 	public void OnGui() {
+		#if UNITY_EDITOR
 		GUI.Box(_pictureSelectRegion, "pictureSelect");
 		GUI.Box(_selectUpBtnRegion, "up");
 		GUI.Box(_selectDownBtnRegion, "down");
 		for (int i = 0; i < 4; i++) {
 			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
+		}
+		#endif
+		
+		for (int i = 0; i < 4; i++) {
+			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
 		}
 	}
 	

@@ -15,14 +15,17 @@ public class PaintToolbar
 	private Rect _resetToolRegion;		// 800,180,120,120
 	private Rect _saveToolRegion;		// 
 	private Rect[] _colorPalletteRegion;	// anchor: 800,320 size:60,60
-	
+
 	private Dictionary<int, PaintBrush> _colorPallette = new Dictionary<int, PaintBrush>(); 
+	private Texture2D _eraserTexture;
 	#endregion
 	
 	public PaintToolbar (ColoringGameManager manager, Rect region, 
-		Vector2 paletteAnchor, Vector2 buttonInset) {
+		Vector2 paletteAnchor, Vector2 buttonInset, 
+		Texture2D[] paintBrushTextures, Texture2D eraserTexture) {
 		_manager = manager;
 		_toolbarRegion = region;
+		_eraserTexture = eraserTexture;
 
 		_eraseToolRegion = new Rect(820,120,80,80);
 		_resetToolRegion = new Rect(820,220,80,80);
@@ -41,26 +44,29 @@ public class PaintToolbar
 		
 		// Setup color pallette. Start from top-left, row-major order
 		_colorPallette.Add(-1, new PaintBrush("Erase", Color.white));
-		_colorPallette.Add(0, new PaintBrush("Blue", Color.blue));
-		_colorPallette.Add(1, new PaintBrush("Magenta", Color.magenta));
-		_colorPallette.Add(2, new PaintBrush("Cyan", Color.cyan));
-		_colorPallette.Add(3, new PaintBrush("Red", Color.red));
-		_colorPallette.Add(4, new PaintBrush("Green", Color.green));
-		_colorPallette.Add(5, new PaintBrush("Yellow", Color.yellow));
-		_colorPallette.Add(6, new PaintBrush("Grey", new Color(0.330f, 0.330f, 0.330f)));
-		_colorPallette.Add(7, new PaintBrush("Orange", new Color(1.000f, 0.500f, 0.000f)));
-		
+		for (int i = 0; i <= 7; i++) {
+			_colorPallette.Add(i, new PaintBrush("x", PaintBrush.customPallette[i], paintBrushTextures[i]));
+		}
+
 		CurrentBrush = _colorPallette[0]; // Set default brush 
 	}
 
 	public void OnGUI() {
+		#if UNITY_EDITOR
 		GUI.Box(_toolbarRegion, "toolbar");
 		GUI.Box(_eraseToolRegion, "eraseTool");
 		GUI.Box(_resetToolRegion, "resetTool");
 		GUI.Box(_saveToolRegion, "save");
-
+		#endif
+		
+		GUI.DrawTexture(_eraseToolRegion, _eraserTexture);
+		
 		for (int i = 0; i < _colorPalletteRegion.Length; i++) {
+			#if UNITY_EDITOR
 			GUI.Box(_colorPalletteRegion[i], _colorPallette[i].name);
+			#endif
+			
+			GUI.DrawTexture(_colorPalletteRegion[i], _colorPallette[i].texture);			
 		}
 	}
 	
@@ -68,7 +74,6 @@ public class PaintToolbar
 		if (_eraseToolRegion.Contains(position)) {
 			// Select erase tool
 			CurrentBrush = _colorPallette[-1];
-			Debug.Log ("selected"+CurrentBrush.name);
 		}
 		
 		if (_resetToolRegion.Contains(position)) {
@@ -87,8 +92,6 @@ public class PaintToolbar
 			if (_colorPalletteRegion[i].Contains(position)) {
 				// Set new brush
 				CurrentBrush = _colorPallette[i];
-				
-				Debug.Log ("selected"+_colorPallette[i].name);
 			}
 		}
 	}
