@@ -14,7 +14,7 @@ public class HorseCharacterController : MonoBehaviour {
 	private CharacterController _controller;
 	private Vector3 _movement;
 	private float _currentSpeed;
-	private bool _sideStepping;
+	private bool _sideStepping = false;
 	Transform _plane;
 	
 	void Start () 
@@ -30,7 +30,7 @@ public class HorseCharacterController : MonoBehaviour {
 		if(Input.GetButtonDown("Fire1"))
 			SideStep();
 		if(Input.GetButtonUp ("Fire1"))
-			SideStep ();
+			SideStepReturn();
 		
 		if(_controller.isGrounded) 
 		{ 
@@ -76,15 +76,22 @@ public class HorseCharacterController : MonoBehaviour {
 		_currentSpeed = speed;
 	}
 	public void SideStep() {
-		Vector3 __tmp = _plane.position;
-		__tmp.y += sideStep.y;
-		_plane.position = __tmp;
-		
-		__tmp = transform.position;
-		__tmp.z += sideStep.z;
-		transform.position = __tmp;
-		
-		sideStep *= -1;
-		_sideStepping = !_sideStepping;
+		if(!_sideStepping) // && _controller.isGrounded
+			_SideStep(1);
+	}
+	public void SideStepReturn() {
+		if(_sideStepping) {
+			_SideStep(-1);
+		}
+	}
+	private void _SideStep(int dir) {
+			Vector3 __tmp = _plane.position;
+			__tmp.y += dir*sideStep.y;
+			_plane.position = __tmp;
+	
+			__tmp = transform.position;
+			__tmp.z += dir*sideStep.z;
+			transform.position = __tmp;
+			_sideStepping = !_sideStepping;
 	}
 }
