@@ -61,6 +61,8 @@ public class HorseCharacterController : MonoBehaviour {
 	public void EnterMudConfiguration()
 	{
 		_currentSpeed = mudSpeed;
+		Animation2D __anim =  anim.GetCurrentAnimation();
+		__anim.frameRate /= 2;
 	}
 	
 	/// <summary>
@@ -70,6 +72,8 @@ public class HorseCharacterController : MonoBehaviour {
 	public void ExitMudConfiguration()
 	{
 		_currentSpeed = runningSpeed;
+		Animation2D __anim =  anim.GetCurrentAnimation();
+		__anim.frameRate *= 2;
 	}
 	public void SetSpeed(float speed)
 	{
