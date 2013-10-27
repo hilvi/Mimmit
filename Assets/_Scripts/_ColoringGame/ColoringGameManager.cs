@@ -62,6 +62,9 @@ public class ColoringGameManager : GameManager {
 	
 	void Update () 
 	{
+		if (GetGameState() != GameState.Running)
+			return;
+		
 		if (Input.GetMouseButtonDown(0)) 
 		{
 			_HandleMouseClick();
