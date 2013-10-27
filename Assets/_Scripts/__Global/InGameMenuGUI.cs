@@ -13,6 +13,7 @@ public class InGameMenuGUI : MonoBehaviour
 	private bool _callOnce = false;
 	private int _gamesNumber;
 	private AudioSource _audioSource;
+	private FadeScreen _fade;
 	
 	public Texture gameTitleTexture;
 	public float gamePreviewWidthToScreenWidthRatio = 0.75f;
@@ -25,10 +26,12 @@ public class InGameMenuGUI : MonoBehaviour
 	#endregion
 	#region UNITY_METHODS
 	// Use this for initialization
-	void Start () 
+	IEnumerator Start () 
 	{
+		_fade = gameObject.AddComponent<FadeScreen>();
 		_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		currentLevel = 1;
+		yield return StartCoroutine(_fade.WaitAndFadeIn());
 	}
 	
 	void OnGUI() 
@@ -76,6 +79,7 @@ public class InGameMenuGUI : MonoBehaviour
 	
 	IEnumerator _LoadWinScene(AudioSource source)
 	{
+		yield return StartCoroutine(_fade.WaitAndFadeOut());
 		if (source != null){
 			while(source.volume > 0){
 				source.volume -= 0.02f;	
@@ -86,6 +90,11 @@ public class InGameMenuGUI : MonoBehaviour
 		Application.LoadLevel("WinScene");
 		music = null;
 		Destroy (source.gameObject);
+	}
+	IEnumerator _LoadNextLevel()
+	{
+		yield return StartCoroutine(_fade.WaitAndFadeOut());
+		_gameManager.GoToNextLevel();
 	}
 		
 	void _ShowBottomMenu()
@@ -135,7 +144,7 @@ public class InGameMenuGUI : MonoBehaviour
 				if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
 					Screen.width/7, Screen.width/7), PlayButton) && !_gameManager.isLastLevel) 
 				{
-						_gameManager.GoToNextLevel();		
+						StartCoroutine(_LoadNextLevel());
 				}
 			}else
 			{
