@@ -31,6 +31,8 @@ public class ColoringGameManager : GameManager {
 	private PaintToolbar _toolbar;
 
 	private CharacterWidgetScript _characterWidget;
+	
+	private int _currentPictureIndex = 0;
 	#endregion
 
 	#region UNITY_METHODS
@@ -91,7 +93,7 @@ public class ColoringGameManager : GameManager {
 		#if DEVELOPER_MODE
 		_frame.VolatilePicture = _CreateDebugGridTexture(560, 560, 40, 40);
 		#else
-		_frame.VolatilePicture = cachedPictures[0];
+		_frame.VolatilePicture = cachedPictures[_currentPictureIndex];
 		#endif
 	}
 	
@@ -104,6 +106,7 @@ public class ColoringGameManager : GameManager {
 		Debug.Log("Loading picture index: " + index.ToString());
 		
 		_frame.VolatilePicture = cachedPictures[index];
+		_currentPictureIndex = index;
 	}
 	
 	private void _HandleMouseClick() {
