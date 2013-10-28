@@ -33,7 +33,7 @@ public class FadeScreen : MonoBehaviour
 	}
 	#endregion
     
-	#region PRIVATE METHODS
+	#region PUBLIC METHODS
 	public void FadeIn() {
 		StartCoroutine (WaitAndFadeIn());
 	}
@@ -58,7 +58,10 @@ public class FadeScreen : MonoBehaviour
 			yield return null;
 		}
 		_SetColor(Color.black);
-	}	
+	}
+	#endregion
+	
+	#region PRIVATE METHODS
     private void _Fade() {
 		_SetColor (Color.Lerp(_GetColor(), _target, fadeSpeed * Time.deltaTime));
 	}
