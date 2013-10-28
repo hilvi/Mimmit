@@ -18,15 +18,18 @@ public class PaintToolbar
 
 	private Dictionary<int, PaintBrush> _colorPallette = new Dictionary<int, PaintBrush>(); 
 	private Texture2D _eraserTexture;
+	private Texture2D _tickTexture;
 	#endregion
 	
 	public PaintToolbar (ColoringGameManager manager, Rect region, 
 		Vector2 paletteAnchor, Vector2 buttonInset, 
-		Texture2D[] paintBrushTextures, Texture2D eraserTexture) {
+		Texture2D[] paintBrushTextures, Texture2D eraserTexture,
+		Texture2D tickTexture) {
 		_manager = manager;
 		_toolbarRegion = region;
 		_eraserTexture = eraserTexture;
-
+		_tickTexture = tickTexture;
+		
 		_eraseToolRegion = new Rect(820,120,80,80);
 		_resetToolRegion = new Rect(820,220,80,80);
 		_saveToolRegion = new Rect(800,40,40,40);
@@ -43,9 +46,9 @@ public class PaintToolbar
 		}
 		
 		// Setup color pallette. Start from top-left, row-major order
-		_colorPallette.Add(-1, new PaintBrush("Erase", Color.white));
+		_colorPallette.Add(-1, new PaintBrush(-1, "Erase", Color.white));
 		for (int i = 0; i <= 7; i++) {
-			_colorPallette.Add(i, new PaintBrush("x", PaintBrush.customPallette[i], paintBrushTextures[i]));
+			_colorPallette.Add(i, new PaintBrush(i, "x", PaintBrush.customPallette[i], paintBrushTextures[i]));
 		}
 
 		CurrentBrush = _colorPallette[0]; // Set default brush 
@@ -66,7 +69,18 @@ public class PaintToolbar
 			GUI.Box(_colorPalletteRegion[i], _colorPallette[i].name);
 			#endif
 			
-			GUI.DrawTexture(_colorPalletteRegion[i], _colorPallette[i].texture);			
+			GUI.DrawTexture(_colorPalletteRegion[i], _colorPallette[i].texture);
+			
+			if (i == CurrentBrush.id) {
+				// Offset tick to bottom right corner and resize
+				Rect __r = _colorPalletteRegion[i];
+				__r.x += __r.width / 2f;
+				__r.y += __r.height / 2f;
+				__r.width = __r.width / 2f;
+				__r.height = __r.height / 2f;
+				
+				GUI.DrawTexture(__r, _tickTexture);	
+			}
 		}
 	}
 	

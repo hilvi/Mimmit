@@ -22,6 +22,7 @@ public class ColoringGameManager : GameManager {
 	public Texture2D[] cachedPictures; 
 	public Texture2D[] paintBrushTextures;
 	public Texture2D eraserTexture;
+	public Texture2D tickTexture;
 	#endregion
 	
 	#region PRIVATE
@@ -48,7 +49,7 @@ public class ColoringGameManager : GameManager {
 		_pictureSelector = new PictureSelector(this, pictureSelectRegion, cachedPictures);
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
 			new Vector2(800f, 325f), new Vector2(10f, 10f),
-			paintBrushTextures, eraserTexture);
+			paintBrushTextures, eraserTexture, tickTexture);
 		
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 		
