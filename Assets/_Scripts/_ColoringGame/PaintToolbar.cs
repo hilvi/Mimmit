@@ -19,16 +19,19 @@ public class PaintToolbar
 	private Dictionary<int, PaintBrush> _colorPallette = new Dictionary<int, PaintBrush>(); 
 	private Texture2D _eraserTexture;
 	private Texture2D _tickTexture;
+	private Texture2D _resetTexture;
 	#endregion
 	
 	public PaintToolbar (ColoringGameManager manager, Rect region, 
 		Vector2 paletteAnchor, Vector2 buttonInset, 
 		Texture2D[] paintBrushTextures, Texture2D eraserTexture,
-		Texture2D tickTexture) {
+		Texture2D tickTexture, Texture2D resetTexture) {
+		
 		_manager = manager;
 		_toolbarRegion = region;
 		_eraserTexture = eraserTexture;
 		_tickTexture = tickTexture;
+		_resetTexture = resetTexture;
 		
 		_eraseToolRegion = new Rect(820,120,80,80);
 		_resetToolRegion = new Rect(820,220,80,80);
@@ -63,6 +66,7 @@ public class PaintToolbar
 		#endif
 		
 		GUI.DrawTexture(_eraseToolRegion, _eraserTexture);
+		GUI.DrawTexture(_resetToolRegion, _resetTexture);
 		
 		for (int i = 0; i < _colorPalletteRegion.Length; i++) {
 			#if UNITY_EDITOR
