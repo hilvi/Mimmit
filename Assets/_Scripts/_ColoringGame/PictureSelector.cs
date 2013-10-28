@@ -16,16 +16,21 @@ public class PictureSelector
 	private const int _pictureCount = 11;
 	private List<string> _pictureNames = new List<string>();
 	private Texture2D[] _thumbnails;
+	private Texture2D _upArrowTexture;
+	private Texture2D _downArrowTexture;
 	#endregion
 	
-	public PictureSelector (ColoringGameManager manager, Rect region, Texture2D[] thumbnails) {
+	public PictureSelector (ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
+		Texture2D upArrowTexture, Texture2D downArrowTexture) {
 		_manager = manager;
 		_pictureSelectRegion = region;
 		_thumbnails = thumbnails;
+		_upArrowTexture = upArrowTexture;
+		_downArrowTexture = downArrowTexture;
 		
 		_pictureSelectRegion = new Rect(20,200,160,380);
-		_selectUpBtnRegion = new Rect(20,200,160,40);
-		_selectDownBtnRegion = new Rect(20,540,160,40);
+		_selectUpBtnRegion = new Rect(80, 200, 40, 40);
+		_selectDownBtnRegion = new Rect(80, 540, 40, 40);
 		
 		for (int i = 0; i < _pictureCount; i++) {
 			_pictureNames.Add("Picture"+i.ToString());
@@ -45,8 +50,6 @@ public class PictureSelector
 	public void OnGui() {
 		#if UNITY_EDITOR
 		GUI.Box(_pictureSelectRegion, "pictureSelect");
-		GUI.Box(_selectUpBtnRegion, "up");
-		GUI.Box(_selectDownBtnRegion, "down");
 		for (int i = 0; i < 4; i++) {
 			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
 		}
@@ -55,6 +58,9 @@ public class PictureSelector
 		for (int i = 0; i < 4; i++) {
 			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
 		}
+		
+		GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
+		GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
 	}
 	
 	public void HandleMouse(Vector2 position) {

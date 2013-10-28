@@ -23,6 +23,8 @@ public class ColoringGameManager : GameManager {
 	public Texture2D[] paintBrushTextures;
 	public Texture2D eraserTexture;
 	public Texture2D tickTexture;
+	public Texture2D upArrowTexture;
+	public Texture2D downArrowTexture;
 	#endregion
 	
 	#region PRIVATE
@@ -48,7 +50,8 @@ public class ColoringGameManager : GameManager {
 			InGameMenuGUI.music.audio.Play();
 		}
 		
-		_pictureSelector = new PictureSelector(this, pictureSelectRegion, cachedPictures);
+		_pictureSelector = new PictureSelector(this, pictureSelectRegion, cachedPictures,
+			upArrowTexture, downArrowTexture);
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
 			new Vector2(800f, 325f), new Vector2(10f, 10f),
 			paintBrushTextures, eraserTexture, tickTexture);
