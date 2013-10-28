@@ -89,6 +89,14 @@ public class PaintToolbar
 				__r.height = __r.height / 2f;
 				
 				GUI.DrawTexture(__r, _tickTexture);	
+			} else if (CurrentBrush.id == -1) {
+				Rect __r = _eraseToolRegion;
+				__r.x += __r.width / 2f;
+				__r.y += __r.height / 2f;
+				__r.width = __r.width / 2f;
+				__r.height = __r.height / 2f;
+				
+				GUI.DrawTexture(__r, _tickTexture);	
 			}
 		}
 	}
