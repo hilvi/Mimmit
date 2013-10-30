@@ -28,7 +28,7 @@ public class FadeScreen : MonoBehaviour
 	}
 	public bool fadeOutComplete {
 		get {
-			return _GetColor().a > 0.95f;
+			return _GetColor().a > 0.9f;
 		}
 	}
 	#endregion
