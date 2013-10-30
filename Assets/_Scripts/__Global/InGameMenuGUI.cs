@@ -15,6 +15,10 @@ public class InGameMenuGUI : MonoBehaviour
 	private AudioSource _audioSource;
 	private FadeScreen _fade;
 	
+	private Rect _mainMenuButtonRegion;
+	private Rect _restartButtonRegion;
+	private Rect _nextLevelButtonRegion;
+	
 	public Texture gameTitleTexture;
 	public float gamePreviewWidthToScreenWidthRatio = 0.75f;
 	public float barHeightToScreenHeightRatio = 0.25f;
@@ -31,6 +35,25 @@ public class InGameMenuGUI : MonoBehaviour
 		_fade = gameObject.AddComponent<FadeScreen>();
 		_gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
 		currentLevel = 1;
+		
+		_mainMenuButtonRegion = new Rect(
+			MGUI.Margin*3, 
+			Screen.height - (Screen.width/6), 
+			Screen.width/7, 
+			Screen.width/7);
+		
+		_restartButtonRegion = new Rect(
+			Screen.width -(Screen.width/2 + Screen.width/14),
+			Screen.height - (Screen.width/6), 
+			Screen.width/7, 
+			Screen.width/7);
+		
+		_nextLevelButtonRegion = new Rect(
+			Screen.width - (Screen.width/3 - Screen.width/7),
+			Screen.height - (Screen.width/6), 
+			Screen.width/7, 
+			Screen.width/7);
+		
 		yield return StartCoroutine(_fade.WaitAndFadeIn());
 	}
 	
@@ -39,14 +62,21 @@ public class InGameMenuGUI : MonoBehaviour
 		float __screenUnitW = Screen.width/100;
 		GameState __currentState = _gameManager.GetGameState();
 		// While the game is in progress, only display the pause button
-		if (__currentState == GameState.Running||__currentState == GameState.Pregame) 
+		if (__currentState == GameState.Running || __currentState == GameState.Pregame) 
 		{
-			if (GUI.Button(new Rect(Screen.width - __screenUnitW*11, 2, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
+			Rect __pauseButtonRegion = new Rect(
+				Screen.width - __screenUnitW * 11f, 
+				2f, 
+				(Screen.width/10), 
+				(Screen.width/10));
+			
+			if (GUI.Button(__pauseButtonRegion, PauseButton, MGUI.NoStyle)) 
 			{	
 				_gameManager.PauseGame();
 			}
 		}
-		else {
+		else 
+		{
 			_ShowBottomMenu();
 		}	
 	}
@@ -55,12 +85,15 @@ public class InGameMenuGUI : MonoBehaviour
 	#region METHODS
 	IEnumerator _LoadMainMenu(AudioSource source)
 	{
-		if (source != null){
-			while(source.volume > 0){
+		if (source != null)
+		{
+			while(source.volume > 0)
+			{
 				source.volume -= 0.02f;	
 				yield return null;
 			}
 		}
+		
 		Time.timeScale = 1.0f;
 		ScreenChoice __choice = Manager.GetScreenChoice();
 		if(__choice == ScreenChoice.Map)
@@ -70,9 +103,12 @@ public class InGameMenuGUI : MonoBehaviour
 		else if(__choice == ScreenChoice.Button)
 		{
 			Application.LoadLevel("ChooseGameScene");
-		}else{
+		}
+		else
+		{
 			Application.LoadLevel("ChooseGameScene");
 		}
+		
 		music = null;
 		Destroy (source.gameObject);
 	}
@@ -80,8 +116,10 @@ public class InGameMenuGUI : MonoBehaviour
 	IEnumerator _LoadWinScene(AudioSource source)
 	{
 		yield return StartCoroutine(_fade.WaitAndFadeOut());
-		if (source != null){
-			while(source.volume > 0){
+		if (source != null)
+		{
+			while(source.volume > 0)
+			{
 				source.volume -= 0.02f;	
 				yield return null;
 			}
@@ -91,85 +129,89 @@ public class InGameMenuGUI : MonoBehaviour
 		music = null;
 		Destroy (source.gameObject);
 	}
+	
 	IEnumerator _LoadNextLevel()
 	{
 		yield return StartCoroutine(_fade.WaitAndFadeOut());
 		_gameManager.GoToNextLevel();
 	}
 		
-	void _ShowBottomMenu()
+	private void _ShowBottomMenu()
 	{
-		GameState __currentState = _gameManager.GetGameState();
-		print (__currentState);
-		if(__currentState == GameState.Paused)
+		switch(_gameManager.GetGameState()) 
 		{
-			if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
-			{
-				GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
-				//Only for debug for horse game since SoundCam object is not there yet.
-				if(obj != null)
-					StartCoroutine(_LoadMainMenu(obj.audio));
-				else{
-					Time.timeScale = 1.0f;
-					Application.LoadLevel("ChooseGameScene");
-				}
-			}
-			// Middle Button always show when menu is on
-			if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
-				Screen.width/7, Screen.width/7), Restart)) 
-			{
-				_gameManager.RestartGame();
-			}
-			if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
-				Screen.width/7, Screen.width/7), PlayButton))
-			{
-				_gameManager.UnpauseGame();
+		case GameState.Paused:
+			_HandlePauseState();
+			break;
+		case GameState.Won:
+			_HandleWonState();
+			break;
+		case GameState.Lost:
+			_HandleLostState();
+			break;
+		}
+	}	
+	
+	private void _HandlePauseState() {
+		if (MGUI.HoveredButton(_mainMenuButtonRegion, MainMenuButton)) 
+		{
+			GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
+			//Only for debug for horse game since SoundCam object is not there yet.
+			if(obj != null)
+				StartCoroutine(_LoadMainMenu(obj.audio));
+			else{
+				Time.timeScale = 1.0f;
+				Application.LoadLevel("ChooseGameScene");
 			}
 		}
-		else if(__currentState == GameState.Won)
+		else if (MGUI.HoveredButton(_restartButtonRegion, Restart)) 
 		{
-			if(!_gameManager.isLastLevel)
-			{
-				if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
-				{
-					GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
-					StartCoroutine(_LoadMainMenu(obj.audio));
-				}
-				// Middle Button always show when menu is on
-				if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
-					Screen.width/7, Screen.width/7), Restart)) 
-				{
-					_gameManager.RestartGame();
-				}
-				if (MGUI.HoveredButton(new Rect(Screen.width - (Screen.width/3 - Screen.width/7), Screen.height - (Screen.width/6), 
-					Screen.width/7, Screen.width/7), PlayButton) && !_gameManager.isLastLevel) 
-				{
-						StartCoroutine(_LoadNextLevel());
-				}
-			}else
-			{
-				if(!_callOnce)
-				{
-					_callOnce = true;
-					GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
-					StartCoroutine(_LoadWinScene(obj.audio));
-				}
-			}
+			_gameManager.RestartGame();
 		}
-		else if(__currentState == GameState.Lost)
+		else if (MGUI.HoveredButton(_nextLevelButtonRegion, PlayButton))
 		{
-			if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), MainMenuButton)) 
+			_gameManager.UnpauseGame();
+		}
+	}
+	
+	private void _HandleWonState() {
+		if(!_gameManager.isLastLevel)
+		{
+			if (MGUI.HoveredButton(_mainMenuButtonRegion, MainMenuButton)) 
 			{
 				GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
 				StartCoroutine(_LoadMainMenu(obj.audio));
 			}
-			// Middle Button always show when menu is on
-			if (MGUI.HoveredButton(new Rect(Screen.width -(Screen.width/2 + Screen.width/14),Screen.height - (Screen.width/6), 
-				Screen.width/7, Screen.width/7), Restart)) 
+			else if (MGUI.HoveredButton(_restartButtonRegion, Restart)) 
 			{
 				_gameManager.RestartGame();
 			}
+			else if (MGUI.HoveredButton(_nextLevelButtonRegion, PlayButton)) 
+			{
+				StartCoroutine(_LoadNextLevel());
+			}
 		}
-	}	
+		else
+		{
+			if(!_callOnce)
+			{
+				_callOnce = true;
+				GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
+				StartCoroutine(_LoadWinScene(obj.audio));
+			}
+		}
+	}
+	
+	private void _HandleLostState() {
+		if (MGUI.HoveredButton(_mainMenuButtonRegion, MainMenuButton)) 
+		{
+			GameObject obj = GameObject.FindGameObjectWithTag("SoundCam");
+			StartCoroutine(_LoadMainMenu(obj.audio));
+		}
+		else if (MGUI.HoveredButton(_restartButtonRegion, Restart)) 
+		{
+			_gameManager.RestartGame();
+		}
+	}
 	#endregion
 }
