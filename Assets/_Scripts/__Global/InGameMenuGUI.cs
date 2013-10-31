@@ -9,24 +9,15 @@ using System.Collections;
 public class InGameMenuGUI : Overlay
 {	
 	#region MEMBERS
+	public Texture Restart, PlayButton, MainMenuButton, PauseButton;
+	public static GameObject music;
+
 	private GameManager _gameManager;
 	private bool _callOnce = false;
-	private int _gamesNumber;
-	private AudioSource _audioSource;
-	
 	private Rect _pauseButtonRegion;
 	private Rect _mainMenuButtonRegion;
 	private Rect _restartButtonRegion;
 	private Rect _nextLevelButtonRegion;
-	
-	public Texture gameTitleTexture;
-	public float gamePreviewWidthToScreenWidthRatio = 0.75f;
-	public float barHeightToScreenHeightRatio = 0.25f;
-	public float gamePreviewArrowHeightRation = 0.2f;//  height ration of the white speach arrow pointing to character to total height of preview screen
-	public Texture Restart, PlayButton, MainMenuButton, PauseButton;
-	public static int currentLevel = 1;
-	public static string selectedGameName;
-	public static GameObject music;
 	#endregion
 	
 	#region UNITY_METHODS
@@ -34,7 +25,6 @@ public class InGameMenuGUI : Overlay
 	{
 		FadeIn ();
 		_gameManager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
-		currentLevel = 1;
 
 		_pauseButtonRegion = new Rect (
             Screen.width - Screen.width / 100 * 11f,
