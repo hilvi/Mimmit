@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FadeScreen : MonoBehaviour
 {
-    public float fadeSpeed = 2f;
+    public float fadeSpeed = 1f;
 	
 	private Color _target;
 	private Rect _screen;
@@ -28,7 +28,7 @@ public class FadeScreen : MonoBehaviour
 	}
 	public bool fadeOutComplete {
 		get {
-			return _GetColor().a > 0.9f;
+			return _GetColor().a > 0.95f;
 		}
 	}
 	#endregion
@@ -42,19 +42,23 @@ public class FadeScreen : MonoBehaviour
 	}
 	
 	public IEnumerator WaitAndFadeIn() {
+		float __time = 0;
 		_SetColor(Color.black);
 		_target = Color.clear;
 		while(!fadeInComplete) {
-			_Fade();
+			__time += Time.deltaTime;
+			_SetColor (Color.Lerp(_GetColor(), _target, fadeSpeed * __time));
 			yield return null;
 		}
 		_SetColor(Color.clear);
 	}
 	public IEnumerator WaitAndFadeOut() {
+		float __time = 0;
 		_SetColor(Color.clear);
 		_target = Color.black;
 		while(!fadeOutComplete) {
-			_Fade();
+			__time += Time.deltaTime;
+			_SetColor (Color.Lerp(_GetColor(), _target, fadeSpeed * __time));
 			yield return null;
 		}
 		_SetColor(Color.black);
@@ -62,9 +66,6 @@ public class FadeScreen : MonoBehaviour
 	#endregion
 	
 	#region PRIVATE METHODS
-    private void _Fade() {
-		_SetColor (Color.Lerp(_GetColor(), _target, fadeSpeed * Time.deltaTime));
-	}
 	private void _SetColor(Color color) {
 		_texture.SetPixel(0,0,color);
 		_texture.Apply ();
