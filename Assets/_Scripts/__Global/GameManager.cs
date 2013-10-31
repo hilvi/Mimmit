@@ -88,6 +88,15 @@ public class GameManager : MonoBehaviour {
 			Application.LoadLevel("CreditsScreen");	
 
 	}
+	public string GetNextLevel()
+	{
+		Time.timeScale = 1;
+		if (!isLastLevel){
+			int i = currentLevel + 1;
+			return gameName + i.ToString();
+		}else
+			return "CreditsScreen";
+	}
 	
 	public void EndGame() 
 	{

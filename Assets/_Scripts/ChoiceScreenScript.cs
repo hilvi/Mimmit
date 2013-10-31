@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChoiceScreenScript : MonoBehaviour 
+public class ChoiceScreenScript : Overlay 
 {
 	
 	public Texture2D blonde, brunette, fox, boy, map, button;
@@ -12,16 +12,16 @@ public class ChoiceScreenScript : MonoBehaviour
 	bool characterChosen = false;
 	public GameObject cam;
 	AudioSource audioSource;
-	void Awake()
+	public override void Awake()
 	{
+		base.Awake();
 		Object o = FindObjectOfType(typeof(Camera));
 		if(o == null)
 		{
 			Instantiate (cam, new Vector3 (0,0,0), Quaternion.identity);
 		}
 	}
-	void Start () 
-	{
+	void Start() {
 		audioSource = GetComponent<AudioSource>();
 		audioSource.clip = audioPress;
 		background = GetComponent<GUITexture>();
@@ -42,6 +42,8 @@ public class ChoiceScreenScript : MonoBehaviour
   		float _ySecondButtons = 421;
 		mapRect = new Rect(halfWidth -  0.5f * _width, _ySecondButtons,_width,_width);
 		//buttonRect = new Rect(halfWidth + 0.5f * _width,_ySecondButtons,_width,_width);
+		FadeIn ();
+
 	}
 	
 
@@ -75,7 +77,7 @@ public class ChoiceScreenScript : MonoBehaviour
 		{
 			if(MGUI.HoveredButton(mapRect,map))
 			{
-				StartCoroutine(SoundAndLoad());
+				LoadLevelAndPlaySound("ChooseGameScene", audioSource);
 			}
 			/*if(GUI.Button(buttonRect,"ButtonScreenScene"))
 			{
@@ -91,8 +93,8 @@ public class ChoiceScreenScript : MonoBehaviour
 		while(audioSource.isPlaying)
 		{
 			yield return null;
-		}		
+		}
 		Manager.SetScreenChoice(ScreenChoice.Button);
-		Application.LoadLevel("ChooseGameScene");
+		LoadLevel("ChooseGameScene");
 	}
 }

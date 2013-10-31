@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChooseGameScript : MonoBehaviour {
+public class ChooseGameScript : Overlay {
 	
 	GUITexture background;
 	
@@ -35,8 +35,9 @@ public class ChooseGameScript : MonoBehaviour {
 				return blonde;
 		}
 	}
-	void Awake()
+	public override void Awake()
 	{
+		base.Awake();
 		Object o = FindObjectOfType(typeof(Camera));
 		if(o == null)
 		{
@@ -49,6 +50,7 @@ public class ChooseGameScript : MonoBehaviour {
 	}
 	void Start () 
 	{
+		FadeIn ();
 		background = GetComponent<GUITexture>();
 		// Setting background to full screen
 		float width = Screen.width;
@@ -147,11 +149,11 @@ public class ChooseGameScript : MonoBehaviour {
 	IEnumerator FadeOutAndLoad (string scene)
 	{
 		AudioSource source = cam.audio;
+		LoadLevel(scene);
 		while(source.volume > 0.2f || audioSource.isPlaying)
 		{
 			source.volume -= Time.deltaTime*0.2f;
 			yield return null;
 		}
-		Application.LoadLevel(scene);
 	}
 }

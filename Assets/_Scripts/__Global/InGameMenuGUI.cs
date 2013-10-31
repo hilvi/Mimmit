@@ -6,14 +6,13 @@ using System.Collections;
 /// Attached to the game manager object
 /// </summary>
 [RequireComponent(typeof(AudioSource))]
-public class InGameMenuGUI : MonoBehaviour
+public class InGameMenuGUI : Overlay
 {	
 	#region MEMBERS
 	private GameManager _gameManager;
 	private bool _callOnce = false;
 	private int _gamesNumber;
 	private AudioSource _audioSource;
-	private FadeScreen _fade;
 	
 	private Rect _pauseButtonRegion;
 	private Rect _mainMenuButtonRegion;
@@ -31,9 +30,9 @@ public class InGameMenuGUI : MonoBehaviour
 	#endregion
 	
 	#region UNITY_METHODS
-	IEnumerator Start ()
+	void Start ()
 	{
-		_fade = gameObject.AddComponent<FadeScreen> ();
+		FadeIn ();
 		_gameManager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		currentLevel = 1;
 
@@ -60,8 +59,6 @@ public class InGameMenuGUI : MonoBehaviour
 			Screen.height - (Screen.width / 6), 
 			Screen.width / 7, 
 			Screen.width / 7);
-		
-		yield return StartCoroutine(_fade.WaitAndFadeIn());
 	}
 	
 	void OnGUI ()
@@ -81,30 +78,30 @@ public class InGameMenuGUI : MonoBehaviour
 	#region METHODS
 	IEnumerator _LoadMainMenu (AudioSource source)
 	{
+		Time.timeScale = 1.0f;
+		ScreenChoice __choice = Manager.GetScreenChoice ();
+		if (__choice == ScreenChoice.Map) {
+			LoadLevel ("MapWorld");
+		} else if (__choice == ScreenChoice.Button) {
+			LoadLevel ("ChooseGameScene");
+		} else {
+			LoadLevel ("ChooseGameScene");
+		}
+		
 		if (source != null) {
 			while (source.volume > 0) {
 				source.volume -= 0.02f;	
 				yield return null;
 			}
 		}
-		
-		Time.timeScale = 1.0f;
-		ScreenChoice __choice = Manager.GetScreenChoice ();
-		if (__choice == ScreenChoice.Map) {
-			Application.LoadLevel ("MapWorld");
-		} else if (__choice == ScreenChoice.Button) {
-			Application.LoadLevel ("ChooseGameScene");
-		} else {
-			Application.LoadLevel ("ChooseGameScene");
-		}
-		
+				
 		music = null;
 		Destroy (source.gameObject);
 	}
 	
 	IEnumerator _LoadWinScene (AudioSource source)
 	{
-		yield return StartCoroutine(_fade.WaitAndFadeOut());
+		LoadLevel ("WinScene");
 		if (source != null) {
 			while (source.volume > 0) {
 				source.volume -= 0.02f;	
@@ -112,15 +109,13 @@ public class InGameMenuGUI : MonoBehaviour
 			}
 		}
 		Time.timeScale = 1.0f;
-		Application.LoadLevel ("WinScene");
 		music = null;
 		Destroy (source.gameObject);
 	}
 	
-	IEnumerator _LoadNextLevel ()
+	void _LoadNextLevel ()
 	{
-		yield return StartCoroutine(_fade.WaitAndFadeOut());
-		_gameManager.GoToNextLevel ();
+		LoadLevel(_gameManager.GetNextLevel());
 	}
 		
 	private void _ShowBottomMenu ()
@@ -165,13 +160,13 @@ public class InGameMenuGUI : MonoBehaviour
 			} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
 				_gameManager.RestartGame ();
 			} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
-				StartCoroutine (_LoadNextLevel ());
+				_LoadNextLevel ();
 			}
 		} else {
 			if (!_callOnce) {
 				_callOnce = true;
 				GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
-				StartCoroutine (_LoadWinScene (obj.audio));
+				StartCoroutine (_LoadWinScene(obj.audio));
 			}
 		}
 	}

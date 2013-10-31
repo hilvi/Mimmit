@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FadeScreen : MonoBehaviour
 {
-    public float fadeSpeed = 1f;
+    public float fadeSpeed = 0.2f;
 	
 	private Color _target;
 	private Rect _screen;
@@ -34,14 +34,8 @@ public class FadeScreen : MonoBehaviour
 	#endregion
     
 	#region PUBLIC METHODS
-	public void FadeIn() {
-		StartCoroutine (WaitAndFadeIn());
-	}
-	public void FadeOut() {
-		StartCoroutine (WaitAndFadeOut ());
-	}
-	
-	public IEnumerator WaitAndFadeIn() {
+
+	public IEnumerator FadeIn() {
 		float __time = 0;
 		_SetColor(Color.black);
 		_target = Color.clear;
@@ -52,7 +46,7 @@ public class FadeScreen : MonoBehaviour
 		}
 		_SetColor(Color.clear);
 	}
-	public IEnumerator WaitAndFadeOut() {
+	public IEnumerator FadeOut() {
 		float __time = 0;
 		_SetColor(Color.clear);
 		_target = Color.black;

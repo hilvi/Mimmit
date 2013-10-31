@@ -1,14 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NavigationGUIScript : MonoBehaviour {
+public class NavigationGUIScript : Overlay {
 	public Texture PlayButton,homeButton,PauseButton;
 	
 	AudioSource audioSource;
 	
-	void Awake()
+	/*void Awake()
 	{
-		/*Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
+		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
 		foreach(Camera c in cams)
 		{
 			if(c.gameObject != this.gameObject)
@@ -16,8 +16,8 @@ public class NavigationGUIScript : MonoBehaviour {
 				
 				Destroy (c.gameObject);
 			}
-		}*/
-	}
+		}
+	}*/
 	// Use this for initialization
 	void Start () 
 	{
@@ -63,7 +63,7 @@ public class NavigationGUIScript : MonoBehaviour {
 		{
 			//StartCoroutine(LoadMainMenu(audioSource));
 			
-			Application.LoadLevel("ChoiceScene");
+			LoadLevel("ChoiceScene");
 			Time.timeScale = 1.0f;
 			Manager.SetNavigationState(NavigationState.Running);
 			

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FrontPageScript : MonoBehaviour {
+public class FrontPageScript : Overlay {
 	GUITexture background;
 	public Texture2D texture;
 	// Use this for initialization
@@ -21,7 +21,7 @@ public class FrontPageScript : MonoBehaviour {
 	{
 		if(MGUI.HoveredButton(buttonRect,texture))
 		{
-			Application.LoadLevel("ChoiceScene");
+			LoadLevel ("ChoiceScene");
 		}
 	}
 }
