@@ -32,6 +32,12 @@ public class HorseGameManager : GameManager {
 		float __width = Screen.width / 2;
 		float __height = Screen.height / 2;
 		_boxRect = new Rect(Screen.width /2  - __width / 2, Screen.height / 2 - __height / 2, __width , __height);
+		
+		gameObject.AddComponent<GUIText>();
+		gameObject.transform.position = new Vector3(0.5f, 0.5f, 0);
+		guiText.fontSize = 60;
+		guiText.alignment = TextAlignment.Center;
+		guiText.anchor = TextAnchor.MiddleCenter;
 	}
 	
 	void Update () 
@@ -51,15 +57,17 @@ public class HorseGameManager : GameManager {
 	
 	void OnGUI()
 	{
+#if UNITY_EDITOR
 		float fps  = 1/Time.deltaTime;
 		GUI.Box (new Rect(0,0,100,50),fps.ToString());
+#endif
 		if(_gameOver)
 		{
 			if(_winner == Winner.Bird)
 			{
-				GUI.Box (_boxRect, "Sorry, try again");
+				guiText.text = "Hävisit\nYritä uudelleen";
 			}else{
-				GUI.Box (_boxRect, "Youhouuuu you won!!!");
+				guiText.text = "Voitit";
 			}
 		}
 	}
