@@ -33,7 +33,7 @@ public class InGameMenuGUI : Overlay
             (Screen.width / 10));
 
 		_mainMenuButtonRegion = new Rect (
-			MGUI.Margin * 3, 
+			MGUI.margin * 3, 
 			Screen.height - (Screen.width / 6), 
 			Screen.width / 7, 
 			Screen.width / 7);
@@ -56,7 +56,7 @@ public class InGameMenuGUI : Overlay
 		GameState __currentState = _gameManager.GetGameState ();
 		// While the game is in progress, only display the pause button
 		if (__currentState == GameState.Running || __currentState == GameState.Pregame) {
-			if (GUI.Button (_pauseButtonRegion, PauseButton, MGUI.NoStyle)) {	
+			if (GUI.Button (_pauseButtonRegion, PauseButton, MGUI.noStyle)) {	
 				_gameManager.PauseGame ();
 			}
 		} else {

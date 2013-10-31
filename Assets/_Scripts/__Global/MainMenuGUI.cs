@@ -2,53 +2,43 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class MainMenuGUI : MonoBehaviour {
-
+public class MainMenuGUI : MonoBehaviour
+{
+	#region MEMBERS
 	public Texture gameTitleTexture;
 	public Texture gameExitTexture;
 	public Texture gameCreditsTexture;
-	
 	public static int currentLevel = 1;
 	public static string selectedGameName;
-	
 	public float barHeightToScreenHeightRatio = 0.25f;
 	public float gamePreviewWidthToScreenWidthRatio = 0.75f;
 	public float gamePreviewArrowHeightRation = 0.2f;// height ration of the white speach arrow pointing to character to total height of preview screen
-	
-	//float ScreenHeight = Screen.height;
-	//float ScreenWidth = Screen.width;
-	
+
 	float buttonBarHeight;
 	int gamesNumber;
 	bool callOptions = false;
-	
-	bool Sound= true;
-
+	bool Sound = true;
 	public string[] gameList;
 	Texture[] gameSelectionTextures;
 	Texture[] previewTextures;
 	Texture[] playButtonsTextures;
 	Texture soundON, soundOff, credits, options;
-		
 	Rect gamePreviewButtonRect;
-	Rect gamePreviewRect;	
+	Rect gamePreviewRect;
 	Rect soundButtonRect;
 	Rect creditsButtonRect;
 	Rect[] gameSelectionRects;
 	Rect quitRect;
 	Rect creditsRect;
 	Rect gameTitleRect;
-	
-	
-		
 	int selectedGame = -1;
+	#endregion
 	
-	// Use this for initialization
-	void Start () {
-
+	#region UNITY_METHODS
+	void Start ()
+	{
 		selectedGameName = "";
 		
-
 		currentLevel = 1;
 		gamesNumber = gameList.Length;
 		buttonBarHeight = barHeightToScreenHeightRatio * Screen.height;
@@ -57,122 +47,111 @@ public class MainMenuGUI : MonoBehaviour {
 		playButtonsTextures = new Texture[gamesNumber];
 		gameSelectionRects = new Rect[gamesNumber];
 		
-		float buttonWidth = (Screen.width - MGUI.Margin*(gamesNumber+1)) / gamesNumber;
+		float buttonWidth = (Screen.width - MGUI.margin * (gamesNumber + 1)) / gamesNumber;
 		
 		for (int i = 0; i < gamesNumber; i++) {
-			gameSelectionTextures[i] = (Texture)Resources.Load("MainMenu/Buttons/" + gameList[i]);
-			previewTextures[i] = (Texture)Resources.Load("MainMenu/Previews/" + gameList[i]);
-			playButtonsTextures[i] = (Texture)Resources.Load("MenuCommon/play_" + gameList[i]);
+			gameSelectionTextures [i] = (Texture)Resources.Load ("MainMenu/Buttons/" + gameList [i]);
+			previewTextures [i] = (Texture)Resources.Load ("MainMenu/Previews/" + gameList [i]);
+			playButtonsTextures [i] = (Texture)Resources.Load ("MenuCommon/play_" + gameList [i]);
 			
 			
-			float buttonHeight = buttonWidth * gameSelectionTextures[i].height / gameSelectionTextures[i].width;
-			gameSelectionRects[i] = new Rect(i * (buttonWidth) + (i+1) * MGUI.Margin, centerPosition(buttonHeight, buttonBarHeight ), buttonWidth, buttonHeight);
+			float buttonHeight = buttonWidth * gameSelectionTextures [i].height / gameSelectionTextures [i].width;
+			gameSelectionRects [i] = new Rect (i * (buttonWidth) + (i + 1) * MGUI.margin, _CenterPosition (buttonHeight, buttonBarHeight), buttonWidth, buttonHeight);
 		}
 		
-		soundON =(Texture)Resources.Load("MainMenu/Buttons/soundon");
-		soundOff =(Texture)Resources.Load("MainMenu/Buttons/soundoff");
-		options =(Texture)Resources.Load("MainMenu/Buttons/options_credits_btn");
-		credits =(Texture)Resources.Load("MainMenu/Buttons/roll_credits_btn");
-		gameExitTexture =(Texture)Resources.Load("MainMenu/Buttons/button_exit");
+		soundON = (Texture)Resources.Load ("MainMenu/Buttons/soundon");
+		soundOff = (Texture)Resources.Load ("MainMenu/Buttons/soundoff");
+		options = (Texture)Resources.Load ("MainMenu/Buttons/options_credits_btn");
+		credits = (Texture)Resources.Load ("MainMenu/Buttons/roll_credits_btn");
+		gameExitTexture = (Texture)Resources.Load ("MainMenu/Buttons/button_exit");
 		
-		float titleHeight = Screen.height - buttonBarHeight - MGUI.Margin;
+		float titleHeight = Screen.height - buttonBarHeight - MGUI.margin;
 		float titleWidth = titleHeight * gameTitleTexture.width / gameTitleTexture.width;
-		gameTitleRect = new Rect(centerPosition(titleWidth, Screen.width), Screen.height - titleHeight, titleWidth, titleHeight);
+		gameTitleRect = new Rect (_CenterPosition (titleWidth, Screen.width), Screen.height - titleHeight, titleWidth, titleHeight);
 		
-		quitRect = new Rect(MGUI.Margin, Screen.height - MGUI.Margin - MGUI.menuButtonWidth, MGUI.menuButtonWidth, MGUI.menuButtonWidth);
+		quitRect = new Rect (MGUI.margin, Screen.height - MGUI.margin - MGUI.menuButtonWidth, MGUI.menuButtonWidth, MGUI.menuButtonWidth);
 		
-		creditsRect = new Rect(Screen.width - MGUI.Margin - MGUI.menuButtonWidth, Screen.height - MGUI.Margin - MGUI.menuButtonWidth, MGUI.menuButtonWidth, MGUI.menuButtonWidth);
+		creditsRect = new Rect (Screen.width - MGUI.margin - MGUI.menuButtonWidth, Screen.height - MGUI.margin - MGUI.menuButtonWidth, MGUI.menuButtonWidth, MGUI.menuButtonWidth);
 					
-		float previewRatio = (float) previewTextures[0].width / previewTextures[0].height;	
+		float previewRatio = (float)previewTextures [0].width / previewTextures [0].height;	
 		float previewWidth = Screen.width * gamePreviewWidthToScreenWidthRatio;
-		float previewHeight = Mathf.Min ( previewWidth / previewRatio, Screen.height - buttonBarHeight - 2 * MGUI.Margin);	
-		gamePreviewRect = new Rect(centerPosition(previewWidth, Screen.width), buttonBarHeight + MGUI.Margin , previewWidth, previewHeight);
-		soundButtonRect = MGUI.centerInRect(new Rect(Screen.width/7, gamePreviewArrowHeightRation * gamePreviewRect.height, MGUI.menuButtonWidth, MGUI.menuButtonWidth), gamePreviewRect);
-		creditsButtonRect = MGUI.centerInRect(new Rect(Screen.width/9 - Screen.width/4, gamePreviewArrowHeightRation * gamePreviewRect.height, MGUI.menuButtonWidth, MGUI.menuButtonWidth), gamePreviewRect);
+		float previewHeight = Mathf.Min (previewWidth / previewRatio, Screen.height - buttonBarHeight - 2 * MGUI.margin);	
+		gamePreviewRect = new Rect (_CenterPosition (previewWidth, Screen.width), buttonBarHeight + MGUI.margin, previewWidth, previewHeight);
+		soundButtonRect = MGUI.CenterInRect (new Rect (Screen.width / 7, gamePreviewArrowHeightRation * gamePreviewRect.height, MGUI.menuButtonWidth, MGUI.menuButtonWidth), gamePreviewRect);
+		creditsButtonRect = MGUI.CenterInRect (new Rect (Screen.width / 9 - Screen.width / 4, gamePreviewArrowHeightRation * gamePreviewRect.height, MGUI.menuButtonWidth, MGUI.menuButtonWidth), gamePreviewRect);
 		//TODO make centerRect method
-		gamePreviewButtonRect = MGUI.centerInRect(new Rect(0, gamePreviewArrowHeightRation * gamePreviewRect.height, MGUI.menuButtonWidth, MGUI.menuButtonWidth), gamePreviewRect);// new Rect(centerPosition(), centerPosition(), Screen.width/7, Screen.width/7);			
+		gamePreviewButtonRect = MGUI.CenterInRect (new Rect (0, gamePreviewArrowHeightRation * gamePreviewRect.height, MGUI.menuButtonWidth, MGUI.menuButtonWidth), gamePreviewRect);// new Rect(centerPosition(), centerPosition(), Screen.width/7, Screen.width/7);			
 	}
 	
-	static float centerPosition(float itemLength, float totalLength) {
-		return (totalLength - itemLength)/2;
-	}
-	
-	void SelectGame(int i) {
-		selectedGame = i;
-		selectedGameName = gameList[i];
-	}
-	
-	void OnGUI() {
-		for (int i=0; i< gamesNumber; i++) 
-		{
-			if (MGUI.HoveredButton(gameSelectionRects[i], gameSelectionTextures[i])) 
-			{
+	void OnGUI ()
+	{
+		for (int i=0; i< gamesNumber; i++) {
+			if (MGUI.HoveredButton (gameSelectionRects [i], gameSelectionTextures [i])) {
 				callOptions = false;
-				SelectGame(i);
+				_SelectGame (i);
 			}
 		}
 		
 		if (selectedGame > -1 && callOptions == false) {
-
-			GUI.DrawTexture(gamePreviewRect,  previewTextures[selectedGame]);		
+			GUI.DrawTexture (gamePreviewRect, previewTextures [selectedGame]);		
 				
-			if (MGUI.HoveredButton(gamePreviewButtonRect, playButtonsTextures[selectedGame])) 
-			{
-				Application.LoadLevel("TutorialScene");
+			if (MGUI.HoveredButton (gamePreviewButtonRect, playButtonsTextures [selectedGame])) {
+				Application.LoadLevel ("TutorialScene");
 			}
-		}
-		else if(callOptions == true)
-		{
-			GUI.DrawTexture(gamePreviewRect,  previewTextures[1]);
-			if(Sound == true)
-			{	
-				if (MGUI.HoveredButton(soundButtonRect, soundON))
-				{
-					PlayerPrefs.SetString("sound", "false");
+		} else if (callOptions == true) {
+			GUI.DrawTexture (gamePreviewRect, previewTextures [1]);
+			if (Sound == true) {	
+				if (MGUI.HoveredButton (soundButtonRect, soundON)) {
+					PlayerPrefs.SetString ("sound", "false");
 					Sound = false;
-					EnableSound();
+					_ToggleSound ();
 				}
-			}
-			else{
+			} else {
 				
-				if (MGUI.HoveredButton(soundButtonRect, soundOff)){
-					
-					PlayerPrefs.SetString("sound", "true");
+				if (MGUI.HoveredButton (soundButtonRect, soundOff)) {
+					PlayerPrefs.SetString ("sound", "true");
 					Sound = true;
-					EnableSound();
+					_ToggleSound ();
 					
 				}
 			}
-			if (MGUI.HoveredButton(creditsButtonRect, credits)) {
-				
-				Application.LoadLevel("CreditsScreen");	
+			if (MGUI.HoveredButton (creditsButtonRect, credits)) {
+				Application.LoadLevel ("CreditsScreen");	
 			}
 			
-		}
-		else{
-			GUI.DrawTexture(gameTitleRect, gameTitleTexture);
-		}
-		
-		if (MGUI.HoveredButton( quitRect, gameExitTexture)) 
-		{
-			Application.Quit();
+		} else {
+			GUI.DrawTexture (gameTitleRect, gameTitleTexture);
 		}
 		
-		if (MGUI.HoveredButton(creditsRect, options)) 
-		{
+		if (MGUI.HoveredButton (quitRect, gameExitTexture)) {
+			Application.Quit ();
+		}
+		
+		if (MGUI.HoveredButton (creditsRect, options)) {
 			callOptions = true;
 		}
 	}
+	#endregion
 	
-	void EnableSound()
+	#region METHODS
+	private float _CenterPosition (float itemLength, float totalLength)
+	{
+		return (totalLength - itemLength) / 2;
+	}
+	
+	private void _SelectGame (int i)
+	{
+		selectedGame = i;
+		selectedGameName = gameList [i];
+	}
+	
+	private void _ToggleSound ()
 	{	
-		if(AudioListener.volume == 0)
-		{
-			
+		if (AudioListener.volume == 0) {
 			AudioListener.volume = 1;
-		}	
-		else{
-				AudioListener.volume = 0;
+		} else {
+			AudioListener.volume = 0;
 		} 				
 	}
+	#endregion
 }

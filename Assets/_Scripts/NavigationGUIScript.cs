@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class NavigationGUIScript : Overlay {
@@ -31,7 +31,7 @@ public class NavigationGUIScript : Overlay {
 		// While the game is in progress, only display the pause button
 		if (currentState == NavigationState.Running) 
 		{
-			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.NoStyle)) 
+			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.noStyle)) 
 			{	
 				Manager.SetNavigationState(NavigationState.Pause);
 			}
@@ -59,7 +59,7 @@ public class NavigationGUIScript : Overlay {
 	void ShowBottomMenu()
 	{
 		// Left button
-		if (MGUI.HoveredButton(new Rect(MGUI.Margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) 
+		if (MGUI.HoveredButton(new Rect(MGUI.margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) 
 		{
 			//StartCoroutine(LoadMainMenu(audioSource));
 			
