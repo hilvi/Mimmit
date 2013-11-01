@@ -4,16 +4,18 @@ using System.Collections;
 public class BackgroundManager : MonoBehaviour {
 	public Texture2D[] textures;
 	public bool shuffle = false;
+	public Texture2D background;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		Shader __diffuse = Shader.Find("Diffuse");
 		
 		if(shuffle)
 			_Shuffle ();
 		
 		Material __mat = new Material(__diffuse);
-		__mat.mainTexture = _MergeTextures();
+		background = _MergeTextures();
+		__mat.mainTexture = background;
 		renderer.material = __mat;
 	}
 	

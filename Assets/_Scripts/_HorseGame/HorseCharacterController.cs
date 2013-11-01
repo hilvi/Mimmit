@@ -8,6 +8,8 @@ public class HorseCharacterController : MonoBehaviour {
 	public float runningSpeed = 5;
 	public float jumpSpeed = 10;
 	public float mudSpeed = 2;
+	public float powerUpSpeed = 8;
+	public float powerUpTime = 2;
 	public Vector3 sideStep = new Vector3(0, -0.3f, -0.5f);
 	public Animator2D anim;
 	
@@ -15,11 +17,18 @@ public class HorseCharacterController : MonoBehaviour {
 	private Vector3 _movement;
 	private float _currentSpeed;
 	private bool _sideStepping = false;
+	private ParticleRenderer _particles;
 	Transform _plane;
 	
 	void Start () 
 	{
+		GameObject __particles = (GameObject)Instantiate(Resources.Load("Particles/powerup"));
+		__particles.transform.parent = transform;
+		__particles.transform.position = new Vector3(0, transform.position.y, -1);
+
+		_particles = GetComponentInChildren<ParticleRenderer>();
 		_controller = GetComponent<CharacterController>();
+		
 		_plane = transform.Find("Plane");
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
@@ -51,6 +60,16 @@ public class HorseCharacterController : MonoBehaviour {
 		
 		_movement.x = _currentSpeed;
 		_controller.Move(_movement*Time.deltaTime);
+		StartCoroutine(PowerUp());
+	}
+	
+	public IEnumerator PowerUp() {
+		_particles.enabled = true;
+		_currentSpeed = powerUpSpeed;
+		yield return new WaitForSeconds(powerUpTime);
+		_currentSpeed = runningSpeed;
+		_particles.enabled = false;
+		
 	}
 	
 	/// <summary>
