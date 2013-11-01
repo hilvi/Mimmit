@@ -13,7 +13,7 @@ public class PictureSelector
 	private Rect[] _selectPictureRegion;	// 
 	
 	private int _pictureIndexOffset = 0;
-	private const int _pictureCount = 11;
+	private const int _pictureCount = 10;
 	private List<string> _pictureNames = new List<string>();
 	private Texture2D[] _thumbnails;
 	private Texture2D _upArrowTexture;
