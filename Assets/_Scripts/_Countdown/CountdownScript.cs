@@ -6,12 +6,6 @@ public class CountdownScript : MonoBehaviour {
 	public float maxSize;
 	public float transformSpeed;
 	
-	private Vector3 _maximumSize;
-	
-	void Start () {
-		_maximumSize = new Vector3(1f, 1f, 1f);
-	}
-	
 	void Update () {
 		float __w = transform.localScale.x + Time.deltaTime * transformSpeed;
 		float __h = transform.localScale.y + Time.deltaTime * transformSpeed;
