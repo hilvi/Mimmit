@@ -2,13 +2,12 @@
 using System.Collections;
 
 public class Overlay : MonoBehaviour {
-	
 	protected FadeScreen _fade;
 	
 	public virtual void Awake() {
 		_fade = gameObject.AddComponent<FadeScreen>();
 	}
-	
+
 	public void FadeIn() {
 		StartCoroutine(_fade.FadeIn());
 	}
@@ -22,7 +21,7 @@ public class Overlay : MonoBehaviour {
 		StartCoroutine(_PlaySound(audio));
 		StartCoroutine(_LoadLevel(level));
 	}
-	
+
 	private IEnumerator _PlaySound(AudioSource audio)
 	{
 		audio.Play();
