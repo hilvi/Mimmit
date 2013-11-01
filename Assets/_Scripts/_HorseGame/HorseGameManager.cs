@@ -31,7 +31,6 @@ public class HorseGameManager : GameManager {
 	private float PositionToProgress(Transform pos) {
 		float __currentPos = pos.transform.position.x;
 		__currentPos = __currentPos / _levelLength * progressBarLength;
-		Debug.Log(__currentPos);
 		return _progressBar.x+__currentPos-15;
 	}
 	
