@@ -71,7 +71,8 @@ public class PaintToolbar
 		
 		GUI.DrawTexture(_eraseToolRegion, _eraserTexture);
 		GUI.DrawTexture(_resetToolRegion, _resetTexture);
-		GUI.DrawTexture(_saveToolRegion, _saveTexture);
+		if(_saveTexture != null)
+			GUI.DrawTexture(_saveToolRegion, _saveTexture);
 		
 		for (int i = 0; i < _colorPalletteRegion.Length; i++) {
 			#if UNITY_EDITOR
