@@ -8,7 +8,7 @@ public class HorseCharacterController : MonoBehaviour {
 	public float runningSpeed = 5;
 	public float jumpSpeed = 10;
 	public float mudSpeed = 2;
-	public float powerUpSpeed = 8;
+	public float powerUpSpeed = 7;
 	public float powerUpTime = 2;
 	public Vector3 sideStep = new Vector3(0, -0.3f, -0.5f);
 	public Animator2D anim;
@@ -60,16 +60,17 @@ public class HorseCharacterController : MonoBehaviour {
 		
 		_movement.x = _currentSpeed;
 		_controller.Move(_movement*Time.deltaTime);
-		StartCoroutine(PowerUp());
 	}
 	
 	public IEnumerator PowerUp() {
 		_particles.enabled = true;
 		_currentSpeed = powerUpSpeed;
 		yield return new WaitForSeconds(powerUpTime);
-		_currentSpeed = runningSpeed;
+		if(_currentSpeed == powerUpSpeed)
+			_currentSpeed = runningSpeed;
+		else
+			_currentSpeed = mudSpeed;
 		_particles.enabled = false;
-		
 	}
 	
 	/// <summary>
@@ -79,7 +80,11 @@ public class HorseCharacterController : MonoBehaviour {
 	/// </summary>
 	public void EnterMudConfiguration()
 	{
-		_currentSpeed = mudSpeed;
+		if(_currentSpeed == powerUpSpeed)
+			_currentSpeed = (mudSpeed+powerUpSpeed)/2;
+		else
+			_currentSpeed = mudSpeed;
+
 		Animation2D __anim =  anim.GetCurrentAnimation();
 		__anim.frameRate /= 2;
 	}
@@ -90,7 +95,11 @@ public class HorseCharacterController : MonoBehaviour {
 	/// </summary>
 	public void ExitMudConfiguration()
 	{
-		_currentSpeed = runningSpeed;
+		if(_currentSpeed == mudSpeed)
+			_currentSpeed = runningSpeed;
+		else
+			_currentSpeed = powerUpSpeed;
+		
 		Animation2D __anim =  anim.GetCurrentAnimation();
 		__anim.frameRate *= 2;
 	}
