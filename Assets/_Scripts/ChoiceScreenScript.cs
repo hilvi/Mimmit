@@ -1,100 +1,119 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChoiceScreenScript : Overlay 
+public class ChoiceScreenScript : Overlay
 {
-	
+	#region MEMBERS
+	public GameObject cam;
 	public Texture2D blonde, brunette, fox, boy, map, button;
 	public AudioClip audioPress;
-	GUITexture background;
-	// Use this for initialization
-	Rect blondeRect, bruneRect, foxRect , boyRect, mapRect, buttonRect; 
-	bool characterChosen = false;
-	public GameObject cam;
-	AudioSource audioSource;
-	public override void Awake()
+	private AudioSource _audioSource;
+	private GUITexture _background;
+	private Rect _backgroundRect, _blondeRect, _bruneRect, _foxRect, _boyRect, _mapRect;
+	private Vector2 _mapBeginPos, _mapEndPos;
+	private bool _characterChosen = false;
+	private bool _buttonIsSliding = false;
+	private bool _buttonSlideIsDone = false;
+	#endregion
+	
+	#region UNITY_METHODS
+	public override void Awake ()
 	{
-		base.Awake();
-		Object o = FindObjectOfType(typeof(Camera));
-		if(o == null)
-		{
-			Instantiate (cam, new Vector3 (0,0,0), Quaternion.identity);
+		base.Awake ();
+		Object o = FindObjectOfType (typeof(Camera));
+		if (o == null) {
+			Instantiate (cam, new Vector3 (0, 0, 0), Quaternion.identity);
 		}
 	}
-	void Start() {
-		audioSource = GetComponent<AudioSource>();
-		audioSource.clip = audioPress;
-		background = GetComponent<GUITexture>();
+
+	void Start ()
+	{
+		_audioSource = GetComponent<AudioSource> ();
+		_audioSource.clip = audioPress;
+		_background = GetComponent<GUITexture> ();
 		// Setting background to full screen
 		float width = Screen.width;
 		float height = Screen.height;
-		Rect rect = new Rect(-width / 2, - height / 2, width, height);
-		background.pixelInset = rect;
+		float __halfWidth = Screen.width / 2;
 		
-		float halfWidth = Screen.width / 2;
-		int _y = 187; int _width = 150;
-		float margin = 8;
-		blondeRect 	= new Rect(halfWidth - 2 * _width - 3*margin ,_y,_width,_width);
-		bruneRect 	= new Rect(halfWidth - _width - margin,_y,_width,_width);
-		foxRect 	= new Rect(halfWidth+margin,_y,_width,_width);
-		boyRect 	= new Rect(halfWidth+margin * 3 +  _width,_y,_width,_width);
+		_backgroundRect = new Rect (-width / 2, - height / 2, width, height);
+		_background.pixelInset = _backgroundRect;
 		
-  		float _ySecondButtons = 421;
-		mapRect = new Rect(halfWidth -  0.5f * _width, _ySecondButtons,_width,_width);
-		//buttonRect = new Rect(halfWidth + 0.5f * _width,_ySecondButtons,_width,_width);
+		const float __yUpper = 187f;
+		const float __yBottom = 421f;
+		const float __margin = 8f;
+		const float __buttonWidth = 150f;
+		
+		// Upper row
+		_blondeRect = new Rect (__halfWidth - 2 * __buttonWidth - 3 * __margin, __yUpper, __buttonWidth, __buttonWidth);
+		_bruneRect = new Rect (__halfWidth - __buttonWidth - __margin, __yUpper, __buttonWidth, __buttonWidth);
+		_foxRect = new Rect (__halfWidth + __margin, __yUpper, __buttonWidth, __buttonWidth);
+		_boyRect = new Rect (__halfWidth + __margin * 3 + __buttonWidth, __yUpper, __buttonWidth, __buttonWidth);
+		
+		// Bottom row
+		_mapEndPos = new Vector2 (Screen.width + __buttonWidth, __yBottom);
+		_mapBeginPos = new Vector2 (__halfWidth - 0.5f * __buttonWidth, __yBottom);
+		_mapRect = new Rect (_mapBeginPos.x, _mapBeginPos.y, __buttonWidth, __buttonWidth);
+
 		FadeIn ();
-
 	}
-	
 
-	void OnGUI()
+	void OnGUI ()
 	{
-		if(MGUI.HoveredButton(blondeRect,blonde))
-		{
-			audioSource.Play();
-			Manager.SetCharacter(Character.Blonde);
-			characterChosen = true;
+		if (MGUI.HoveredButton (_blondeRect, blonde)) {
+			_audioSource.Play ();
+			Manager.SetCharacter (Character.Blonde);
+			_characterChosen = true;
 		}
-		if(MGUI.HoveredButton(bruneRect,brunette))
-		{
-			audioSource.Play();
-			Manager.SetCharacter(Character.Brune);
-			characterChosen = true;
+		if (MGUI.HoveredButton (_bruneRect, brunette)) {
+			_audioSource.Play ();
+			Manager.SetCharacter (Character.Brune);
+			_characterChosen = true;
 		}
-		if(MGUI.HoveredButton(foxRect,fox))
-		{
-			audioSource.Play();
-			Manager.SetCharacter(Character.Fox);
-			characterChosen = true;
+		if (MGUI.HoveredButton (_foxRect, fox)) {
+			_audioSource.Play ();
+			Manager.SetCharacter (Character.Fox);
+			_characterChosen = true;
 		}
-		if(MGUI.HoveredButton(boyRect,boy))
-		{
-			audioSource.Play();
-			Manager.SetCharacter(Character.Boy);
-			characterChosen = true;
+		if (MGUI.HoveredButton (_boyRect, boy)) {
+			_audioSource.Play ();
+			Manager.SetCharacter (Character.Boy);
+			_characterChosen = true;
 		}
-		if(characterChosen)
-		{
-			if(MGUI.HoveredButton(mapRect,map))
-			{
-				LoadLevelAndPlaySound("ChooseGameScene", audioSource);
+		if (_characterChosen) {
+			if (!_buttonIsSliding && !_buttonSlideIsDone)
+				StartCoroutine (SlideButton ());
+			
+			if (MGUI.HoveredButton (_mapRect, map) && _buttonSlideIsDone) {
+				LoadLevelAndPlaySound ("ChooseGameScene", _audioSource);
 			}
-			/*if(GUI.Button(buttonRect,"ButtonScreenScene"))
-			{
-				Manager.SetScreenChoice(ScreenChoice.Button);
-				Application.LoadLevel("ChooseGameScene");
-			}*/
 		}
-		
 	}
-	IEnumerator SoundAndLoad()
+
+	private IEnumerator SoundAndLoad ()
 	{
-		audioSource.Play();
-		while(audioSource.isPlaying)
-		{
+		_audioSource.Play ();
+		while (_audioSource.isPlaying) {
 			yield return null;
 		}
-		Manager.SetScreenChoice(ScreenChoice.Button);
-		LoadLevel("ChooseGameScene");
+		Manager.SetScreenChoice (ScreenChoice.Button);
+		LoadLevel ("ChooseGameScene");
 	}
+	
+	private IEnumerator SlideButton ()
+	{
+		_buttonIsSliding = true;
+		
+		float __t = 1f;
+		while (__t > 0f) {
+			__t -= Time.deltaTime * 2f;
+			_mapRect.x = Mathf.Lerp (_mapBeginPos.x, _mapEndPos.x, __t);
+			yield return null;
+		}
+		
+		_buttonSlideIsDone = true;
+		_buttonIsSliding = false;
+		yield return null;
+	}
+	#endregion
 }
