@@ -35,6 +35,7 @@ public class HorseGameManager : GameManager {
 		
 		gameObject.AddComponent<GUIText>();
 		gameObject.transform.position = new Vector3(0.5f, 0.5f, 0);
+		guiText.font = (Font)Resources.Load("Fonts/Gretoon");
 		guiText.fontSize = 60;
 		guiText.alignment = TextAlignment.Center;
 		guiText.anchor = TextAnchor.MiddleCenter;
