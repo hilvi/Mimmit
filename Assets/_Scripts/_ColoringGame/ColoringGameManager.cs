@@ -56,13 +56,13 @@ public class ColoringGameManager : GameManager {
 			upArrowTexture, downArrowTexture);
 		
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
-			new Vector2(800f, 325f), new Vector2(10f, 10f),
+			new Vector2(800f, 325f), new Vector2(5f, 5f),
 			paintBrushTextures, eraserTexture, 
 			tickTexture, resetTexture,
 			saveTexture);
 		
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
-		
+
 		#if DEVELOPER_MODE
 		pictureRegion = new Rect(200, 20, 560, 560);
 		_frame = new PaintFrame(this, pictureRegion, _CreateDebugGridTexture(560, 560, 40, 40));

@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
+using System.Collections;
 
 public class PaintToolbar
 {
@@ -42,20 +43,60 @@ public class PaintToolbar
 		_resetToolRegion = new Rect(870,240,60,60);
 		
 		// TODO, possibly make more elegant, ugly constants
-		_colorPalletteRegion = new Rect[8];
-		for (int y = 0; y < 4; y++) {
-			for (int x = 0; x < 2; x++)  {
-				float xx = (paletteAnchor.x + x * 60f) + (buttonInset.x / 2f);
-				float yy = (paletteAnchor.y + y * 60f) + (buttonInset.y / 2f);
-				_colorPalletteRegion[y * 2 + x] = 
-					new Rect(xx, yy, 60f - buttonInset.x, 60f - buttonInset.y);
+		const int __gridWidth = 4, __gridHeight = 8;
+		_colorPalletteRegion = new Rect[__gridWidth * __gridHeight];
+		const float __cellWidth = 30f;
+		for (int y = 0; y < __gridHeight; y++) {
+			for (int x = 0; x < __gridWidth; x++)  {
+				float xx = (paletteAnchor.x + x * __cellWidth) + (buttonInset.x / 2f);
+				float yy = (paletteAnchor.y + y * __cellWidth) + (buttonInset.y / 2f);
+				_colorPalletteRegion[y * __gridWidth + x] = 
+					new Rect(xx, yy, __cellWidth - buttonInset.x, __cellWidth - buttonInset.y);
 			}
 		}
-		
+
+		byte bit = 0x00;
+
 		// Setup color pallette. Start from top-left, row-major order
 		_colorPallette.Add(-1, new PaintBrush(-1, "Erase", Color.white));
-		for (int i = 0; i <= 7; i++) {
-			_colorPallette.Add(i, new PaintBrush(i, "x", PaintBrush.customPallette[i], paintBrushTextures[i]));
+		for (int i = 0; i < __gridWidth * __gridHeight; i++) {
+			PaintBrush __pb = new PaintBrush(i, "x", PaintBrush.customPallette[0], paintBrushTextures[0]);
+
+			float incr = (1f - 0.1f) / __gridWidth;
+			float r = 0.1f, g = 0.1f, b = 0.1f;
+			
+			if (IsBitSet(bit, 2) == false) {
+				r = incr;
+				r += Mathf.Clamp01(incr * (i % __gridWidth));
+			}
+			if (IsBitSet(bit, 1) == false) {
+				g = incr;
+				g += Mathf.Clamp01(incr * (i % __gridWidth));
+			}
+			if (IsBitSet(bit, 0) == false) {
+				b = incr;
+				b += Mathf.Clamp01(incr * (i % __gridWidth));
+			}
+
+			if ((i+1) % __gridWidth == 0) {
+				bit += 1;
+			}
+
+			Texture2D __t = new Texture2D(paintBrushTextures[0].width, paintBrushTextures[0].height);
+			for (int y = 0; y < __t.height; y++) {
+				for (int x = 0; x < __t.width; x++) {
+					Color __tc = paintBrushTextures[0].GetPixel(x, y);
+					__tc.r = r;
+					__tc.g = g;
+					__tc.b = b;
+					__t.SetPixel(x, y, __tc);
+				}
+			}
+			__t.Apply();
+			
+			__pb.color = new Color(r, g, b);
+			__pb.texture = __t;
+			_colorPallette.Add(i, __pb);
 		}
 
 		CurrentBrush = _colorPallette[0]; // Set default brush 
@@ -155,6 +196,10 @@ public class PaintToolbar
 	private string EncodePNGToBase64(byte[] pngData) {
   		return "data:image/png;base64," +
     		Convert.ToBase64String(pngData, Base64FormattingOptions.None);
+	}
+	
+	private bool IsBitSet(byte b, int pos) {
+		return (b & (1 << pos)) != 0;
 	}
 }
 
