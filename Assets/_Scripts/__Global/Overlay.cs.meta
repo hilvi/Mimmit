@@ -2,7 +2,9 @@ fileFormatVersion: 2
 guid: 637340a3b9d4c0f4289d0b59f3a05f08
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - countdownWidgetPrefab: {fileID: 100000, guid: 6ae3ddc8c1c2f7d418dd11c9eabb4b2d,
+      type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

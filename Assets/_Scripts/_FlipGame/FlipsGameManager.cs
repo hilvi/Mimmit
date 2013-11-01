@@ -11,7 +11,6 @@ public class FlipsGameManager : GameManager {
 	
 	public InputManager inputManager;
 	public LevelGenerator levelGenerator;
-	public GUIText statusLine;
 	public SoundManager sound;
 
 	Card firstCard = null; // Handles to the two cards the player is currently flipping
@@ -39,9 +38,9 @@ public class FlipsGameManager : GameManager {
 		
 		cardsTotal = levelGenerator.CardCount();
 		SetGameState(GameState.Pregame);
-		statusLine.pixelOffset = new Vector2(Screen.width/2, -Screen.height /2 );
 		cam = Camera.main;
-		StartCoroutine(UpdateStatus());
+		
+		StartCoroutine(_UpdateStatus());
 	}
 	
 	// Update is called once per frame
@@ -133,30 +132,17 @@ public class FlipsGameManager : GameManager {
 			}
 		}
 	}
-
-	IEnumerator UpdateStatus() 
+	
+	private IEnumerator _UpdateStatus() 
 	{
-		float goTimer = 1;
-		while (revealTime > 0) 
-		{
-			revealTime -= Time.deltaTime;
-			statusLine.guiText.material.color = new Color(1f,1f,1f,1.5f - (Mathf.Ceil(revealTime) - revealTime));
-			statusLine.text = (Mathf.Ceil(revealTime)).ToString();
-			statusLine.fontSize = (int)(80 + 100*(Mathf.Ceil(revealTime) - revealTime));
+		CountdownManager __cdm = GetComponent<CountdownManager>();
+		while (!__cdm.CountdownDone) {
 			yield return null;
 		}
 		
 		HideAllCards();
-		
 		base.SetGameState(GameState.Running);
-		while (goTimer > 0) 
-		{
-			statusLine.text = "Go!";
-			statusLine.guiText.material.color = new Color(1f,1f,1f,goTimer);
-			statusLine.fontSize = (int)(80 + 100*(Mathf.Ceil(goTimer) - goTimer));
-			goTimer -= Time.deltaTime;
-			yield return null;
-		}
-		statusLine.gameObject.SetActive(false);	
+		
+		yield return null;
 	}
 }
