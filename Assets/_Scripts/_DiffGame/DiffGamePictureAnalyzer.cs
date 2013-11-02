@@ -6,9 +6,7 @@ public class DiffGamePictureAnalyzer : MonoBehaviour
 	#region MEMBERS
 	public Texture2D[] originalPictures;
 	public Texture2D[] errorPictures;
-	private Rect _frame;
-	private Rect _topFrame;
-	private Rect _bottomFrame;
+	private Rect _leftFrame, _rightFrame;
 	private Texture2D[] _modifiedOriginalPictures;
 	private Texture2D[] _modifiedErrorPictures;
 	private Texture2D[] _differenceMaps;
@@ -37,41 +35,21 @@ public class DiffGamePictureAnalyzer : MonoBehaviour
 			_differenceMaps[i] = _ComputeDifferenceMap(_modifiedOriginalPictures[i], _modifiedErrorPictures[i]);
 		}
 		#endif
+
+		_leftFrame = new Rect (20f, 20f + (560f / 2f) - (321f / 2f), 450f, 321f);
 		
-		float __w = originalPictures [0].width;
-		float __h = originalPictures [0].height;
-		_frame = new Rect (0f, 0f, __w, __h);
-		
-		Debug.Log ("Aspect ratio: " + (__w / __h).ToString ());
-		Debug.Log ("Aspect ratio: " + (960f / 600f).ToString ());
-		
-		//  600 height 
-		// - 40 top and bottom margins
-		// - 20 in-between images
-		//  540 total height for 2 pictures
-		// /  2
-		//  270 height per picture
-		// * 1.40274 original pictures aspect ratio
-		// 378,7398 width per picture round up 379
-		// 379x270 per picture
-		
-		// 960 width - 60 margins = 900 -> / 2  = 450 pixels width per picture
-		// 450 / 1.40274 for height = 321 rounded up
-		// 450x321 per picture
-		_topFrame = new Rect (20f, 20f + (560f / 2f) - (321f / 2f), 450f, 321f);
-		
-		_bottomFrame = _topFrame;
-		_bottomFrame.x += _topFrame.width + 20f;
+		_rightFrame = _leftFrame;
+		_rightFrame.x += _leftFrame.width + 20f;
 	}
 
 	void Update ()
 	{
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetKeyDown(KeyCode.RightArrow)) {
 			_levelIndex++;
 			if (_levelIndex >= originalPictures.Length) {
 				_levelIndex = 0;
 			}
-		} else if (Input.GetMouseButtonDown (1)) {
+		} else if (Input.GetKeyDown(KeyCode.LeftArrow)) {
 			_levelIndex--;
 			if (_levelIndex < 0)
 				_levelIndex = originalPictures.Length - 1;
@@ -86,16 +64,12 @@ public class DiffGamePictureAnalyzer : MonoBehaviour
 	
 	void OnGUI ()
 	{
-		/*
-		GUI.DrawTexture(_topFrame, originalPictures[_levelIndex]);
-		GUI.DrawTexture(_bottomFrame, errorPictures[_levelIndex]);
-		*/
-		GUI.DrawTexture (_topFrame, _modifiedOriginalPictures [_levelIndex]);
-		GUI.DrawTexture (_bottomFrame, _modifiedErrorPictures [_levelIndex]);
+		GUI.DrawTexture (_leftFrame, _modifiedOriginalPictures [_levelIndex]);
+		GUI.DrawTexture (_rightFrame, _modifiedErrorPictures [_levelIndex]);
 		
 		#if UNITY_EDITOR
 		if (_cheatModeEnabled)
-			GUI.DrawTexture(_bottomFrame, _differenceMaps[_levelIndex]);
+			GUI.DrawTexture(_rightFrame, _differenceMaps[_levelIndex]);
 		#endif
 	}
 	#endregion
@@ -116,14 +90,15 @@ public class DiffGamePictureAnalyzer : MonoBehaviour
 		for (int i = 0; i < __aPixels.Length; i++) {
 			Color __aColor = __aPixels [i];
 			Color __bColor = __bPixels [i];
-			float __difference = Vector4.Distance (__aColor, __bColor);
 			
-			if (__difference < 0.05f) {
+			float __difference = Vector4.Distance (__aColor, __bColor);
+			if (__difference < 0.1f) {
 				// Pixels are practically the same
 				__diffPixels [i] = Color.clear;
 			} else {
 				// Pixels are very much different
 				__diffPixels [i] = (Random.value < 0.5f) ? Color.magenta : Color.white;
+				//__diffPixels [i] = __aColor;
 			}
 		}
 		
