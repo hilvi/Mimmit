@@ -4,6 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class HorseCharacterController : MonoBehaviour {
 	
+	#region MEMBERS
 	public float gravity = 20;
 	public float runningSpeed = 5;
 	public float jumpSpeed = 10;
@@ -17,17 +18,17 @@ public class HorseCharacterController : MonoBehaviour {
 	private Vector3 _movement;
 	private float _currentSpeed;
 	private bool _sideStepping = false;
-	private ParticleRenderer _particles;
+
 	Transform _plane;
+	public Transform particle;
+	#endregion
 	
+	#region UNITY_METHODS
 	void Start () 
 	{
-		GameObject __particles = (GameObject)Instantiate(Resources.Load("Particles/powerup"));
-		__particles.transform.parent = transform;
-		__particles.transform.position = new Vector3(0, transform.position.y, -1);
-
-		_particles = GetComponentInChildren<ParticleRenderer>();
 		_controller = GetComponent<CharacterController>();
+		particle = transform.Find ("Particle");
+		particle.gameObject.SetActive(false);
 		
 		_plane = transform.Find("Plane");
 		_currentSpeed = runningSpeed;
@@ -61,17 +62,9 @@ public class HorseCharacterController : MonoBehaviour {
 		_movement.x = _currentSpeed;
 		_controller.Move(_movement*Time.deltaTime);
 	}
+	#endregion
 	
-	public IEnumerator PowerUp() {
-		_particles.enabled = true;
-		_currentSpeed = powerUpSpeed;
-		yield return new WaitForSeconds(powerUpTime);
-		if(_currentSpeed == powerUpSpeed)
-			_currentSpeed = runningSpeed;
-		else
-			_currentSpeed = mudSpeed;
-		_particles.enabled = false;
-	}
+	#region METHODS
 	
 	/// <summary>
 	/// Enters the mud configuration.
@@ -107,6 +100,10 @@ public class HorseCharacterController : MonoBehaviour {
 	{
 		_currentSpeed = speed;
 	}
+	public float GetSpeed()
+	{
+		return _currentSpeed;
+	}
 	public void SideStep() {
 		if(!_sideStepping) // && _controller.isGrounded
 			_SideStep(1);
@@ -126,4 +123,5 @@ public class HorseCharacterController : MonoBehaviour {
 			transform.position = __tmp;
 			_sideStepping = !_sideStepping;
 	}
+	#endregion
 }

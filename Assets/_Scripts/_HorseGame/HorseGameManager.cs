@@ -86,12 +86,7 @@ public class HorseGameManager : GameManager {
 	}
 	
 	void OnGUI()
-	{
-#if UNITY_EDITOR
-		float fps  = 1/Time.deltaTime;
-		GUI.Box (new Rect(0,0,100,50),fps.ToString());
-#endif
-		
+	{	
 		GUI.DrawTexture(_progressBar, _levelTexture);
 		_progressBirdPos.x = PositionToProgress(_birdPosition);
 		GUI.DrawTexture(_progressBirdPos, birdTexture);

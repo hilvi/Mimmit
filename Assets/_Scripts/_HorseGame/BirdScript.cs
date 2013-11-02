@@ -24,10 +24,6 @@ public class BirdScript : MonoBehaviour {
 		_transform.Translate(_translation * Time.deltaTime);
 		_anim.PlayAnimation("Bird");
 	}
-	void OnTriggerEnter(Collider col)
-	{
-		
-	}
 	#endregion
 	
 	#region METHODS
