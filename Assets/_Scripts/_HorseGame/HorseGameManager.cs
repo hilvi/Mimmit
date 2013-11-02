@@ -18,7 +18,7 @@ public class HorseGameManager : GameManager {
 	private float _levelLength;
 	private Texture2D _levelTexture;
 	
-	public HorseCharacterController horseScript;
+	HorseCharacterController _horseScript;
 	public BirdScript birdScript;
 	public AudioClip music;
 	public GameObject musicObject;
@@ -68,6 +68,7 @@ public class HorseGameManager : GameManager {
 		guiText.fontSize = 60;
 		guiText.alignment = TextAlignment.Center;
 		guiText.anchor = TextAnchor.MiddleCenter;
+		_horseScript = GameObject.Find ("Player").GetComponent<HorseCharacterController>();
 	}
 	
 	void Update () 
@@ -109,7 +110,7 @@ public class HorseGameManager : GameManager {
 	public void PlayerFinish()
 	{
 		_playerFinished = true;
-		horseScript.SetSpeed(0);
+		_horseScript.SetSpeed(0);
 		if(_birdFinished == false)_winner = Winner.Player;
 		if(_birdFinished && _playerFinished)
 		{

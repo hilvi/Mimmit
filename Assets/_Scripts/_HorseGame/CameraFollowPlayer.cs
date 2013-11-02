@@ -7,11 +7,12 @@ using System.Collections;
 /// </summary>
 public class CameraFollowPlayer : MonoBehaviour {
 	
-	public Transform playerTr;
+	Transform playerTr;
 	Transform _transform;
 	void Start()
 	{
 		_transform = GetComponent<Transform>();
+		playerTr = GameObject.Find ("Player").transform;
 	}
 
 	void Update () 

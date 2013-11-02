@@ -8,14 +8,17 @@ using System.Collections;
 /// </summary>
 public class MudScript : MonoBehaviour {
 
-	public HorseCharacterController horseScript;
-	
+	HorseCharacterController _horseScript;
+	void Start()
+	{
+		_horseScript = GameObject.Find ("Player").GetComponent<HorseCharacterController>();
+	}
 	void OnTriggerEnter()
 	{
-		horseScript.EnterMudConfiguration();
+		_horseScript.EnterMudConfiguration();
 	}
 	void OnTriggerExit()
 	{
-		horseScript.ExitMudConfiguration();
+		_horseScript.ExitMudConfiguration();
 	}
 }
