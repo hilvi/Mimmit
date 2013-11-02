@@ -26,7 +26,7 @@ public class DiffGameManager : GameManager
 	//private Rect _gameArea;
 	private Rect _leftFrame, _rightFrame;
 	
-	
+	private CircularCounterScript _counter;
 	#endregion
 	
 	#region UNITY_METHODS
@@ -62,6 +62,11 @@ public class DiffGameManager : GameManager
 		
 		_borderOrigPic = _CreateBorders(originalPicture, Color.black, 10);
 		_borderErrPic = _CreateBorders(errorPicture, Color.black, 10);
+		
+		_counter = GetComponent<CircularCounterScript>();
+		_counter.SetPosition(Screen.width / 2f - 50f, 40f);
+		
+		text.enabled = false;
 	}
 
 	void Update ()
@@ -76,6 +81,8 @@ public class DiffGameManager : GameManager
 		if (_errorLeft == 0)
 			SetGameState (GameState.Won);
 		text.text = _errorLeft.ToString (); 
+		
+		_counter.SetActiveSectors(7 - _errorLeft);
 	}
 	
 	void OnGUI ()
@@ -95,6 +102,8 @@ public class DiffGameManager : GameManager
 			GUI.Box(errors[i], i.ToString());
 		}
 		#endif
+		
+		_counter.Draw();
 	}
 	#endregion
 	
