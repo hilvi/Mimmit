@@ -18,7 +18,6 @@ public class HorseCharacterController : MonoBehaviour {
 	private Vector3 _movement;
 	private float _currentSpeed;
 	private bool _sideStepping = false;
-
 	Transform _plane;
 	public Transform particle;
 	#endregion
@@ -65,6 +64,7 @@ public class HorseCharacterController : MonoBehaviour {
 	#endregion
 	
 	#region METHODS
+
 	
 	/// <summary>
 	/// Enters the mud configuration.
@@ -80,6 +80,7 @@ public class HorseCharacterController : MonoBehaviour {
 
 		Animation2D __anim =  anim.GetCurrentAnimation();
 		__anim.frameRate /= 2;
+		print ("In");
 	}
 	
 	/// <summary>
@@ -95,7 +96,10 @@ public class HorseCharacterController : MonoBehaviour {
 		
 		Animation2D __anim =  anim.GetCurrentAnimation();
 		__anim.frameRate *= 2;
+		print ("Out");
+		print(__anim.frameRate);
 	}
+	
 	public void SetSpeed(float speed)
 	{
 		_currentSpeed = speed;
