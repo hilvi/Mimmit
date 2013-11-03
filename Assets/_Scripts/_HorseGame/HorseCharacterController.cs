@@ -15,6 +15,7 @@ public class HorseCharacterController : MonoBehaviour
 	public Animator2D anim;
 	public Transform particle;
 	
+	private HorseGameManager _gameManager;
 	private CharacterController _controller;
 	private Vector3 _movement;
 	private float _currentSpeed;
@@ -32,10 +33,15 @@ public class HorseCharacterController : MonoBehaviour
 		_plane = transform.Find ("Plane");
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
+		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
+		anim.PlayAnimation ("Idle");
 	}
 	
 	void Update ()
 	{
+		if (_gameManager.GetGameState() != GameState.Running)
+			return;
+		
 		if (Input.GetButtonDown ("Fire1"))
 			SideStep ();
 		if (Input.GetButtonUp ("Fire1"))

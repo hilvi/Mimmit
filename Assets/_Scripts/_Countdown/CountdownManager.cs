@@ -3,6 +3,7 @@ using System.Collections;
 
 public class CountdownManager : MonoBehaviour {
 	
+	#region MEMBERS
 	public GameObject countdownScript;
 	
 	public bool CountdownDone {
@@ -11,7 +12,10 @@ public class CountdownManager : MonoBehaviour {
 		}
 	}
 	private bool _countdownDone;
+	private Vector3 _spawnPosition;
+	#endregion
 	
+	#region UNITY_METHODS
 	void Start () {
 		_countdownDone = false;
 		StartCoroutine(_Countdown());
@@ -20,11 +24,16 @@ public class CountdownManager : MonoBehaviour {
 	void Update () {
 	
 	}
+	#endregion
+	
+	#region MEMBERS
+	public void SetSpawnPosition(Vector3 position) {
+		_spawnPosition = position;
+	}
 	
 	private IEnumerator _Countdown() {
-		GameObject cs = Instantiate(countdownScript) as GameObject;
-		cs.GetComponent<CountdownScript>().SetText("3");
-		for (int i = 2; i >= 0; i--) {
+		GameObject cs = null;
+		for (int i = 3; i >= 0; i--) {
 			float t = 1f;
 			while (t > 0f) {
 				t -= Time.deltaTime;
@@ -33,11 +42,11 @@ public class CountdownManager : MonoBehaviour {
 			
 			if (i != 0) {
 				// Numbers
-				cs = Instantiate(countdownScript) as GameObject;
+				cs = Instantiate(countdownScript, _spawnPosition, Quaternion.identity) as GameObject;
 				cs.GetComponent<CountdownScript>().SetText(i.ToString());
 			} else {
 				// Go text
-				cs = Instantiate(countdownScript) as GameObject;
+				cs = Instantiate(countdownScript, _spawnPosition, Quaternion.identity) as GameObject;
 				cs.GetComponent<CountdownScript>().SetText("GO!");
 			}
 		}
@@ -45,4 +54,5 @@ public class CountdownManager : MonoBehaviour {
 		_countdownDone = true;
 		yield return null;
 	}
+	#endregion
 }

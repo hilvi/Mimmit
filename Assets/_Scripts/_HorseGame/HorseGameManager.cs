@@ -17,11 +17,13 @@ public class HorseGameManager : GameManager
 	public Texture2D playerTexture;
 	public Texture2D birdTexture;
 	public float progressCharacterSize = 50;
+	
+	private CharacterWidgetScript _characterWidget;
+	private HorseCharacterController _horseScript;
 	private Winner _winner = Winner.None;
 	private bool _playerFinished = false;
 	private bool _birdFinished = false;
 	private bool _gameOver;
-	private CharacterWidgetScript _characterWidget;
 	private Rect _progressBar;
 	private Rect _progressPlayerPos;
 	private Rect _progressBirdPos;
@@ -29,7 +31,6 @@ public class HorseGameManager : GameManager
 	private Transform _birdPosition;
 	private float _levelLength;
 	private Texture2D _levelTexture;
-	private HorseCharacterController _horseScript;
 	#endregion
 
 	
@@ -43,7 +44,7 @@ public class HorseGameManager : GameManager
 			InGameMenuGUI.music.audio.Play ();
 		}
 		_characterWidget = GetComponent<CharacterWidgetScript> ();
-		SetGameState (GameState.Running);
+		SetGameState (GameState.Pregame);
 		
 		float __width = Screen.width / 2;
 		Transform __finishPosition = GameObject.Find ("FinishLine").transform;
@@ -67,6 +68,8 @@ public class HorseGameManager : GameManager
 		guiText.alignment = TextAlignment.Center;
 		guiText.anchor = TextAnchor.MiddleCenter;
 		_horseScript = GameObject.Find ("Player").GetComponent<HorseCharacterController> ();
+		
+		StartCoroutine(_InitiateCountdown());
 	}
 	
 	void Update ()
@@ -128,6 +131,20 @@ public class HorseGameManager : GameManager
 		float __currentPos = pos.transform.position.x;
 		__currentPos = __currentPos / _levelLength * progressBarLength;
 		return _progressBar.x + __currentPos - 15;
+	}
+	
+	private IEnumerator _InitiateCountdown ()
+	{
+		CountdownManager __cdm = GetComponent<CountdownManager> ();
+		__cdm.SetSpawnPosition(new Vector3(0f, 2f, -1f));
+		
+		while (!__cdm.CountdownDone) {
+			yield return null;
+		}
+		
+		base.SetGameState (GameState.Running);
+		
+		yield return null;
 	}
 	#endregion
 }

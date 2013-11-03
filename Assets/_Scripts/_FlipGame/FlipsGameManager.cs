@@ -39,7 +39,7 @@ public class FlipsGameManager : GameManager
 		SetGameState (GameState.Pregame);
 		_cam = Camera.main;
 		
-		StartCoroutine (_UpdateStatus ());
+		StartCoroutine (_InitiateCountdown ());
 	}
 	
 	void Update ()
@@ -123,9 +123,11 @@ public class FlipsGameManager : GameManager
 		}
 	}
 	
-	private IEnumerator _UpdateStatus ()
+	private IEnumerator _InitiateCountdown ()
 	{
 		CountdownManager __cdm = GetComponent<CountdownManager> ();
+		__cdm.SetSpawnPosition(new Vector3(0f, 0f, -1f));
+		
 		while (!__cdm.CountdownDone) {
 			yield return null;
 		}
