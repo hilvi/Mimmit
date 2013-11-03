@@ -11,7 +11,6 @@ public class InGameMenuGUI : Overlay
 	#region MEMBERS
 	public Texture Restart, PlayButton, MainMenuButton, PauseButton;
 	public static GameObject music;
-
 	private GameManager _gameManager;
 	private bool _callOnce = false;
 	private Rect _pauseButtonRegion;
@@ -102,11 +101,6 @@ public class InGameMenuGUI : Overlay
 		music = null;
 		Destroy (source.gameObject);
 	}
-	
-	void _LoadNextLevel ()
-	{
-		LoadLevel(_gameManager.GetNextLevel());
-	}
 		
 	private void _ShowBottomMenu ()
 	{
@@ -132,7 +126,7 @@ public class InGameMenuGUI : Overlay
 				StartCoroutine (_LoadMainMenu (obj.audio));
 			else {
 				Time.timeScale = 1.0f;
-				Application.LoadLevel ("ChooseGameScene");
+				LoadLevel ("ChooseGameScene");
 			}
 		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
 			_gameManager.RestartGame ();
@@ -143,21 +137,13 @@ public class InGameMenuGUI : Overlay
 	
 	private void _HandleWonState ()
 	{
-		if (!_gameManager.isLastLevel) {
-			if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
-				GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
-				StartCoroutine (_LoadMainMenu (obj.audio));
-			} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
-				_gameManager.RestartGame ();
-			} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
-				_LoadNextLevel ();
-			}
-		} else {
-			if (!_callOnce) {
-				_callOnce = true;
-				GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
-				StartCoroutine (_LoadWinScene(obj.audio));
-			}
+		if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
+			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
+			StartCoroutine (_LoadMainMenu (obj.audio));
+		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
+			_gameManager.RestartGame ();
+		} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
+			_gameManager.GoToNextLevel();
 		}
 	}
 	
