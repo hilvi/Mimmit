@@ -80,10 +80,13 @@ public class ChooseGameScript : Overlay {
 		chosen = GetChosenCharacter();
 		audioSource = GetComponent<AudioSource>();
 		audioSource.clip = audioPress;
+		
+		// This hack kills any extra music objects
+		GameObject t = GameObject.Find("MusicMemory(Clone)");
+		if (t != null)
+			Destroy (t);
 	}
 
-	
-	
 	// Update is called once per frame
 	void OnGUI ()
 	{
