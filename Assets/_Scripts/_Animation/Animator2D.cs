@@ -17,7 +17,7 @@ public class Animator2D : MonoBehaviour {
 	#endregion
 	
 	#region UNITY_METHODS
-	void Start()
+	void Awake()
 	{
 		Animation2D []_animations = GetComponents<Animation2D>();
 		foreach(Animation2D a in _animations)
