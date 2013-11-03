@@ -21,7 +21,7 @@ public class DiffGameManager : GameManager
 	
 	private int _errorLeft;
 	private AudioSource _audioSource;
-	private List<Rect> _misses = new List<Rect> ();
+	private Dictionary<Rect, float> _misses = new Dictionary<Rect, float> ();
 	private List<Rect> _hits = new List<Rect> ();
 	//private Rect _gameArea;
 	private Rect _leftFrame, _rightFrame;
@@ -34,7 +34,7 @@ public class DiffGameManager : GameManager
 	{
 		base.Start ();
 		SetGameState (GameState.Running);
-				
+
 		_errorLeft = errors.Length;
 		
 		//300 is half of picture size
@@ -71,18 +71,35 @@ public class DiffGameManager : GameManager
 
 	void Update ()
 	{
+		// Check if player found an error
 		if (Input.GetMouseButtonDown (0)) {
 			Vector2 pos = InputManager.MouseScreenToGUI ();
 			if (GetGameState () != GameState.Paused && 
-				GetGameState () != GameState.Won) {
+				GetGameState () != GameState.Won &&
+				_rightFrame.Contains(pos)) {
 				_Hit (pos);
 			}
 		}
+		
+		// End game if all errors are found
 		if (_errorLeft == 0)
 			SetGameState (GameState.Won);
 		text.text = _errorLeft.ToString (); 
 		
+		// Update counter
 		_counter.SetActiveSectors(7 - _errorLeft);
+		
+		// Reduce alpha on all crosses, remove from dict if alpha = 0f
+		var __keys = new List<Rect>(_misses.Keys);
+		foreach (var k in __keys) {
+			float newAlpha = _misses[k] - Time.deltaTime;
+			newAlpha = Mathf.Clamp(newAlpha, 0f, 2f);
+			
+			if (newAlpha <= 0f)
+				_misses.Remove(k);
+			else
+				_misses[k] = newAlpha;
+		}
 	}
 	
 	void OnGUI ()
@@ -90,9 +107,13 @@ public class DiffGameManager : GameManager
 		GUI.DrawTexture (_leftFrame, _borderOrigPic);
 		GUI.DrawTexture (_rightFrame, _borderErrPic);
 		
-		foreach (Rect miss in _misses) {
-			GUI.DrawTexture (miss, cross);
+		foreach (var m in _misses) {
+			Color tempCol = GUI.color;
+			GUI.color = new Color(1f, 1f, 1f, m.Value);
+			GUI.DrawTexture (m.Key, cross);
+			GUI.color = tempCol;
 		}
+
 		foreach (Rect hit in _hits) {
 			GUI.DrawTexture (hit, tick);
 		}
@@ -128,7 +149,7 @@ public class DiffGameManager : GameManager
 		_audioSource.clip = missSound;
 		_audioSource.Play ();
 		click.center = pos;
-		_misses.Add (click);
+		_misses.Add (click, 2f);
 	}
 	
 	private Texture2D _CreateBorders (Texture2D a, Color borderColor, int borderThickness)
