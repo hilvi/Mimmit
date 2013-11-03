@@ -119,15 +119,14 @@ public class ChooseGameScript : Overlay {
 			audioSource.Play();
 			StartCoroutine(FadeOutAndLoad("Horse_1"));
 		}
+		
+		/*
 		//Unfinished games
 		GUI.enabled = false;
 		if(MGUI.HoveredButton (hedgehogRect,hedgehog))
 		{
 			
 		}
-		
-		
-		
 		if(MGUI.HoveredButton (dragonRect,dragon))
 		{
 			
@@ -145,6 +144,7 @@ public class ChooseGameScript : Overlay {
 			
 		}
 		GUI.enabled = true;
+		*/
 	}
 	IEnumerator FadeOutAndLoad (string scene)
 	{

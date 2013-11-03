@@ -105,8 +105,10 @@ public class FlipsGameManager : GameManager
 
 	void OnGUI ()
 	{
+		#region UNITY_EDITOR
 		float fps = 1 / Time.deltaTime;
 		GUI.Box (new Rect (0, 0, 100, 50), fps.ToString ());
+		#endregion
 	}
 	#endregion
 	
