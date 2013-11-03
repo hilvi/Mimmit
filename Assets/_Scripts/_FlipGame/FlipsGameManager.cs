@@ -5,144 +5,135 @@ using System.Collections;
 [RequireComponent(typeof(SoundManager))]
 [RequireComponent(typeof(InputManager))]
 [RequireComponent(typeof(LevelGenerator))]
-public class FlipsGameManager : GameManager {
-	
+public class FlipsGameManager : GameManager
+{
+	#region MEMBERS
 	public float revealTime = 3; // The time, in seconds, for which the cards are revealed at the beginning of the level
-	
 	public InputManager inputManager;
 	public LevelGenerator levelGenerator;
 	public SoundManager sound;
-
-	Card firstCard = null; // Handles to the two cards the player is currently flipping
-	Card secondCard = null;
-	
-	int cardsTotal;
-	int cardsGuessed = 0;
-	Camera cam;
 	public GameObject musicObject;
 	public AudioClip music;
-	static GameObject obj;
 	
-	// Use this for initialization
-	public override void Start () 
+	private Card _firstCard = null; // Handles to the two cards the player is currently flipping
+	private Card _secondCard = null;
+	private int _cardsTotal;
+	private int _cardsGuessed = 0;
+	private Camera _cam;
+	private static GameObject _obj;
+	#endregion
+	
+	#region UNITY_METHODS
+	public override void Start ()
 	{
 		base.Start ();
 		//obj = null;
 		//obj = GameObject.FindGameObjectWithTag("SoundCam");
-		if(InGameMenuGUI.music == null)
-		{
-		  	InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
+		if (InGameMenuGUI.music == null) {
+			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
 			InGameMenuGUI.music.audio.clip = music;
-			InGameMenuGUI.music.audio.Play();
+			InGameMenuGUI.music.audio.Play ();
 		}
 		
-		cardsTotal = levelGenerator.CardCount();
-		SetGameState(GameState.Pregame);
-		cam = Camera.main;
+		_cardsTotal = levelGenerator.CardCount ();
+		SetGameState (GameState.Pregame);
+		_cam = Camera.main;
 		
-		StartCoroutine(_UpdateStatus());
+		StartCoroutine (_UpdateStatus ());
 	}
 	
-	// Update is called once per frame
-	void Update () 
+	void Update ()
 	{
-		GameState currentState = GetGameState();
-		switch(currentState)
-		{
+		GameState currentState = GetGameState ();
+		switch (currentState) {
 			#region PREGAME
-		 	case GameState.Pregame:	
-				if (inputManager.IsEscapeButtonDown()) 
-					PauseGame();
-				break;
+		case GameState.Pregame:	
+			if (inputManager.IsEscapeButtonDown ()) 
+				PauseGame ();
+			break;
 			#endregion
 			#region RUNNING
-			case GameState.Running:
-				if (inputManager.IsEscapeButtonDown()) 
-					PauseGame();
-				Ray ray = cam.ScreenPointToRay(inputManager.GetCursorPosition());
-		   		RaycastHit hit;
+		case GameState.Running:
+			if (inputManager.IsEscapeButtonDown ()) 
+				PauseGame ();
+			Ray ray = _cam.ScreenPointToRay (inputManager.GetCursorPosition ());
+			RaycastHit hit;
 			
-		        if (inputManager.IsButtonDown() && Physics.Raycast(ray, out hit) && !secondCard)
-				{
-					if (hit.collider.CompareTag("Card")) 
-					{
-						Card card = hit.collider.gameObject.transform.parent.GetComponent<Card>();
-						if (card.IsFaceDown()) 
-						{
-							StartCoroutine(card.Rotate());
-							sound.PlayAudio("MemorySwift");
-							if (firstCard==null) 
-								firstCard = card;
-							else {
-								secondCard = card;
-							}
+			if (inputManager.IsButtonDown () && Physics.Raycast (ray, out hit) && !_secondCard) {
+				if (hit.collider.CompareTag ("Card")) {
+					Card card = hit.collider.gameObject.transform.parent.GetComponent<Card> ();
+					if (card.IsFaceDown ()) {
+						StartCoroutine (card.Rotate ());
+						sound.PlayAudio ("MemorySwift");
+						if (_firstCard == null) 
+							_firstCard = card;
+						else {
+							_secondCard = card;
 						}
 					}
 				}
-				if (secondCard != null) 
-				{
-					if (firstCard.IsFaceUp() && secondCard.IsFaceUp()) 
-					{
-						if (firstCard.GetSuit() == secondCard.GetSuit()) 
-						{
-							cardsGuessed += 2;
-							firstCard.Disappear();
-							secondCard.Disappear();
-							sound.PlayAudio("MemoryFound");
-							if (cardsGuessed >= cardsTotal) 
-							{
-								SetGameState(GameState.Won);
-								return;
-							}
-						}else
-						{
-							StartCoroutine(firstCard.Rotate());
-							StartCoroutine(secondCard.Rotate ());
-							sound.PlayAudio("MemoryReturn");
+			}
+			if (_secondCard != null) {
+				if (_firstCard.IsFaceUp () && _secondCard.IsFaceUp ()) {
+					if (_firstCard.GetSuit () == _secondCard.GetSuit ()) {
+						_cardsGuessed += 2;
+						_firstCard.Disappear ();
+						_secondCard.Disappear ();
+						sound.PlayAudio ("MemoryFound");
+						if (_cardsGuessed >= _cardsTotal) {
+							SetGameState (GameState.Won);
+							return;
 						}
+					} else {
+						StartCoroutine (_firstCard.Rotate ());
+						StartCoroutine (_secondCard.Rotate ());
+						sound.PlayAudio ("MemoryReturn");
+					}
 						
-						firstCard = null;
-						secondCard = null;			
-					}
+					_firstCard = null;
+					_secondCard = null;			
 				}
-				break;
+			}
+			break;
 			#endregion
 			#region OVER
-			case GameState.Won:
-				break;
+		case GameState.Won:
+			break;
 			#endregion
 		}
 	}
-	void OnGUI()
+
+	void OnGUI ()
 	{
-		float fps  = 1/Time.deltaTime;
-		GUI.Box (new Rect(0,0,100,50),fps.ToString());
+		float fps = 1 / Time.deltaTime;
+		GUI.Box (new Rect (0, 0, 100, 50), fps.ToString ());
 	}
+	#endregion
 	
-	void HideAllCards() 
+	#region METHODS
+	private void _HideAllCards ()
 	{
 		Card card;
-		GameObject [] obj = GameObject.FindGameObjectsWithTag("Card");
-		foreach (GameObject cardBack in obj) 
-		{
-			card = cardBack.transform.parent.GetComponent<Card>();
-			if (card.IsFaceUp()) 
-			{
-				StartCoroutine(card.Rotate());
+		GameObject [] obj = GameObject.FindGameObjectsWithTag ("Card");
+		foreach (GameObject cardBack in obj) {
+			card = cardBack.transform.parent.GetComponent<Card> ();
+			if (card.IsFaceUp ()) {
+				StartCoroutine (card.Rotate ());
 			}
 		}
 	}
 	
-	private IEnumerator _UpdateStatus() 
+	private IEnumerator _UpdateStatus ()
 	{
-		CountdownManager __cdm = GetComponent<CountdownManager>();
+		CountdownManager __cdm = GetComponent<CountdownManager> ();
 		while (!__cdm.CountdownDone) {
 			yield return null;
 		}
 		
-		HideAllCards();
-		base.SetGameState(GameState.Running);
+		_HideAllCards ();
+		base.SetGameState (GameState.Running);
 		
 		yield return null;
 	}
+	#endregion
 }
