@@ -90,13 +90,14 @@ public class InGameMenuGUI : Overlay
 	
 	IEnumerator _LoadWinScene (AudioSource source)
 	{
-		LoadLevel ("WinScene");
+		
 		if (source != null) {
 			while (source.volume > 0) {
 				source.volume -= 0.02f;	
 				yield return null;
 			}
 		}
+		LoadLevel ("WinScene");
 		Time.timeScale = 1.0f;
 		music = null;
 		Destroy (source.gameObject);
@@ -143,7 +144,10 @@ public class InGameMenuGUI : Overlay
 		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
 			_gameManager.RestartGame ();
 		} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
-			_gameManager.GoToNextLevel();
+			if(!_gameManager.isLastLevel)
+				_gameManager.GoToNextLevel();
+			else
+				StartCoroutine(_LoadWinScene(GameObject.FindGameObjectWithTag("SoundCam").audio));
 		}
 	}
 	
