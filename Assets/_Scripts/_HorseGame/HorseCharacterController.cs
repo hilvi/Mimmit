@@ -38,14 +38,20 @@ public class HorseCharacterController : MonoBehaviour
 	}
 	
 	void Update ()
-	{
-		if (_gameManager.GetGameState() != GameState.Running)
+	{		
+		if (_gameManager.GetGameState() != GameState.Running &&
+			_gameManager.GetGameState() != GameState.Paused) {
+			// Always idle if game is not running or paused
+			anim.PlayAnimation ("Idle");
 			return;
+		}
 		
-		if (Input.GetButtonDown ("Fire1"))
-			SideStep ();
-		if (Input.GetButtonUp ("Fire1"))
-			SideStepReturn ();
+		if (_gameManager.GetGameState() != GameState.Paused) {			
+			if (Input.GetButtonDown ("Fire1"))
+				SideStep ();
+			if (Input.GetButtonUp ("Fire1"))
+				SideStepReturn ();
+		}
 		
 		if (_controller.isGrounded) { 
 			if (_controller.velocity.x != 0)
