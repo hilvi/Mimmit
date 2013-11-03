@@ -1,10 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-public class FlipsGUIBackground : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		GetComponent<GUITexture>().pixelInset = new Rect(-Screen.width/2, -Screen.height/2, Screen.width, Screen.height);
+public class FlipsGUIBackground : MonoBehaviour
+{
+	#region UNITY_METHODS
+	void Start ()
+	{
+		GetComponent<GUITexture> ().pixelInset = 
+			new Rect (-Screen.width / 2, -Screen.height / 2, Screen.width, Screen.height);
 	}
+	#endregion
 }

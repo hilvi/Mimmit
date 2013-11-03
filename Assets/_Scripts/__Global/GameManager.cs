@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public enum GameState { Pregame, Running, Paused, Won, Lost };
-public class GameManager : MonoBehaviour {
+public class GameManager : Overlay {
 	#region MEMBERS
 	public bool isLastLevel = true;
 	public int currentLevel = 1;
@@ -13,11 +13,6 @@ public class GameManager : MonoBehaviour {
 	#endregion
 	
 	#region UNITY_METHODS
-	virtual protected void Awake() 
-	{		
-
-	}
-	
 	public virtual void Start () 
 	{
 		SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
@@ -68,7 +63,7 @@ public class GameManager : MonoBehaviour {
 	{
 		//Reset global time scale
 		Time.timeScale = 1;
-		Application.LoadLevel(Application.loadedLevel);
+		LoadLevel(Application.loadedLevelName);
 	}
 	
 	public bool IsGameRunning() 
@@ -83,19 +78,10 @@ public class GameManager : MonoBehaviour {
 		Time.timeScale = 1;
 		if (!isLastLevel){
 			int i = currentLevel + 1;
-			Application.LoadLevel(gameName + i.ToString());
+			LoadLevel(gameName + i.ToString());
 		}else
-			Application.LoadLevel("CreditsScreen");	
+			LoadLevel("WinScene");	
 
-	}
-	public string GetNextLevel()
-	{
-		Time.timeScale = 1;
-		if (!isLastLevel){
-			int i = currentLevel + 1;
-			return gameName + i.ToString();
-		}else
-			return "CreditsScreen";
 	}
 	
 	public void EndGame() 
