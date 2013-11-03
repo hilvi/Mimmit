@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BirdScript : MonoBehaviour {
-
+public class BirdScript : MonoBehaviour
+{
 	#region MEMBERS
 	public float speed;
 	private Animator2D _anim;
@@ -11,23 +11,22 @@ public class BirdScript : MonoBehaviour {
 	#endregion
 	
 	#region UNITY_METHODS
-	
-	void Start () 
+	void Start ()
 	{
-		_transform = GetComponent<Transform>();
-		_translation = new Vector3(speed,0,0);
-		_anim = GetComponentInChildren<Animator2D>();
+		_transform = GetComponent<Transform> ();
+		_translation = new Vector3 (speed, 0, 0);
+		_anim = GetComponentInChildren<Animator2D> ();
 	}
 
-	void Update () 
+	void Update ()
 	{	
-		_transform.Translate(_translation * Time.deltaTime);
-		_anim.PlayAnimation("Bird");
+		_transform.Translate (_translation * Time.deltaTime);
+		_anim.PlayAnimation ("Bird");
 	}
 	#endregion
 	
 	#region METHODS
-	public void SetSpeed(float speed)
+	public void SetSpeed (float speed)
 	{
 		_translation.x = speed;
 	}
