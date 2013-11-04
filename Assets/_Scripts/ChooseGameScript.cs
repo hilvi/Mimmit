@@ -80,10 +80,13 @@ public class ChooseGameScript : Overlay {
 		chosen = GetChosenCharacter();
 		audioSource = GetComponent<AudioSource>();
 		audioSource.clip = audioPress;
+		
+		// This hack kills any extra music objects
+		GameObject t = GameObject.Find("MusicMemory(Clone)");
+		if (t != null)
+			Destroy (t);
 	}
 
-	
-	
 	// Update is called once per frame
 	void OnGUI ()
 	{
@@ -119,15 +122,14 @@ public class ChooseGameScript : Overlay {
 			audioSource.Play();
 			StartCoroutine(FadeOutAndLoad("Horse_1"));
 		}
+		
+		/*
 		//Unfinished games
 		GUI.enabled = false;
 		if(MGUI.HoveredButton (hedgehogRect,hedgehog))
 		{
 			
 		}
-		
-		
-		
 		if(MGUI.HoveredButton (dragonRect,dragon))
 		{
 			
@@ -145,6 +147,7 @@ public class ChooseGameScript : Overlay {
 			
 		}
 		GUI.enabled = true;
+		*/
 	}
 	IEnumerator FadeOutAndLoad (string scene)
 	{
