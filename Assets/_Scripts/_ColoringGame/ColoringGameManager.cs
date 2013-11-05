@@ -56,7 +56,7 @@ public class ColoringGameManager : GameManager {
 			upArrowTexture, downArrowTexture);
 		
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
-			new Vector2(800f, 325f), new Vector2(5f, 5f),
+			/*new Vector2(800f, 325f)*/new Vector2(730f,190f), new Vector2(5f, 5f),
 			paintBrushTextures, eraserTexture, 
 			tickTexture, resetTexture,
 			saveTexture);
@@ -81,6 +81,20 @@ public class ColoringGameManager : GameManager {
 			_HandleMouseClick();
 			_characterWidget.TriggerHappyEmotion();
 		}
+		if(pictureSelectRegion.Contains(Input.mousePosition))
+		{
+			float __mouse = Input.GetAxis("Mouse ScrollWheel");
+			print(__mouse);
+			if(__mouse > 0)
+			{
+				_pictureSelector.HandleMouseWheel(1);
+			}
+			else if(__mouse < 0)
+			{
+				_pictureSelector.HandleMouseWheel(-1);
+			}
+		}
+		
 	}
 	
 	void OnGUI () 

@@ -12,7 +12,7 @@ public class PaintToolbar
 	private ColoringGameManager _manager;
 	private const int _gridWidth = 4;
 	private const int _gridHeight = 8;
-	private const float _brushWidth = 30f;
+	private const float _brushWidth = 50f;
 	private Rect _toolbarRegion;		// 780,20,160,560
 	private Rect _eraseToolRegion;		// 800,40,120,120
 	private Rect _resetToolRegion;		// 800,180,120,120
@@ -40,11 +40,15 @@ public class PaintToolbar
 		_resetTexture = resetTexture;
 		_saveTexture = saveTexture;
 		
-		_saveToolRegion = new Rect (810, 120, 100, 100);
+		/*_saveToolRegion = new Rect (810, 120, 100, 100);
 		
 		_eraseToolRegion = new Rect (790, 240, 60, 60);
-		_resetToolRegion = new Rect (870, 240, 60, 60);
+		_resetToolRegion = new Rect (870, 240, 60, 60);*/
+		_eraseToolRegion = new Rect (730, 110, 60, 60);
+		_resetToolRegion = new Rect (800, 110, 60, 60);
+		_saveToolRegion = new Rect (870, 110, 60, 60);
 		
+	
 		// Generate brush grid
 		_colorPalletteRegion = new Rect[_gridWidth * _gridHeight];
 		for (int y = 0; y < _gridHeight; y++) {

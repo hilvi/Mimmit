@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class PictureSelector
 {
-	#region PRIVATE
+	#region MEMBERS
 	private ColoringGameManager _manager;
 	
 	private Rect _pictureSelectRegion;		// 20,200,160,380
@@ -20,6 +20,25 @@ public class PictureSelector
 	private Texture2D _downArrowTexture;
 	#endregion
 	
+	#region UNITY_METHODS
+	public void OnGui() {
+		#if UNITY_EDITOR
+		GUI.Box(_pictureSelectRegion, "pictureSelect");
+		for (int i = 0; i < 3; i++) {
+			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
+		}
+		#endif
+		
+		for (int i = 0; i < 3; i++) {
+			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
+		}
+		
+		GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
+		GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
+	}
+	#endregion
+	
+	#region METHODS
 	public PictureSelector (ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
 		Texture2D upArrowTexture, Texture2D downArrowTexture) {
 		_manager = manager;
@@ -29,41 +48,29 @@ public class PictureSelector
 		_downArrowTexture = downArrowTexture;
 		
 		_pictureSelectRegion = new Rect(20,200,160,380);
-		_selectUpBtnRegion = new Rect(80, 200, 40, 40);
-		_selectDownBtnRegion = new Rect(80, 540, 40, 40);
+		_selectUpBtnRegion = new Rect(80, 200, 40, 30);
+		_selectDownBtnRegion = new Rect(80, 550, 40, 30);
 		
-		for (int i = 0; i < _pictureCount; i++) {
+		for (int i = 0; i < _pictureCount; i++) 
+		{
 			_pictureNames.Add("Picture"+i.ToString());
 		}
 		
 		// TODO, possibly make more elegant, ugly constants and non-integer values
-		float __v = 252.5f; // Vertical coordinate
+		float __v = 240f; // Vertical coordinate
 		_selectPictureRegion = new Rect[4];
-		for (int i = 0; i < 4; i++) {
-			_selectPictureRegion[i] = new Rect(67.5f, __v, 65f, 65f);
-			__v += 70f;
+
+		for (int i = 0; i < 3; i++) 
+		{
+			_selectPictureRegion[i] = new Rect(52.5f, __v, 95, 95);
+			__v += 100f;
 		}
 		
 		// TODO, load picture thumbnails here
 	}
 	
-	public void OnGui() {
-		#if UNITY_EDITOR
-		GUI.Box(_pictureSelectRegion, "pictureSelect");
-		for (int i = 0; i < 4; i++) {
-			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
-		}
-		#endif
-		
-		for (int i = 0; i < 4; i++) {
-			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
-		}
-		
-		GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
-		GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
-	}
-	
-	public void HandleMouse(Vector2 position) {
+	public void HandleMouse(Vector2 position) 
+	{
 		// Navigation buttons
 		if (_selectUpBtnRegion.Contains(position)) {
 			_pictureIndexOffset--;
@@ -75,7 +82,7 @@ public class PictureSelector
 		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 4);
 		
 		// Picture selection
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 3; i++) {
 			if (_selectPictureRegion[i].Contains(position)) {
 				// TODO load new picture
 				//Debug.Log("selected picture"+_pictureNames[_pictureIndexOffset + i]);
@@ -83,6 +90,15 @@ public class PictureSelector
 			}
 		}
 	}
+	public void HandleMouseWheel(int modifier) 
+	{
+		// Navigation buttons
+		_pictureIndexOffset += modifier < 0 ? 1 : -1; 
+		// Prevent index overflow
+		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 3);
+		
+	}
+	#endregion
 }
 
 
