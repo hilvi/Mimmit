@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChooseGameScript : Overlay {
-	
+public class ChooseGameScript : Overlay 
+{
+	#region MEMBERS
 	GUITexture background;
 	
 	public Texture2D otter, hedgehog, tree, horse, owl, dragon,bear,granma,seaDragon;
@@ -15,26 +16,9 @@ public class ChooseGameScript : Overlay {
 	Camera cam;
 	public AudioClip audioPress;
 	AudioSource audioSource;
-
-	Texture2D GetChosenCharacter ()
-	{
-		Character _character = Manager.GetCharacter();
-		switch(_character)
-		{
-			case Character.Blonde:
-				return blonde;
-			case Character.Brune:
-				return brune;
-			case Character.Boy:
-				return boy;
-			case Character.Fox:
-				return fox;
-			case Character.None:
-				return blonde;
-			default:
-				return blonde;
-		}
-	}
+	#endregion
+	
+	#region UNITY_METHODS
 	public override void Awake()
 	{
 		base.Awake();
@@ -78,7 +62,7 @@ public class ChooseGameScript : Overlay {
 		//granmaRect = 	new Rect(__startX + 1.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
 		//seaDragonRect = new Rect(__startX + 2.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
 		characterBoxRect = new Rect(20,20,200,200);
-		chosen = GetChosenCharacter();
+		chosen = _GetChosenCharacter();
 		audioSource = GetComponent<AudioSource>();
 		audioSource.clip = audioPress;
 		audioSource.volume = 0.5f;
@@ -107,22 +91,22 @@ public class ChooseGameScript : Overlay {
 		if(MGUI.HoveredButton (owlRect,owl))
 		{
 			audioSource.Play ();
-			StartCoroutine(FadeOutAndLoad("Flip_1"));
+			StartCoroutine(_FadeOutAndLoad("Flip_1"));
 		}
 		if(MGUI.HoveredButton (treeRect,tree))
 		{
 			audioSource.Play ();
-			StartCoroutine(FadeOutAndLoad("Diff_1"));
+			StartCoroutine(_FadeOutAndLoad("Diff_1"));
 		}
 		if(MGUI.HoveredButton (otterRect,otter))
 		{
 			audioSource.Play();
-			StartCoroutine(FadeOutAndLoad("Coloring_1"));
+			StartCoroutine(_FadeOutAndLoad("Coloring_1"));
 		}
 		if(MGUI.HoveredButton (horseRect,horse))
 		{
 			audioSource.Play();
-			StartCoroutine(FadeOutAndLoad("Horse_1"));
+			StartCoroutine(_FadeOutAndLoad("Horse_1"));
 		}
 		
 		/*
@@ -151,7 +135,10 @@ public class ChooseGameScript : Overlay {
 		GUI.enabled = true;
 		*/
 	}
-	IEnumerator FadeOutAndLoad (string scene)
+	#endregion
+	
+	#region METHODS
+	IEnumerator _FadeOutAndLoad (string scene)
 	{
 		AudioSource source = cam.audio;
 		LoadLevel(scene);
@@ -161,4 +148,24 @@ public class ChooseGameScript : Overlay {
 			yield return null;
 		}
 	}
+	Texture2D _GetChosenCharacter ()
+	{
+		Character _character = Manager.GetCharacter();
+		switch(_character)
+		{
+			case Character.Blonde:
+				return blonde;
+			case Character.Brune:
+				return brune;
+			case Character.Boy:
+				return boy;
+			case Character.Fox:
+				return fox;
+			case Character.None:
+				return blonde;
+			default:
+				return blonde;
+		}
+	}
+	#endregion
 }

@@ -21,6 +21,7 @@ public class HorseCharacterController : MonoBehaviour
 	private float _currentSpeed;
 	private bool _sideStepping = false;
 	private Transform _plane;
+	public GameObject smokeParticle; 
 	#endregion
 	
 	#region UNITY_METHODS
@@ -34,36 +35,50 @@ public class HorseCharacterController : MonoBehaviour
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
 		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
+		smokeParticle.SetActive(false);
 		anim.PlayAnimation ("Idle");
 	}
 	
 	void Update ()
-	{		
-		if (_gameManager.GetGameState() != GameState.Running &&
-			_gameManager.GetGameState() != GameState.Paused) {
+	{	
+		GameState __state = _gameManager.GetGameState();
+		if (__state == GameState.Pregame)
+		{
 			// Always idle if game is not running or paused
 			anim.PlayAnimation ("Idle");
 			return;
 		}
-		
-		if (_gameManager.GetGameState() != GameState.Paused) {			
-			if (Input.GetButtonDown ("Fire1"))
-				SideStep ();
-			if (Input.GetButtonUp ("Fire1"))
-				SideStepReturn ();
+		if(__state == GameState.Lost || __state == GameState.Won)
+		{
+			smokeParticle.SetActive(false);
+			return;
 		}
-		
-		if (_controller.isGrounded) { 
+		if (_controller.isGrounded) 
+		{ 
+			if (Input.GetButtonDown ("Fire1"))
+			SideStep ();
+			if (Input.GetButtonUp ("Fire1"))
+			SideStepReturn ();
+			
 			if (_controller.velocity.x != 0)
+			{
+				smokeParticle.SetActive(true);
 				anim.PlayAnimation ("Run");
+			}
 			else
+			{
+				smokeParticle.SetActive(false);
 				anim.PlayAnimation ("Idle");
-			if (Input.GetButtonDown ("Jump") && !_sideStepping) {	
+			}
+			if (Input.GetButtonDown ("Jump") && !_sideStepping) 
+			{	
 				_movement.y = jumpSpeed;
 			}
 			
-		} else {
+		} else 
+		{
 			anim.PlayAnimation ("Jump");
+			smokeParticle.SetActive(false);
 			_movement.y -= gravity * Time.deltaTime;
 		}
 		
@@ -85,9 +100,8 @@ public class HorseCharacterController : MonoBehaviour
 		else
 			_currentSpeed = mudSpeed;
 
-		Animation2D __anim = anim.GetCurrentAnimation ();
-		__anim.frameRate /= 2;
-		print ("In");
+		Animator2D __anim = GetComponentInChildren<Animator2D>();
+		__anim.speed /= 2;
 	}
 	
 	/// <summary>
@@ -101,10 +115,8 @@ public class HorseCharacterController : MonoBehaviour
 		else
 			_currentSpeed = powerUpSpeed;
 		
-		Animation2D __anim = anim.GetCurrentAnimation ();
-		__anim.frameRate *= 2;
-		print ("Out");
-		print(__anim.frameRate);
+		Animator2D __anim = GetComponentInChildren<Animator2D>();
+		__anim.speed *= 2;
 	}
 	
 	public void SetSpeed(float speed)
@@ -119,7 +131,7 @@ public class HorseCharacterController : MonoBehaviour
 
 	public void SideStep ()
 	{
-		if (!_sideStepping) // && _controller.isGrounded
+		if (!_sideStepping)
 			_SideStep (1);
 	}
 
