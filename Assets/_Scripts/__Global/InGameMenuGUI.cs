@@ -12,7 +12,6 @@ public class InGameMenuGUI : Overlay
 	public Texture Restart, PlayButton, MainMenuButton, PauseButton;
 	public static GameObject music;
 	private GameManager _gameManager;
-	private bool _callOnce = false;
 	private Rect _pauseButtonRegion;
 	private Rect _mainMenuButtonRegion;
 	private Rect _restartButtonRegion;

@@ -73,11 +73,6 @@ public class HorseCharacterController : MonoBehaviour
 	#endregion
 	
 	#region METHODS
-<<<<<<< HEAD
-
-	
-=======
->>>>>>> 4dfc115e09bd115d765c6f697dc1814b34cd5b2d
 	/// <summary>
 	/// Enters the mud configuration.
 	/// When stepping in mud, this is called and set the horse as mud configuration.
@@ -111,13 +106,8 @@ public class HorseCharacterController : MonoBehaviour
 		print ("Out");
 		print(__anim.frameRate);
 	}
-<<<<<<< HEAD
 	
 	public void SetSpeed(float speed)
-=======
-
-	public void SetSpeed (float speed)
->>>>>>> 4dfc115e09bd115d765c6f697dc1814b34cd5b2d
 	{
 		_currentSpeed = speed;
 	}

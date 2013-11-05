@@ -6,7 +6,7 @@ public class ChooseGameScript : Overlay {
 	GUITexture background;
 	
 	public Texture2D otter, hedgehog, tree, horse, owl, dragon,bear,granma,seaDragon;
-	Rect /*mapRect,*/ otterRect, hedgehogRect, treeRect, horseRect, owlRect, dragonRect, bearRect,granmaRect,seaDragonRect;
+	Rect /*mapRect,*/ otterRect, treeRect, horseRect, owlRect/*, hedgehogRect,  dragonRect, bearRect,granmaRect,seaDragonRect*/;
 	Rect characterBoxRect;
 	public Texture2D blonde, brune, fox, boy;
 	public GameObject camPrefab;
@@ -58,7 +58,8 @@ public class ChooseGameScript : Overlay {
 		Rect rect = new Rect(-width / 2, - height / 2, width, height);
 		background.pixelInset = rect;
 		
-		
+		// Here for some reasons, you may have a little problem to see the underscore in front of the variables...
+		// They do not show up for me even though they are there
 		float __startY = 50f;
 		float __edge = 110;
 		float __size = 130;
@@ -69,17 +70,18 @@ public class ChooseGameScript : Overlay {
 		treeRect = 		new Rect(__startX + __size + __margin, __startY + __size + __margin,__edge,__edge);// 285 250
 		otterRect = 	new Rect(__startX + 2f * __size + __margin, __startY + __size + __margin,__edge,__edge);
 		
-		hedgehogRect = 	new Rect(__startX + 0.5f  *__size+__margin, __startY + 2f * __size+ __margin,__edge,__edge);
+		//hedgehogRect = 	new Rect(__startX + 0.5f  *__size+__margin, __startY + 2f * __size+ __margin,__edge,__edge);
 		horseRect = 	new Rect(__startX + 1.5f  *__size + __margin, __startY + 2f * __size + __margin,__edge,__edge);
-		dragonRect =	new Rect(__startX + 2.5f  *__size+ __margin, __startY + 2f * __size + __margin,__edge,__edge);
+		//dragonRect =	new Rect(__startX + 2.5f  *__size+ __margin, __startY + 2f * __size + __margin,__edge,__edge);
 		
-		bearRect =	 	new Rect(__startX + 0.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
-		granmaRect = 	new Rect(__startX + 1.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
-		seaDragonRect = new Rect(__startX + 2.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
+		//bearRect =	 	new Rect(__startX + 0.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
+		//granmaRect = 	new Rect(__startX + 1.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
+		//seaDragonRect = new Rect(__startX + 2.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
 		characterBoxRect = new Rect(20,20,200,200);
 		chosen = GetChosenCharacter();
 		audioSource = GetComponent<AudioSource>();
 		audioSource.clip = audioPress;
+		audioSource.volume = 0.5f;
 		
 		// This hack kills any extra music objects
 		GameObject t = GameObject.Find("MusicMemory(Clone)");

@@ -4,26 +4,6 @@ using System.Collections;
 public class NavigationGUIScript : Overlay {
 	public Texture PlayButton,homeButton,PauseButton;
 	
-	AudioSource audioSource;
-	
-	/*void Awake()
-	{
-		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
-		foreach(Camera c in cams)
-		{
-			if(c.gameObject != this.gameObject)
-			{
-				
-				Destroy (c.gameObject);
-			}
-		}
-	}*/
-	// Use this for initialization
-	void Start () 
-	{
-		//audioSource = cam.GetComponent<AudioSource>();
-	}
-	
 	void OnGUI() 
 	{		
 		float screenUnitW = Screen.width/100;
@@ -41,28 +21,12 @@ public class NavigationGUIScript : Overlay {
 			ShowBottomMenu();
 		}	
 	}
-
-	
-	/*IEnumerator LoadMainMenu(AudioSource source){
-		if (audioSource != null)
-		{
-			while(audioSource.volume > 0){
-				audioSource.volume -= 0.02f;	
-				yield return null;
-			}
-		}
-		
-		Manager.SetNavigationState(NavigationState.Running);
-		Application.LoadLevel("ChoiceScene");
-	}*/
 	
 	void ShowBottomMenu()
 	{
 		// Left button
 		if (MGUI.HoveredButton(new Rect(MGUI.margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) 
 		{
-			//StartCoroutine(LoadMainMenu(audioSource));
-			
 			LoadLevel("ChoiceScene");
 			Time.timeScale = 1.0f;
 			Manager.SetNavigationState(NavigationState.Running);
