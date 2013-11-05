@@ -11,6 +11,7 @@ public class Animator2D : MonoBehaviour {
 	private Animation2D _currentAnimation;
 	private Dictionary<string, Animation2D> _animDict = new Dictionary<string, Animation2D>();
 	private bool _playing;
+	public float speed = 1.0f; 
 	
 	//public string defaultAnimation = "idle";
 	public Renderer rendererObj;
@@ -48,7 +49,7 @@ public class Animator2D : MonoBehaviour {
 		{
 			SwitchAnimation(animationName);
 		}
-		_phase += Time.deltaTime *_currentAnimation.frameRate;
+		_phase += Time.deltaTime *_currentAnimation.frameRate * speed;
 		if(_phase > 1)
 		{
 			_SetCursor();
