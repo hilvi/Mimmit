@@ -44,9 +44,9 @@ public class PaintToolbar
 		
 		_eraseToolRegion = new Rect (790, 240, 60, 60);
 		_resetToolRegion = new Rect (870, 240, 60, 60);*/
-		_eraseToolRegion = new Rect (730, 110, 60, 60);
-		_resetToolRegion = new Rect (800, 110, 60, 60);
-		_saveToolRegion = new Rect (870, 110, 60, 60);
+		_eraseToolRegion = new Rect (740, 110, 60, 60);
+		_resetToolRegion = new Rect (810, 110, 60, 60);
+		_saveToolRegion = new Rect (880, 110, 60, 60);
 		
 	
 		// Generate brush grid
