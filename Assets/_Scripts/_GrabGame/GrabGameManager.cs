@@ -5,6 +5,7 @@ public class BirdGameManager : GameManager
 {
 	public GameObject musicObject;
 	public AudioClip music;
+	public FallingObjectSettings[] fallingObjects;
 	
 	private ObjectSpawner _spawner;
 	
