@@ -12,7 +12,7 @@ public class GrabGameManager : GameManager
 	Shader _diffuse;
 	float _worldWidth;
 	float _worldHeight;
-	private float timer;	
+	private float timer;
 	
 	// Use this for initialization
 	public override void Start ()
