@@ -10,9 +10,9 @@ public class PaintToolbar
 	
 	#region PRIVATE
 	private ColoringGameManager _manager;
-	private const int _gridWidth = 4;
-	private const int _gridHeight = 8;
-	private const float _brushWidth = 50f;
+	private const int _gridWidth = 3;
+	private const int _gridHeight = 6;
+	private const float _brushWidth = 66f;
 	private Rect _toolbarRegion;		// 780,20,160,560
 	private Rect _eraseToolRegion;		// 800,40,120,120
 	private Rect _resetToolRegion;		// 800,180,120,120
@@ -68,13 +68,13 @@ public class PaintToolbar
 		// Generate HSL color pallette for each brush
 		Color[] __HSLpallette = new Color[_gridWidth * _gridHeight];
 		int __index = 0;
-		for (int y = 0; y < _gridHeight; y++) {
-			for (int x = 0; x < _gridWidth; x++) { 
+		for (int y = 1; y <= _gridHeight; y++) {
+			for (int x = 1; x <= _gridWidth; x++) { 
 				float __h = (float)y / (float)_gridHeight;
 				float __s = (float)x / (float)_gridWidth;
 				
-				if (x == 0)
-					__s += (float)1f / ((float)_gridWidth * 2f); // Slight bias to prevent similar colors
+				//if (x == 0)
+					//__s += (float)1f / ((float)_gridWidth * 2f); // Slight bias to prevent similar colors
 				
 				__HSLpallette [__index] = HSLToRGB (__h, __s, 0.5f);
 				__index++;
