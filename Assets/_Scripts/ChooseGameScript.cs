@@ -25,11 +25,13 @@ public class ChooseGameScript : Overlay
 	
 	public class GameButton
 	{
-		private Rect movieRect; // Used for video clip
-		private Rect backgroundRect; // Used for borders
 		public Texture texture;
 		public float horizontalOffset;
 		public string startSceneName;
+		
+		private Rect movieRect; // Used for video clip
+		private Rect backgroundRect; // Used for borders
+		private float floatingHeight;
 		
 		public GameButton (float x, float y, float width, float height, 
 			Texture texture, string startSceneName, float borderWidth)
@@ -50,13 +52,29 @@ public class ChooseGameScript : Overlay
 		{
 			Rect __r = new Rect (movieRect);
 			__r.x += horizontalOffset;
+			__r.y -= floatingHeight;
 			return __r;
 		}
 		
 		public Rect CalcBGRect () {
 			Rect __r = new Rect (backgroundRect);
 			__r.x += horizontalOffset;
+			__r.y -= floatingHeight;
 			return __r;
+		}
+		
+		public Rect CalcStaticRect() {
+			Rect __r = new Rect (backgroundRect);
+			__r.x += horizontalOffset;
+			return __r;
+		}
+		
+		public void FloatUp() {
+			floatingHeight = Mathf.Lerp(floatingHeight, 20f, Time.deltaTime * 10f);
+		}
+		
+		public void FloatBack() {
+			floatingHeight = Mathf.Lerp(floatingHeight, 0f, Time.deltaTime * 5f);
 		}
 	}
 	
@@ -154,6 +172,12 @@ public class ChooseGameScript : Overlay
 		
 		for (int i = 0; i < gameButtons.Length; i++) {
 			gameButtons [i].horizontalOffset = currentPivotOffset;
+			// If hovering, float button
+			if (gameButtons [i].CalcStaticRect().Contains(__mouse)) {
+				gameButtons[i].FloatUp();
+			} else {
+				gameButtons[i].FloatBack();
+			}
 		}
 		
 		// Mouse input
@@ -203,7 +227,7 @@ public class ChooseGameScript : Overlay
 	{
 		Vector2 __mousePos = InputManager.MouseScreenToGUI ();
 		for (int i = 0; i < gameButtons.Length; i++) {
-			if (gameButtons [i].CalcRect ().Contains (__mousePos) &&
+			if (gameButtons [i].CalcStaticRect ().Contains (__mousePos) &&
 				gameButtons [i].startSceneName != "") {
 				_localAudioSource.Play ();
 				StartCoroutine (_FadeOutAndLoad (gameButtons [i].startSceneName));
