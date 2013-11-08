@@ -6,4 +6,7 @@ public class FallingObjectSettings {
 	public float maxSpeed;
 	public Texture2D texture;
 	public bool collect;
+	
+	internal int id = -1;
+	internal bool collected = false;
 }

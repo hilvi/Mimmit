@@ -4,6 +4,9 @@ using System.Collections;
 public class FallingObjectScript : MonoBehaviour {
 	
 	public float fallingSpeed;
+	public GrabGameManager manager;
+	public int id;
+	public bool collect;
 	
 	private Vector3 _pos;
 	
@@ -26,6 +29,7 @@ public class FallingObjectScript : MonoBehaviour {
 	void OnTriggerEnter (Collider col)
 	{
 		if (col.gameObject.name == "Player") {
+			manager.ObjectCollected(id, collect);
 			Destroy(gameObject);
 		}
 	}
