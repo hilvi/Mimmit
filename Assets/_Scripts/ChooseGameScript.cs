@@ -25,21 +25,36 @@ public class ChooseGameScript : Overlay
 	
 	public class GameButton
 	{
-		public Rect rect;
+		private Rect movieRect; // Used for video clip
+		private Rect backgroundRect; // Used for borders
 		public Texture texture;
 		public float horizontalOffset;
 		public string startSceneName;
 		
-		public GameButton (float x, float y, float width, float height, Texture texture, string startSceneName)
+		public GameButton (float x, float y, float width, float height, 
+			Texture texture, string startSceneName, float borderWidth)
 		{
-			this.rect = new Rect (x + width / 2f, y - height / 2f, width, height);
+			this.movieRect = new Rect (x + width / 2f, y - height / 2f, width, height);
 			this.texture = texture;
 			this.startSceneName = startSceneName;
+			
+			// Create crude black border
+			backgroundRect = new Rect(movieRect);
+			backgroundRect.x -= borderWidth;
+			backgroundRect.y -= borderWidth;
+			backgroundRect.width += borderWidth * 2f;
+			backgroundRect.height += borderWidth * 2f;
 		}
 		
 		public Rect CalcRect ()
 		{
-			Rect __r = new Rect (rect);
+			Rect __r = new Rect (movieRect);
+			__r.x += horizontalOffset;
+			return __r;
+		}
+		
+		public Rect CalcBGRect () {
+			Rect __r = new Rect (backgroundRect);
 			__r.x += horizontalOffset;
 			return __r;
 		}
@@ -100,7 +115,8 @@ public class ChooseGameScript : Overlay
 				__buttonWidth, // Size width
 				__buttonHeight, // Size height
 				buttonTextures [i], // Movie Texture
-				sceneNames [i]				// Scene name
+				sceneNames [i],  // Scene name
+				10f // Border width
 			);			
 		}
 
@@ -162,6 +178,8 @@ public class ChooseGameScript : Overlay
 
 		// Draw buttons
 		for (int i = 0; i < gameButtons.Length; i++) {
+			GUI.Box(gameButtons[i].CalcBGRect(), "");
+			
 			#if UNITY_PRO
 			GUI.DrawTexture(gameButtons[i].CalcRect(), gameButtons[i].texture);
 			#else
