@@ -13,7 +13,7 @@ public class ChooseGameScript : Overlay
 	public MovieTexture[] buttonTextures;
 
 	// Entire background will be shifted by this value to create an illusion of "centering" the camera
-	private float centerPivotOffset; 
+	public float centerPivotOffset; 
 	// This will be define how much background is shifted from center pivot. 
 	private float currentPivotOffset;
 	private Rect backgroundRect;
@@ -75,17 +75,12 @@ public class ChooseGameScript : Overlay
 		}
 		
 		// Initialize background
-		float __width = hugeBackground.width;
-		float __height = hugeBackground.height;
-		backgroundRect = new Rect (__width / 2f, 0f, hugeBackground.width, hugeBackground.height);
-		
+		backgroundRect = new Rect (0f, 0f, hugeBackground.width, hugeBackground.height);
+
 		// Initialize mouse scroll regions
 		float __regionWidth = Screen.width / 4f;
 		leftScrollRegion = new Rect (0f, 0f, __regionWidth, Screen.height);
-		rightScrollRegion = new Rect (Screen.width - __regionWidth, 0f, __regionWidth, Screen.height);
-		
-		// Pivot offset will always be negative and one quarter of backgrounds width
-		centerPivotOffset = -__width / 4f;
+		rightScrollRegion = new Rect (Screen.width - __regionWidth, 0f, __regionWidth, Screen.height);	
 	}
 	
 	void Start ()
@@ -155,7 +150,7 @@ public class ChooseGameScript : Overlay
 		}
 		
 		currentPivotOffset = Mathf.Clamp (currentPivotOffset, 
-			-hugeBackground.width / 4f, hugeBackground.width / 4f);
+			-Mathf.Abs(centerPivotOffset), Mathf.Abs(centerPivotOffset));
 		
 		for (int i = 0; i < gameButtons.Length; i++) {
 			gameButtons [i].horizontalOffset = currentPivotOffset;
