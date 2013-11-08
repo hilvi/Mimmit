@@ -11,11 +11,14 @@ public class GrabGameManager : GameManager
 	public float missesAllowed = 3;
 	public Texture2D tick;
 	public Texture2D cross;
+	public AudioClip hitSound;
+	public AudioClip missSound;
 	Shader _diffuse;
 	float _worldWidth;
 	float _worldHeight;
 	private float _timer;
 	private int _collectables = 0;
+	private AudioSource _audioSource;
 	
 	// Use this for initialization
 	public override void Start ()
@@ -23,6 +26,7 @@ public class GrabGameManager : GameManager
 		base.Start ();
 		
 		_diffuse = Shader.Find ("Diffuse");
+		_audioSource = GetComponent<AudioSource>();
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -97,7 +101,12 @@ public class GrabGameManager : GameManager
 	
 	void SpawnRandomObject ()
 	{
-		int id = Random.Range (0, fallingObjects.Length);
+		//Not very efficient..
+		int id;
+		do {
+			id = Random.Range (0, fallingObjects.Length);
+		} while(fallingObjects[id].collected);
+			
 		InstantiateFallingObject (fallingObjects [id], id);
 	}
 	
@@ -126,8 +135,16 @@ public class GrabGameManager : GameManager
 				fallingObjects [id].collected = true;
 				_collectables--;
 			}
+			if(hitSound != null) {
+				_audioSource.clip = hitSound;
+				_audioSource.Play ();
+			}
 		} else {
 			missesAllowed--;
+			if(missSound != null) {
+				_audioSource.clip = missSound;
+				_audioSource.Play ();
+			}
 		}
 	}
 }
