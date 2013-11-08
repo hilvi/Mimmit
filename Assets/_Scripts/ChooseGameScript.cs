@@ -11,7 +11,6 @@ public class ChooseGameScript : Overlay
 	
 	private Camera cam;
 	private GUITexture background;
-	private Rect /*mapRect,*/ otterRect, treeRect, horseRect, owlRect/*, hedgehogRect,  dragonRect, bearRect,granmaRect,seaDragonRect*/;
 	private Rect characterBoxRect;
 	private Texture2D chosen;
 	private GUIStyle noStyle = new GUIStyle ();
@@ -20,14 +19,37 @@ public class ChooseGameScript : Overlay
 	public Texture2D hugeBackground;
 	public float scrollingSpeed;
 	
-	public MovieTexture movieTexture01, movieTexture02;
-	private Rect movieTestRect;
+	public MovieTexture[] buttonTextures;
 	
-	private const float centerPivotOffset = -480f;
-	private float currentPivotOffset = 0f;
+	// Entire background will be shifted by this value to create an illusion of "centering" the camera
+	private float centerPivotOffset; 
+	
+	// This will be define how much background is shifted from center pivot. 
+	private float currentPivotOffset;
 	private Rect backgroundRect;
 	private Rect leftScrollRegion, rightScrollRegion;
 	#endregion
+	
+	public class GameButton {
+		public Rect rect;
+		public MovieTexture texture;
+		public float horizontalOffset;
+		public string startSceneName;
+		
+		public GameButton(float x, float y, float width, float height, MovieTexture texture, string startSceneName) {
+			this.rect = new Rect(x + width / 2f, y - height / 2f, width, height);
+			this.texture = texture;
+			this.startSceneName = startSceneName;
+		}
+		
+		public Rect CalcRect() {
+			Rect __r = new Rect(rect);
+			__r.x += horizontalOffset;
+			return __r;
+		}
+	}
+	
+	private GameButton[] gameButtons;
 	
 	#region UNITY_METHODS
 	public override void Awake ()
@@ -41,49 +63,102 @@ public class ChooseGameScript : Overlay
 			cam = (Camera)o;
 		}
 		
+		// Initialize background
 		float __width = hugeBackground.width;
 		float __height = hugeBackground.height;
 		backgroundRect = new Rect(__width / 2f, 0f, hugeBackground.width, hugeBackground.height);
 		
+		// Initialize mouse scroll regions
 		float __regionWidth = Screen.width / 6f;
 		leftScrollRegion = new Rect(0f, 0f, __regionWidth, Screen.height);
 		rightScrollRegion = new Rect(Screen.width - __regionWidth, 0f, __regionWidth, Screen.height);
 		
-		movieTestRect = new Rect(200f, 300f, 480f, 270f);
-		Debug.Log (UnityEditorInternal.InternalEditorUtility.HasPro());
+		// Pivot offset will always be negative and one quarter of backgrounds width
+		centerPivotOffset = -__width / 4f;
 	}
 	
 	void Start ()
 	{
 		FadeIn ();
 		background = GetComponent<GUITexture> ();
-		// Setting background to full screen
-		float width = Screen.width;
-		float height = Screen.height;
-		Rect rect = new Rect (-width / 2, - height / 2, width, height);
-		background.pixelInset = rect;
 		
-		// Here for some reasons, you may have a little problem to see the underscore in front of the variables...
-		// They do not show up for me even though they are there
-		float __startY = 50f;
-		float __edge = 110;
-		float __size = 130;
-		float __margin = (__size - __edge) / 2;
-		float __startX = (960 - __size * 4f) / 2f;
-		owlRect = new Rect (__startX + 1.5f * __size + __margin, __startY + __margin, __edge, __edge);
-	
-		treeRect = new Rect (__startX + __size + __margin, __startY + __size + __margin, __edge, __edge);// 285 250
-		otterRect = new Rect (__startX + 2f * __size + __margin, __startY + __size + __margin, __edge, __edge);
+		/* 
+		 * Positions are randomly generated and evenly spread across window.
+		 * Will change later.
+		 */ 
+		float __buttonWidth = Screen.width / 8f;
+		float __buttonHeight = Screen.height / 8f;
+		float __startX = -Screen.width/2f - __buttonWidth / 2f;
+		float __periodX = __buttonWidth * 1.365f;
+		Vector2[] __buttonPositions = new Vector2[10];
+		for (int i = 0; i < __buttonPositions.Length; i++) {
+			__buttonPositions[i].x = __startX + (i+1) * __periodX;
+			__buttonPositions[i].y = (Screen.height/2f) + Random.Range(-1f, 1f) * Screen.height/4f;
+		}
 		
-		//hedgehogRect = 	new Rect(__startX + 0.5f  *__size+__margin, __startY + 2f * __size+ __margin,__edge,__edge);
-		horseRect = new Rect (__startX + 1.5f * __size + __margin, __startY + 2f * __size + __margin, __edge, __edge);
-		//dragonRect =	new Rect(__startX + 2.5f  *__size+ __margin, __startY + 2f * __size + __margin,__edge,__edge);
+		/*
+		 * Construct game buttons
+		 * 1. & 2. param: position x, position y
+		 * 2. & 3. param: size width, size height
+		 * 4. param: MovieTexture
+		 * 5. param: Scene to Load
+		 */ 
+		gameButtons = new GameButton[10];
+		gameButtons[0] = new GameButton(
+			__buttonPositions[0].x, __buttonPositions[0].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "Flip_1");
 		
-		//bearRect =	 	new Rect(__startX + 0.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
-		//granmaRect = 	new Rect(__startX + 1.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
-		//seaDragonRect = new Rect(__startX + 2.5f * __size+__margin, __startY + 3f * __size+__margin,__edge,__edge);
-		characterBoxRect = new Rect (20, 20, 200, 200);
+		gameButtons[1] = new GameButton(
+			__buttonPositions[1].x, __buttonPositions[1].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "Diff_1");
+		
+		gameButtons[2] = new GameButton(
+			__buttonPositions[2].x, __buttonPositions[2].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "Coloring_1");
+		
+		gameButtons[3] = new GameButton(
+			__buttonPositions[3].x, __buttonPositions[3].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "Horse_1");
+		
+		gameButtons[4] = new GameButton(
+			__buttonPositions[4].x, __buttonPositions[4].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "nullscene");
+		
+		gameButtons[5] = new GameButton(
+			__buttonPositions[5].x, __buttonPositions[5].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "nullscene");
+		
+		gameButtons[6] = new GameButton(
+			__buttonPositions[6].x, __buttonPositions[6].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "nullscene");
+		
+		gameButtons[7] = new GameButton(
+			__buttonPositions[7].x, __buttonPositions[7].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "nullscene");
+		
+		gameButtons[8] = new GameButton(
+			__buttonPositions[8].x, __buttonPositions[8].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "nullscene");
+		
+		gameButtons[9] = new GameButton(
+			__buttonPositions[9].x, __buttonPositions[9].y, 
+			__buttonWidth, __buttonHeight, 
+			buttonTextures[0], "nullscene");
+		
+		// Character widget
+		characterBoxRect = new Rect (0, 0, 120, 120);
 		chosen = _GetChosenCharacter ();
+		
+		// Sound system
 		audioSource = GetComponent<AudioSource> ();
 		audioSource.clip = audioPress;
 		audioSource.volume = 0.5f;
@@ -92,6 +167,12 @@ public class ChooseGameScript : Overlay
 		GameObject t = GameObject.Find ("MusicMemory(Clone)");
 		if (t != null)
 			Destroy (t);
+		
+		// Set movie textures to loop and start playing them
+		for (int i = 0; i < buttonTextures.Length; i++) {
+			buttonTextures[i].loop = true;
+			buttonTextures[i].Play();
+		}
 	}
 	
 	void Update () {
@@ -106,6 +187,10 @@ public class ChooseGameScript : Overlay
 		}
 		
 		currentPivotOffset = Mathf.Clamp(currentPivotOffset, -Screen.width / 2f, Screen.width / 2f);
+		
+		for (int i = 0; i < gameButtons.Length; i++) {
+			gameButtons[i].horizontalOffset = currentPivotOffset;
+		}
 	}
 	
 	// Update is called once per frame
@@ -118,62 +203,37 @@ public class ChooseGameScript : Overlay
 		
 		GUI.Box(leftScrollRegion, "left");
 		GUI.Box(rightScrollRegion, "right");
-		
-		GUI.Box(movieTestRect, "testmovie");
-		
+
+		// Character widget
 		NavigationState currentState = Manager.GetNavigationState ();
 		GUI.enabled = true;
 		GUI.Box (characterBoxRect, chosen, noStyle);
 		if (currentState == NavigationState.Pause) {
 			GUI.enabled = false;
 		}
-		
-		/*if(GUI.Button (mapRect,"Map"))
-		{
-			Application.LoadLevel("MapWorld");
-		}*/
-		if (MGUI.HoveredButton (owlRect, owl)) {
-			audioSource.Play ();
-			StartCoroutine (_FadeOutAndLoad ("Flip_1"));
+
+		// Very very ugly code
+		// First loop only draws buttons if they are NOT hovered, to make SURE they are
+		// behind every other buttons, especially when they enlarge ...
+		for (int i = 0; i < gameButtons.Length; i++) {
+			if (!gameButtons[i].CalcRect().Contains(InputManager.MouseScreenToGUI())) {
+				if (MGUI.HoveredButton (gameButtons[i].CalcRect(), gameButtons[i].texture, 3f)) {
+					audioSource.Play ();
+					StartCoroutine (_FadeOutAndLoad (gameButtons[i].startSceneName));
+					
+				}
+			}
 		}
-		if (MGUI.HoveredButton (treeRect, tree)) {
-			audioSource.Play ();
-			StartCoroutine (_FadeOutAndLoad ("Diff_1"));
+		// ... second loop only draws one hovered button. We only draw 10 buttons,
+		// so no duplicates, but lots of unnecessary calculations.
+		for (int i = 0; i < gameButtons.Length; i++) {
+			if (gameButtons[i].CalcRect().Contains(InputManager.MouseScreenToGUI())) {
+				if (MGUI.HoveredButton (gameButtons[i].CalcRect(), gameButtons[i].texture, 3f)) {
+					audioSource.Play ();
+					StartCoroutine (_FadeOutAndLoad (gameButtons[i].startSceneName));
+				}
+			}
 		}
-		if (MGUI.HoveredButton (otterRect, otter)) {
-			audioSource.Play ();
-			StartCoroutine (_FadeOutAndLoad ("Coloring_1"));
-		}
-		if (MGUI.HoveredButton (horseRect, horse)) {
-			audioSource.Play ();
-			StartCoroutine (_FadeOutAndLoad ("Horse_1"));
-		}
-		
-		/*
-		//Unfinished games
-		GUI.enabled = false;
-		if(MGUI.HoveredButton (hedgehogRect,hedgehog))
-		{
-			
-		}
-		if(MGUI.HoveredButton (dragonRect,dragon))
-		{
-			
-		}
-		if(MGUI.HoveredButton (bearRect,bear))
-		{
-			
-		}
-		if(MGUI.HoveredButton (granmaRect,granma))
-		{
-			
-		}
-		if(MGUI.HoveredButton (seaDragonRect,seaDragon))
-		{
-			
-		}
-		GUI.enabled = true;
-		*/
 	}
 	#endregion
 	
