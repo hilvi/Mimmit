@@ -107,16 +107,33 @@ public class GameSelectionScript : Overlay
 	{
 		// Mouse scrolling
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
+		
+		// Check if player is hovering any button
+		bool __buttonHovering = false;
+		for (int i = 0; i < gameButtons.Length; i++) {
+			bool __contains = (gameButtons [i].CalcStaticRect ().Contains (__mouse));
 			
-		if (leftScrollRegion.Contains (__mouse)) {
+			if  (__contains)
+				__buttonHovering = true;
+			
+			// Mouse input
+			if (Input.GetMouseButtonDown (0)) {
+				if (__contains && gameButtons [i].startSceneName != "") {
+					_localAudioSource.Play ();
+					StartCoroutine (_FadeOutAndLoad (gameButtons [i].startSceneName));
+					break;
+				}
+			}
+		}
+
+		if (leftScrollRegion.Contains (__mouse) && !__buttonHovering) {
 			float __force = 1f - __mouse.x / leftScrollRegion.width;
 			currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
 		}
 		
-		if (rightScrollRegion.Contains (__mouse)) {
+		if (rightScrollRegion.Contains (__mouse) && !__buttonHovering) {
 			float __force = 1f - (Screen.width-__mouse.x) / rightScrollRegion.width;
 			currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
-			Debug.Log(__force);
 		}
 		
 		currentPivotOffset = Mathf.Clamp (currentPivotOffset, 
@@ -130,11 +147,6 @@ public class GameSelectionScript : Overlay
 			} else {
 				gameButtons[i].FloatBack();
 			}
-		}
-		
-		// Mouse input
-		if (Input.GetMouseButtonDown (0)) {
-			_HandleMouseClick ();
 		}
 	}
 	
@@ -174,18 +186,6 @@ public class GameSelectionScript : Overlay
 		while (source.volume > 0.2f || _localAudioSource.isPlaying) {
 			source.volume -= Time.deltaTime * 0.2f;
 			yield return null;
-		}
-	}
-	
-	private void _HandleMouseClick ()
-	{
-		Vector2 __mousePos = InputManager.MouseScreenToGUI ();
-		for (int i = 0; i < gameButtons.Length; i++) {
-			if (gameButtons [i].CalcStaticRect ().Contains (__mousePos) &&
-				gameButtons [i].startSceneName != "") {
-				_localAudioSource.Play ();
-				StartCoroutine (_FadeOutAndLoad (gameButtons [i].startSceneName));
-			}
 		}
 	}
 	#endregion
