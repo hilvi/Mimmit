@@ -154,7 +154,8 @@ public class ChooseGameScript : Overlay
 			Debug.Log(__force);
 		}
 		
-		currentPivotOffset = Mathf.Clamp (currentPivotOffset, -Screen.width / 2f, Screen.width / 2f);
+		currentPivotOffset = Mathf.Clamp (currentPivotOffset, 
+			-hugeBackground.width / 4f, hugeBackground.width / 4f);
 		
 		for (int i = 0; i < gameButtons.Length; i++) {
 			gameButtons [i].horizontalOffset = currentPivotOffset;
