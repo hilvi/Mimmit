@@ -13,6 +13,7 @@ public class GrabGameManager : GameManager
 	public Texture2D cross;
 	public AudioClip hitSound;
 	public AudioClip missSound;
+	public float speedMultiplier = 2;
 	Shader _diffuse;
 	float _worldWidth;
 	float _worldHeight;
@@ -20,6 +21,7 @@ public class GrabGameManager : GameManager
 	private int _collectables = 0;
 	private AudioSource _audioSource;
 	private CharacterWidgetScript _characterWidget;
+	private List<GameObject> _objectsOnScreen = new List<GameObject>();
 	
 	// Use this for initialization
 	public override void Start ()
@@ -111,7 +113,8 @@ public class GrabGameManager : GameManager
 		GameObject __obj = Instantiate (fallingObjectPrefab) as GameObject;
 		
 		FallingObjectScript __script = __obj.GetComponent<FallingObjectScript> ();
-		__script.fallingSpeed = Random.Range (settings.minSpeed, settings.maxSpeed);
+		__script.fallingSpeed = Random.Range (settings.minSpeed, settings.maxSpeed)*speedMultiplier;
+		__script.oscillation = Random.Range (settings.minOscillationAmplitude, settings.maxOscillationAmplitude);
 		__script.manager = this;
 		__script.collect = settings.collect;
 		__script.id = id;
@@ -122,6 +125,19 @@ public class GrabGameManager : GameManager
 		
 		float __size = __obj.transform.localScale.x;
 		__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
+		
+		_objectsOnScreen.Add(__obj);
+	}
+	
+	void GameOver()
+	{
+		frequency = 0;
+		foreach(GameObject obj in _objectsOnScreen)
+		{
+			Destroy(obj);
+		}
+		_objectsOnScreen.Clear();
+		GameObject.Find("Player").SetActive(false);
 	}
 	
 	public void ObjectCollected (int id, bool collect)
@@ -148,13 +164,12 @@ public class GrabGameManager : GameManager
 		}
 		
 		if (_collectables == 0) {
-			frequency = 0;
 			SetGameState (GameState.Won);
+			GameOver();
 		} else if (missesAllowed == 0) {
-			frequency = 0;
+
 			SetGameState (GameState.Lost);
+			GameOver();
 		}
 	}
-	
-	
 }
