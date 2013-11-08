@@ -19,6 +19,7 @@ public class GrabGameManager : GameManager
 	private float _timer;
 	private int _collectables = 0;
 	private AudioSource _audioSource;
+	private CharacterWidgetScript _characterWidget;
 	
 	// Use this for initialization
 	public override void Start ()
@@ -26,7 +27,8 @@ public class GrabGameManager : GameManager
 		base.Start ();
 		
 		_diffuse = Shader.Find ("Diffuse");
-		_audioSource = GetComponent<AudioSource>();
+		_audioSource = GetComponent<AudioSource> ();
+		_characterWidget = GetComponent<CharacterWidgetScript>();
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -35,7 +37,7 @@ public class GrabGameManager : GameManager
 			InGameMenuGUI.music.audio.loop = true;
 		}
 		
-		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width-100, Screen.height, 0));
+		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width - 120, Screen.height, 0));
 		_worldWidth = __worldSize.x;
 		_worldHeight = __worldSize.y;
 		
@@ -50,16 +52,10 @@ public class GrabGameManager : GameManager
 	// Update is called once per frame
 	void Update ()
 	{
-		if (_collectables == 0) {
-			SetGameState (GameState.Won);
-		} else if (missesAllowed == 0) {
-			SetGameState (GameState.Lost);
-		} else {
-			_timer += Time.deltaTime;
-			if (_timer > frequency) {
-				SpawnRandomObject ();
-				_timer = 0;
-			}
+		_timer += Time.deltaTime;
+		if (_timer > frequency && frequency != 0) {
+			SpawnRandomObject ();
+			_timer = 0;
 		}
 	}
 	
@@ -88,14 +84,14 @@ public class GrabGameManager : GameManager
 	{
 		float __width = 50;
 		float __offset = 10;
-		float __halfScreen = Screen.width/2;
+		float __halfScreen = Screen.width / 2;
 		float __startPos = __halfScreen - (__width + __offset) * missesAllowed / 2;
 		
-		Rect __pos = new Rect (__startPos, __width/2, __width, __width);
+		Rect __pos = new Rect (__startPos, __width / 2, __width, __width);
 		
-		for(int i = 0; i < missesAllowed; i++) {
-				GUI.DrawTexture (__pos, cross);
-				__pos.x += __offset + __width;
+		for (int i = 0; i < missesAllowed; i++) {
+			GUI.DrawTexture (__pos, cross);
+			__pos.x += __offset + __width;
 		}
 	}
 	
@@ -130,21 +126,35 @@ public class GrabGameManager : GameManager
 	
 	public void ObjectCollected (int id, bool collect)
 	{
-		if (fallingObjects [id].collect && !fallingObjects [id].collected) {
-			if(!fallingObjects [id].collected) {
-				fallingObjects [id].collected = true;
-				_collectables--;
-			}
-			if(hitSound != null) {
-				_audioSource.clip = hitSound;
-				_audioSource.Play ();
-			}
-		} else {
-			missesAllowed--;
-			if(missSound != null) {
-				_audioSource.clip = missSound;
-				_audioSource.Play ();
+		if (GetGameState () == GameState.Running) {
+			if (fallingObjects [id].collect) {
+				if (!fallingObjects [id].collected) {
+					fallingObjects [id].collected = true;
+					_collectables--;
+				}
+				if (hitSound != null) {
+					_audioSource.clip = hitSound;
+					_audioSource.Play ();
+				}
+				_characterWidget.TriggerHappyEmotion();
+			} else {
+				missesAllowed--;
+				if (missSound != null) {
+					_audioSource.clip = missSound;
+					_audioSource.Play ();
+				}
+				_characterWidget.TriggerSadEmotion();
 			}
 		}
+		
+		if (_collectables == 0) {
+			frequency = 0;
+			SetGameState (GameState.Won);
+		} else if (missesAllowed == 0) {
+			frequency = 0;
+			SetGameState (GameState.Lost);
+		}
 	}
+	
+	
 }
