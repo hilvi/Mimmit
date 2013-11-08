@@ -71,9 +71,9 @@ public class InGameMenuGUI : Overlay
 		if (__choice == ScreenChoice.Map) {
 			LoadLevel ("MapWorld");
 		} else if (__choice == ScreenChoice.Button) {
-			LoadLevel ("ChooseGameScene");
+			LoadLevel ("GameSelectionScene");
 		} else {
-			LoadLevel ("ChooseGameScene");
+			LoadLevel ("GameSelectionScene");
 		}
 		
 		if (source != null) {
@@ -126,7 +126,7 @@ public class InGameMenuGUI : Overlay
 				StartCoroutine (_LoadMainMenu (obj.audio));
 			else {
 				Time.timeScale = 1.0f;
-				LoadLevel ("ChooseGameScene");
+				LoadLevel ("GameSelectionScene");
 			}
 		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
 			_gameManager.RestartGame ();
