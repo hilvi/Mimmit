@@ -9,6 +9,7 @@ public class NavigationGUIScript : Overlay {
 	
 	#region UNITY_METHODS
 	public override void Awake () {
+		base.Awake();
 		float screenUnitW = Screen.width/10;
 		_buttonRect = new Rect(Screen.width - screenUnitW, 0, (Screen.width/10), (Screen.width/10));
 	}
@@ -17,7 +18,6 @@ public class NavigationGUIScript : Overlay {
 	#region METHODS
 	public void Draw() 
 	{		
-		
 		NavigationState currentState = Manager.GetNavigationState();
 		// While the game is in progress, only display the pause button
 		if (currentState == NavigationState.Running) 
