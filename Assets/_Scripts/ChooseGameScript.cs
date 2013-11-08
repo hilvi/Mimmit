@@ -96,7 +96,7 @@ public class ChooseGameScript : Overlay
 		backgroundRect = new Rect (0f, 0f, hugeBackground.width, hugeBackground.height);
 
 		// Initialize mouse scroll regions
-		float __regionWidth = Screen.width / 4f;
+		float __regionWidth = Screen.width / 3f;
 		leftScrollRegion = new Rect (0f, 0f, __regionWidth, Screen.height);
 		rightScrollRegion = new Rect (Screen.width - __regionWidth, 0f, __regionWidth, Screen.height);	
 	}
@@ -105,18 +105,20 @@ public class ChooseGameScript : Overlay
 	{
 		FadeIn ();
 		
-		/* 
-		 * Positions are randomly generated and evenly spread across window.
-		 * Will change later.
-		 */ 
+		// Some hardcore magic number wizardry, dont try this at home.
+		// Manual placement will replace this in future.
 		float __buttonWidth = Screen.width / 8f;
 		float __buttonHeight = Screen.height / 8f;
-		float __startX = -Screen.width / 2f - __buttonWidth / 2f;
-		float __periodX = __buttonWidth * 1.365f;
+		float __startX = 0f;
 		Vector2[] __buttonPositions = new Vector2[10];
 		for (int i = 0; i < __buttonPositions.Length; i++) {
-			__buttonPositions [i].x = __startX + (i + 1) * __periodX;
-			__buttonPositions [i].y = (Screen.height / 2f) + Random.Range (-1f, 1f) * Screen.height / 4f;
+			if (i < 5) {
+				__buttonPositions [i].x = __startX + i * __buttonWidth + i * 60f;
+				__buttonPositions [i].y = (Screen.height / 2f) + Random.Range (-1f, -0.5f) * Screen.height / 3.5f;
+			} else {
+				__buttonPositions [i].x = __startX + (i - 5) * __buttonWidth + (i - 5) * 60f;
+				__buttonPositions [i].y = (Screen.height / 2f) + Random.Range (0.5f, 1f) * Screen.height / 3.5f;
+			}
 		}
 		
 		// Construct game buttons
@@ -195,8 +197,8 @@ public class ChooseGameScript : Overlay
 		
 		#if UNITY_EDITOR
 		// Draw mouse scroll regions
-		GUI.Box(leftScrollRegion, "left");
-		GUI.Box(rightScrollRegion, "right");
+		//GUI.Box(leftScrollRegion, "left");
+		//GUI.Box(rightScrollRegion, "right");
 		#endif
 
 		// Draw buttons
