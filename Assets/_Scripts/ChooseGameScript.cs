@@ -80,7 +80,7 @@ public class ChooseGameScript : Overlay
 		backgroundRect = new Rect (__width / 2f, 0f, hugeBackground.width, hugeBackground.height);
 		
 		// Initialize mouse scroll regions
-		float __regionWidth = Screen.width / 6f;
+		float __regionWidth = Screen.width / 4f;
 		leftScrollRegion = new Rect (0f, 0f, __regionWidth, Screen.height);
 		rightScrollRegion = new Rect (Screen.width - __regionWidth, 0f, __regionWidth, Screen.height);
 		
@@ -144,11 +144,14 @@ public class ChooseGameScript : Overlay
 		// Mouse scrolling
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
 		if (leftScrollRegion.Contains (__mouse)) {
-			currentPivotOffset += Time.deltaTime * scrollingSpeed;
+			float __force = 1f - __mouse.x / leftScrollRegion.width;
+			currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
 		}
 		
 		if (rightScrollRegion.Contains (__mouse)) {
-			currentPivotOffset -= Time.deltaTime * scrollingSpeed;
+			float __force = 1f - (Screen.width-__mouse.x) / rightScrollRegion.width;
+			currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
+			Debug.Log(__force);
 		}
 		
 		currentPivotOffset = Mathf.Clamp (currentPivotOffset, -Screen.width / 2f, Screen.width / 2f);
