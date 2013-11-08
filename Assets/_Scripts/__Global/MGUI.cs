@@ -26,7 +26,20 @@ public static class MGUI
 		
 		return GUI.Button (rect, image, noStyle);
 	}
-
+	
+	public static bool HoveredButton (Rect pos, Texture image, float sizeMultiplier)
+	{
+		Rect rect = pos;
+		if (pos.Contains (InputManager.MouseScreenToGUI ())) {
+			rect = new Rect (
+				pos.x - pos.width * (sizeMultiplier - 1f) / 2f, 
+				pos.y - pos.height * (sizeMultiplier - 1f) / 2f,
+				pos.width * sizeMultiplier, 
+				pos.height * sizeMultiplier);
+		}
+		
+		return GUI.Button (rect, image, noStyle);
+	}
 
 	//Returns inner rectangle centered in outer rectangle, inner.x and y are used for offset
 	public static Rect CenterInRect (Rect inner, Rect outer)

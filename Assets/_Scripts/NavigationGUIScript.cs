@@ -2,16 +2,27 @@ using UnityEngine;
 using System.Collections;
 
 public class NavigationGUIScript : Overlay {
+	#region MEMBERS
 	public Texture PlayButton,homeButton,PauseButton;
+	private Rect _buttonRect;
+	#endregion
 	
-	void OnGUI() 
+	#region UNITY_METHODS
+	public override void Awake () {
+		float screenUnitW = Screen.width/10;
+		_buttonRect = new Rect(Screen.width - screenUnitW, 0, (Screen.width/10), (Screen.width/10));
+	}
+	#endregion
+	
+	#region METHODS
+	public void Draw() 
 	{		
-		float screenUnitW = Screen.width/100;
+		
 		NavigationState currentState = Manager.GetNavigationState();
 		// While the game is in progress, only display the pause button
 		if (currentState == NavigationState.Running) 
 		{
-			if (GUI.Button(new Rect(Screen.width - screenUnitW*10, 0, (Screen.width/10), (Screen.width/10)), PauseButton, MGUI.noStyle)) 
+			if (GUI.Button(_buttonRect, PauseButton, MGUI.noStyle)) 
 			{	
 				Manager.SetNavigationState(NavigationState.Pause);
 			}
@@ -21,8 +32,8 @@ public class NavigationGUIScript : Overlay {
 			ShowBottomMenu();
 		}	
 	}
-	
-	void ShowBottomMenu()
+
+	private void ShowBottomMenu()
 	{
 		// Left button
 		if (MGUI.HoveredButton(new Rect(MGUI.margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) 
@@ -37,4 +48,5 @@ public class NavigationGUIScript : Overlay {
 			Manager.SetNavigationState(NavigationState.Running);
 		}
 	}
+	#endregion
 }
