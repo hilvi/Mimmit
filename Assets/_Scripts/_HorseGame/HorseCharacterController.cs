@@ -14,6 +14,7 @@ public class HorseCharacterController : MonoBehaviour
 	public Vector3 sideStep = new Vector3 (0, -0.3f, -0.5f);
 	public Animator2D anim;
 	public Transform particle;
+	public ParticleEmitter particleEmit;
 	
 	private HorseGameManager _gameManager;
 	private CharacterController _controller;
@@ -21,7 +22,10 @@ public class HorseCharacterController : MonoBehaviour
 	private float _currentSpeed;
 	private bool _sideStepping = false;
 	private Transform _plane;
-	public ParticleEmitter particleEmit;
+	private string _runAnim;
+	private string _jumpAnim;
+	private string _idleAnim;
+	
 	#endregion
 	
 	#region UNITY_METHODS
@@ -35,7 +39,27 @@ public class HorseCharacterController : MonoBehaviour
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
 		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
-		anim.PlayAnimation ("Idle");
+		
+		switch(Manager.GetCharacter())
+		{
+		case Character.Blonde:
+			_runAnim = "RunBlonde";
+			_jumpAnim = "JumpBlonde";
+			_idleAnim = "IdleBlonde";
+			break;
+		case Character.Brune:
+			_runAnim = "RunBrune";
+			_jumpAnim = "JumpBrune";
+			_idleAnim = "IdleBrune";
+			break;
+		default:
+			_runAnim = "RunBlonde";
+			_jumpAnim = "JumpBlonde";
+			_idleAnim = "IdleBlonde";
+			break;
+		}
+		
+		anim.PlayAnimation (_idleAnim);
 	}
 	
 	void Update ()
@@ -45,7 +69,7 @@ public class HorseCharacterController : MonoBehaviour
 		if (__state == GameState.Pregame || __state == GameState.Lost || __state == GameState.Won) 
 		{
 			particleEmit.emit = false;
-			anim.PlayAnimation ("Idle");
+			anim.PlayAnimation (_idleAnim);
 			return;
 		}
 			
@@ -58,13 +82,13 @@ public class HorseCharacterController : MonoBehaviour
 			
 			if (_controller.velocity.x != 0)
 			{
-				anim.PlayAnimation ("Run");
+				anim.PlayAnimation (_runAnim);
 				if(particleEmit.emit == false)
 					particleEmit.emit = true;
 			}
 			else
 			{
-				anim.PlayAnimation ("Idle");
+				anim.PlayAnimation (_idleAnim);
 				if(particleEmit.emit == true)
 					particleEmit.emit = false;
 			}
@@ -76,7 +100,7 @@ public class HorseCharacterController : MonoBehaviour
 		} 
 		else 
 		{
-			anim.PlayAnimation ("Jump");
+			anim.PlayAnimation (_jumpAnim);
 			if(particleEmit.emit == true)
 					particleEmit.emit = false;
 			_movement.y -= gravity * Time.deltaTime;
