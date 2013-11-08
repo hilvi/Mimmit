@@ -8,6 +8,7 @@ public class GrabGameManager : GameManager
 	public FallingObjectSettings[] fallingObjects;
 	public GameObject fallingObjectPrefab;
 	public float frequency = 3;
+	public float missesAllowed = 3;
 	public Texture2D tick;
 	public Texture2D cross;
 	Shader _diffuse;
@@ -30,7 +31,7 @@ public class GrabGameManager : GameManager
 			InGameMenuGUI.music.audio.loop = true;
 		}
 		
-		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width, Screen.height, 0));
+		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width-100, Screen.height, 0));
 		_worldWidth = __worldSize.x;
 		_worldHeight = __worldSize.y;
 		
@@ -47,24 +48,27 @@ public class GrabGameManager : GameManager
 	{
 		if (_collectables == 0) {
 			SetGameState (GameState.Won);
-		}
-		else
+		} else if (missesAllowed == 0) {
+			SetGameState (GameState.Lost);
+		} else {
 			_timer += Time.deltaTime;
-		if (_timer > frequency) {
-			SpawnRandomObject ();
-			_timer = 0;
+			if (_timer > frequency) {
+				SpawnRandomObject ();
+				_timer = 0;
+			}
 		}
 	}
 	
 	void OnGUI ()
 	{
 		DrawCollectable ();
+		DrawAvoidable ();
 	}
 	
 	void DrawCollectable ()
 	{
-		Rect __pos = new Rect (Screen.width - 100, 150, 80, 80);
-		float __offset = 20;
+		Rect __pos = new Rect (Screen.width - 100, 140, 80, 80);
+		float __offset = 10;
 		
 		foreach (FallingObjectSettings settings in fallingObjects) {
 			if (settings.collect) {
@@ -73,6 +77,21 @@ public class GrabGameManager : GameManager
 					GUI.DrawTexture (__pos, tick);
 				__pos.y += __offset + __pos.height;
 			}
+		}
+	}
+	
+	void DrawAvoidable ()
+	{
+		float __width = 50;
+		float __offset = 10;
+		float __halfScreen = Screen.width/2;
+		float __startPos = __halfScreen - (__width + __offset) * missesAllowed / 2;
+		
+		Rect __pos = new Rect (__startPos, __width/2, __width, __width);
+		
+		for(int i = 0; i < missesAllowed; i++) {
+				GUI.DrawTexture (__pos, cross);
+				__pos.x += __offset + __width;
 		}
 	}
 	
@@ -103,8 +122,12 @@ public class GrabGameManager : GameManager
 	public void ObjectCollected (int id, bool collect)
 	{
 		if (fallingObjects [id].collect && !fallingObjects [id].collected) {
-			fallingObjects [id].collected = true;
-			_collectables--;
+			if(!fallingObjects [id].collected) {
+				fallingObjects [id].collected = true;
+				_collectables--;
+			}
+		} else {
+			missesAllowed--;
 		}
 	}
 }
