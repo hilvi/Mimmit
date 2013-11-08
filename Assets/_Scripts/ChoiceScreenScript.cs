@@ -85,7 +85,7 @@ public class ChoiceScreenScript : Overlay
 				StartCoroutine (SlideButton ());
 			
 			if (MGUI.HoveredButton (_mapRect, map) && _buttonSlideIsDone) {
-				LoadLevelAndPlaySound ("ChooseGameScene", _audioSource);
+				LoadLevelAndPlaySound ("GameSelectionScene", _audioSource);
 			}
 		}
 	}
@@ -97,7 +97,7 @@ public class ChoiceScreenScript : Overlay
 			yield return null;
 		}
 		Manager.SetScreenChoice (ScreenChoice.Button);
-		LoadLevel ("ChooseGameScene");
+		LoadLevel ("GameSelectionScene");
 	}
 	
 	private IEnumerator SlideButton ()

@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ChooseGameScript : Overlay
+public class GameSelectionScript : Overlay
 {
 	#region MEMBERS
 	public AudioClip audioPress;
