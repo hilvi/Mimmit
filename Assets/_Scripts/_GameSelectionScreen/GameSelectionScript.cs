@@ -1,4 +1,4 @@
-﻿//#define UNITY_PRO
+﻿#define UNITY_PRO
 using UnityEngine;
 using System.Collections;
 
@@ -56,14 +56,14 @@ public class GameSelectionScript : Overlay
 		
 		// Some hardcore magic number wizardry, dont try this at home.
 		// Manual placement will replace this in future.
-		float __buttonWidth = Screen.width / 8f;
-		float __buttonHeight = Screen.height / 8f;
+		float __buttonWidth = Screen.width / 4f;
+		float __buttonHeight = Screen.height / 4f;
 		float __startX = 0f;
 		Vector2[] __buttonPositions = new Vector2[10];
 		for (int i = 0; i < __buttonPositions.Length; i++) {
 			if (i < 5) {
 				__buttonPositions [i].x = __startX + i * __buttonWidth + i * 60f;
-				__buttonPositions [i].y = (Screen.height / 2f) + Random.Range (-1f, -0.5f) * Screen.height / 3.5f;
+				__buttonPositions [i].y = (Screen.height / 2f) + Random.Range (-1f, -0.5f) /** Screen.height / 3.5f*/;
 			} else {
 				__buttonPositions [i].x = __startX + (i - 5) * __buttonWidth + (i - 5) * 60f;
 				__buttonPositions [i].y = (Screen.height / 2f) + Random.Range (0.5f, 1f) * Screen.height / 3.5f;
@@ -71,7 +71,7 @@ public class GameSelectionScript : Overlay
 		}
 		
 		// Construct game buttons
-		gameButtons = new GameSelectionButton[10];
+		gameButtons = new GameSelectionButton[4];
 		for (int i = 0; i < gameButtons.Length; i++) {
 			gameButtons [i] = new GameSelectionButton (
 				__buttonPositions [i].x, // Position x
