@@ -1,25 +1,40 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Character{
+public enum Character
+{
 	None, Blonde, Brune, Fox, Boy
 }
-public enum ScreenChoice{
+public enum ScreenChoice
+{
 	None, Map, Button
 }
-public enum NavigationState{
+public enum NavigationState
+{
 	Running, Pause
 }
-public static class Manager {
+/// <summary>
+/// Manager class containing 
+/// </summary>
+public static class Manager 
+{
 
 	static Character _character = Character.None;
 	static ScreenChoice _choice = ScreenChoice.None;
 	static NavigationState _navState = NavigationState.Running;
-	
+
+	/// <summary>
+	/// Returns chosen character
+	/// </summary>
+	/// <returns>The character.</returns>
 	public static Character GetCharacter()
 	{
 		return _character;
 	}
+	/// <summary>
+	/// Sets the chosen character.
+	/// </summary>
+	/// <param name="chosenCharacter">Chosen character.</param>
 	public static void SetCharacter(Character chosenCharacter)
 	{
 		_character = chosenCharacter;

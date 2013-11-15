@@ -1,8 +1,13 @@
 using UnityEngine;
 using System.Collections;
 
-public enum GameState { Pregame, Running, Paused, Won, Lost };
-public class GameManager : Overlay {
+public enum GameState 
+{ 
+	Pregame, Running, Paused, Won, Lost 
+}
+
+public class GameManager : Overlay 
+{
 	#region MEMBERS
 	public bool isLastLevel = true;
 	public int currentLevel = 1;
