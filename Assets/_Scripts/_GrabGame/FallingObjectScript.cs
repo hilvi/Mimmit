@@ -34,11 +34,11 @@ public class FallingObjectScript : MonoBehaviour {
 	{
 		if (col.gameObject.name == "Player") {
 			manager.ObjectCollected(id, collect);
-			Destroy(gameObject);
+			manager.RemoveObject(gameObject);
 		}
 	}
 	
 	void OnBecameInvisible() {
-		Destroy (gameObject);
+		manager.RemoveObject(gameObject);
 	}
 }
