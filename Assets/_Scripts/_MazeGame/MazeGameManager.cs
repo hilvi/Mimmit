@@ -4,7 +4,7 @@ using System.Collections;
 public class MazeGameManager : GameManager 
 {
 	#region MEMBERS
-	//Character _character;
+	Character _character;
 	#endregion
 	#region UNITY_METHODS
 	public override void Start () 

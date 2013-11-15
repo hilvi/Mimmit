@@ -6,11 +6,11 @@ public class CharacterWidgetScript : MonoBehaviour {
 	
 	#region PUBLIC
 	public Texture2D blonde, brune, fox, boy; // TODO swap to animations
-	public Rect characterBoxRect;
 	#endregion
 	
 	#region PRIVATE
 	private Dictionary<Character, Texture2D> _roster = new Dictionary<Character, Texture2D>();
+    private Rect _characterBoxRect;
 	#endregion
 	
 	#region UNITY_METHODS
@@ -20,11 +20,12 @@ public class CharacterWidgetScript : MonoBehaviour {
 		_roster.Add(Character.Brune, brune);
 		_roster.Add(Character.Fox, fox);
 		_roster.Add(Character.Boy, boy);
+        _characterBoxRect = new Rect(0,0,100,100);
 	}
 
 	void OnGUI() {
 		// TODO, playAnimation() etc.
-		GUI.DrawTexture(characterBoxRect, _roster[Manager.GetCharacter()]);
+		GUI.DrawTexture(_characterBoxRect, _roster[Manager.GetCharacter()]);
 	}
 	#endregion
 	

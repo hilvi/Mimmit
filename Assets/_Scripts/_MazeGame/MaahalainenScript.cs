@@ -7,7 +7,7 @@ public class MaahalainenScript : MonoBehaviour {
 	private bool _showGUI = false;
 	private Rect _guiRect;
 	public Inventory inventory;
-	public GameObject stonePile;
+	public GameObject obstacle;
 	#endregion
 
 	#region UNITY_METHODS
@@ -22,7 +22,7 @@ public class MaahalainenScript : MonoBehaviour {
 	{
 		if(inventory.InventoryContains(Items.PickAxe))
 		{
-			Destroy (stonePile);
+            StartCoroutine(_MoveForward(2f));
 			return;
 		}
 		_showGUI = true;
@@ -40,4 +40,16 @@ public class MaahalainenScript : MonoBehaviour {
 		}
 	}
 	#endregion
+    #region MEMBERS
+    IEnumerator _MoveForward(float wait) 
+    {
+        float __timer = 0;
+        while (__timer < wait) 
+        {
+            __timer += Time.deltaTime;
+            yield return null;
+        }
+        Destroy(obstacle);
+    } 
+    #endregion
 }

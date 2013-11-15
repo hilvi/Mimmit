@@ -48,8 +48,8 @@ public class PictureSelector
 		_downArrowTexture = downArrowTexture;
 		
 		_pictureSelectRegion = new Rect(20,200,160,380);
-		_selectUpBtnRegion = new Rect(80, 200, 40, 30);
-		_selectDownBtnRegion = new Rect(80, 550, 40, 30);
+		_selectUpBtnRegion = new Rect(100, 100, 40, 30);
+		_selectDownBtnRegion = new Rect(100, 565, 40, 30);
 		
 		for (int i = 0; i < _pictureCount; i++) 
 		{
@@ -57,13 +57,13 @@ public class PictureSelector
 		}
 		
 		// TODO, possibly make more elegant, ugly constants and non-integer values
-		float __v = 240f; // Vertical coordinate
+		float __v = 140; // Vertical coordinate
 		_selectPictureRegion = new Rect[4];
 
 		for (int i = 0; i < 3; i++) 
 		{
-			_selectPictureRegion[i] = new Rect(52.5f, __v, 95, 95);
-			__v += 100f;
+			_selectPictureRegion[i] = new Rect(50f, __v, 135, 135);
+			__v += 140;
 		}
 		
 		// TODO, load picture thumbnails here

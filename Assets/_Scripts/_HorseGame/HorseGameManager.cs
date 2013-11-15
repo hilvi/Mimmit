@@ -38,7 +38,8 @@ public class HorseGameManager : GameManager
 	public override void Start ()
 	{
 		base.Start ();
-		if (InGameMenuGUI.music == null) {
+		if (InGameMenuGUI.music == null)
+        {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
 			InGameMenuGUI.music.audio.clip = music;
 			InGameMenuGUI.music.audio.Play ();
