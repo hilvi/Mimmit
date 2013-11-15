@@ -61,6 +61,6 @@ public class BallonScript : MonoBehaviour {
 			audioSource.volume -= Time.deltaTime;
 			yield return null;
 		}
-		Application.LoadLevel("ChooseGameScene");
+		Application.LoadLevel("GameSelectionScene");
 	}
 }

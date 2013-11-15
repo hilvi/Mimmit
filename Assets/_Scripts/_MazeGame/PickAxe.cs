@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class chickFlight : MonoBehaviour {
+public class PickAxe : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
