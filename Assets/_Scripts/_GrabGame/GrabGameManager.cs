@@ -35,6 +35,7 @@ public class GrabGameManager : GameManager
 	private List<GameObject> _objectsOnScreen = new List<GameObject>();
 	private float[] _lanes;
 	private bool patternFinished = true;
+	private GUIStyle _counterStyle = new GUIStyle();
 	
 	// Use this for initialization
 	public override void Start ()
@@ -57,11 +58,18 @@ public class GrabGameManager : GameManager
 		_worldHeight = __worldSize.y;
 		
 		foreach (FallingObjectSettings settings in fallingObjects) {
-			if (settings.collect)
+			if (settings.collect) {
 				_collectables += settings.numberToCollect;
+			}
 		}
 
 		InitiateLanes(spawnLanes);
+
+		_counterStyle.font = (Font)Resources.Load ("Fonts/Gretoon");
+		_counterStyle.fontSize = 50;
+		_counterStyle.normal.textColor = Color.white;
+		_counterStyle.alignment = TextAnchor.MiddleCenter;
+
 
 		SetGameState (GameState.Running);
 	}
@@ -78,17 +86,28 @@ public class GrabGameManager : GameManager
 		DrawCollectable ();
 		DrawLife ();
 	}
-	
+
 	void DrawCollectable ()
 	{
-		Rect __pos = new Rect (Screen.width - 100, 140, 80, 80);
+		float __width = 50;
+		Rect __pos = new Rect (0, 140, __width, __width);
 		float __offset = 10;
-		
+
+		float __counterPos = Screen.width - __width * 2 - __offset;
+		float __picturePos = Screen.width - __width - __offset;
+
 		foreach (FallingObjectSettings settings in fallingObjects) {
 			if (settings.collect) {
+				__pos.x = __picturePos;
 				GUI.DrawTexture (__pos, settings.texture);
+
 				if (settings.numberToCollect == 0)
 					GUI.DrawTexture (__pos, tick);
+				else {
+					__pos.x = __counterPos;
+					GUI.Label (__pos, settings.numberToCollect.ToString(), _counterStyle);
+				}
+
 				__pos.y += __offset + __pos.height;
 			}
 		}
@@ -103,7 +122,7 @@ public class GrabGameManager : GameManager
 		float __startPos = __halfScreen - (__width + __offset) * missesAllowed / 2;
 		Rect __pos = new Rect (__startPos, __width / 2, __width, __width);*/
 
-		Rect __pos = new Rect (__width/2, 140, __width, __width);
+		Rect __pos = new Rect (__width/2, 150, __width, __width);
 		
 		for (int i = 0; i < missesAllowed; i++) {
 			GUI.DrawTexture (__pos, cross);
@@ -206,6 +225,8 @@ public class GrabGameManager : GameManager
 	
 	void InstantiateFallingObject (int id, int lane)
 	{
+		if(GetGameState() != GameState.Running)
+			return;
 		GameObject __obj = Instantiate (fallingObjectPrefab) as GameObject;
 		FallingObjectSettings settings = fallingObjects[id];
 		
