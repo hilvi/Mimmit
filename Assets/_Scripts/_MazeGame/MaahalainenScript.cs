@@ -6,6 +6,8 @@ public class MaahalainenScript : MonoBehaviour {
 	#region MEMBERS
 	private bool _showGUI = false;
 	private Rect _guiRect;
+	public Inventory inventory;
+	public GameObject stonePile;
 	#endregion
 
 	#region UNITY_METHODS
@@ -18,8 +20,16 @@ public class MaahalainenScript : MonoBehaviour {
 
 	void OnTriggerEnter()
 	{
-		print ("Here");
+		if(inventory.InventoryContains(Items.PickAxe))
+		{
+			Destroy (stonePile);
+			return;
+		}
 		_showGUI = true;
+	}
+	void OnTriggerExit()
+	{
+		_showGUI = false;
 	}
 
 	void OnGUI()
