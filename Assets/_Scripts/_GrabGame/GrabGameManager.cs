@@ -133,6 +133,7 @@ public class GrabGameManager : GameManager
 	IEnumerator Spawner ()
 	{
 		patternFinished = false;
+		yield return new WaitForSeconds(frequency);
 		Pattern pattern = patterns[Random.Range (0, patterns.Length)];
 		switch(pattern) {
 		case Pattern.Random:
@@ -148,7 +149,6 @@ public class GrabGameManager : GameManager
 			yield return StartCoroutine (SpawnAllAtOnce());
 			break;
 		}
-		yield return new WaitForSeconds(frequency);
 		patternFinished = true;
 	}
 
@@ -157,7 +157,7 @@ public class GrabGameManager : GameManager
 		for(int i = 0; i < spawnLanes; i++)
 		{
 			InstantiateFallingObject(GetObjectId(), i);
-			yield return new WaitForSeconds(frequency);
+			yield return new WaitForSeconds(frequency/2);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class GrabGameManager : GameManager
 		for(int i = spawnLanes-1; i >= 0; i--)
 		{
 			InstantiateFallingObject(GetObjectId(), i);
-			yield return new WaitForSeconds(frequency);
+			yield return new WaitForSeconds(frequency/2);
 		}
 	}
 
@@ -197,7 +197,7 @@ public class GrabGameManager : GameManager
 		int __id;
 		do {
 			__id = Random.Range (0, fallingObjects.Length);
-		} while(fallingObjects[__id].numberToCollect == 0);
+		} while(fallingObjects[__id].numberToCollect == 0 && fallingObjects[__id].collect);
 
 		return __id;
 	}

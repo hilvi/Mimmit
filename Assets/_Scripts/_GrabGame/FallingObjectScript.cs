@@ -26,7 +26,7 @@ public class FallingObjectScript : MonoBehaviour {
 	void Update () {
 		_pos = transform.position;
 		_pos.y -= fallingSpeed * Time.deltaTime;
-		_pos.x = startX+Mathf.Sin(Time.time)*oscillation;
+		_pos.x = startX+Mathf.Sin(Time.time * 3)*oscillation;
 		transform.position = _pos;
 	}
 	
