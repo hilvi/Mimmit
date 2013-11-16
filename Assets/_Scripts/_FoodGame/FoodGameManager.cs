@@ -15,6 +15,15 @@ public class FoodGameManager : GameManager
     private bool cameraIsMoving;
 
     private Transform grabbedObject;
+
+    private enum ActionState { Idle, VerticalWaggle, HorizontalWaggle, RepeatClick }
+    private ActionState currentActionState;
+    private Rect actionStateLabelRect;
+
+    private bool horizontalWaggleEnabled;
+    private bool verticalWaggleEnabled;
+    private bool repeatClickEnabled;
+
     #endregion
 
     #region UNITY_METHODS
@@ -33,14 +42,36 @@ public class FoodGameManager : GameManager
 
         currentCameraState = CameraState.Center;
         cameraIsMoving = false;
+
+        currentActionState = ActionState.Idle;
+        repeatClickEnabled = false;
+        horizontalWaggleEnabled = false;
+
+        // Developer 
+        actionStateLabelRect = new Rect(300, 0, 100, 20);
     }
 
     void Update()
     {
-        // Run drag method
-        UpdateHoldDrag();
-    }
+        UpdateActionState();
 
+        // Run drag method
+        switch (currentActionState)
+        {
+            case ActionState.Idle:
+                HandleIdleState();
+                break;
+            case ActionState.VerticalWaggle:
+                HandleVerticalWaggleState();
+                break;
+            case ActionState.HorizontalWaggle:
+                HandleHorizontalWaggleState();
+                break;
+            case ActionState.RepeatClick:
+                HandleRepeatClickState();
+                break;
+        }
+    }
     void OnGUI()
     {
         if (GUI.Button(leftScrollArrow, "left") && !cameraIsMoving)
@@ -69,10 +100,169 @@ public class FoodGameManager : GameManager
                 StartCoroutine(CameraMoveTowards(currentCameraState));
             }
         }
+
+        GUI.Label(actionStateLabelRect, currentActionState.ToString());
     }
     #endregion
 
     #region METHODS
+    private void HandleIdleState()
+    {
+        UpdateHoldDrag();
+    }
+    private void HandleHorizontalWaggleState()
+    {
+        if (!horizontalWaggleEnabled)
+        {
+            horizontalWaggleEnabled = true;
+            StartCoroutine(HorizontalWaggler(10));
+        }
+    }
+
+    private void HandleVerticalWaggleState()
+    {
+        if (!verticalWaggleEnabled)
+        {
+            verticalWaggleEnabled = true;
+            StartCoroutine(VerticalWaggler(10));
+        }
+    }
+
+    private void HandleRepeatClickState()
+    {
+        if (!repeatClickEnabled)
+        {
+            repeatClickEnabled = true;
+            StartCoroutine(ClickCounter(10));
+        }
+    }
+
+    private void UpdateActionState()
+    {
+        // Developer/debugger controls
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            currentActionState = ActionState.Idle;
+        }
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            currentActionState = ActionState.HorizontalWaggle;
+        }
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            currentActionState = ActionState.VerticalWaggle;
+        }
+        if (Input.GetKeyDown(KeyCode.F4))
+        {
+            currentActionState = ActionState.RepeatClick;
+        }
+    }
+
+    private IEnumerator HorizontalWaggler(int maxHits)
+    {
+        int hits = 0;
+        bool moveToLeft = true;
+        while (true)
+        {
+            // Get cursor position and offset horizontal origin to center of screen
+            // If mouseX is positive, cursor is on right side
+            // If mouseX is negative, cursor is on left side
+            var mousePos = Input.mousePosition;
+            float mouseX = mousePos.x - Screen.width / 2f;
+
+            if (moveToLeft)
+            {
+                if (mouseX < 0f)
+                {
+                    hits++;
+                    moveToLeft = false;
+                    Debug.Log(hits + "/" + maxHits);
+                }
+            }
+            else
+            {
+                if (mouseX > 0f)
+                {
+                    hits++;
+                    moveToLeft = true;
+                    Debug.Log(hits + "/" + maxHits);
+                }
+            }
+
+            // Stop after max hits
+            if (hits == maxHits)
+                break;
+
+            yield return null;
+        }
+
+        horizontalWaggleEnabled = false;
+        currentActionState = ActionState.Idle; // Swap back to idle
+    }
+
+    private IEnumerator VerticalWaggler(int maxHits)
+    {
+        int hits = 0;
+        bool moveUp = true;
+        while (true)
+        {
+            // Get cursor position and offset horizontal origin to center of screen
+            // If mouseY is positive, cursor is on down side
+            // If mouseY is negative, cursor is on up side
+            var mousePos = Input.mousePosition;
+            float mouseY = Screen.height - (mousePos.y + Screen.height / 2f);
+            if (moveUp)
+            {
+                if (mouseY < 0f)
+                {
+                    hits++;
+                    moveUp = false;
+                    Debug.Log(hits + "/" + maxHits);
+                }
+            }
+            else
+            {
+                if (mouseY > 0f)
+                {
+                    hits++;
+                    moveUp = true;
+                    Debug.Log(hits + "/" + maxHits);
+                }
+            }
+
+            // Stop after max hits
+            if (hits == maxHits)
+                break;
+
+            yield return null;
+        }
+
+        horizontalWaggleEnabled = false;
+        currentActionState = ActionState.Idle; // Swap back to idle
+    }
+
+    private IEnumerator ClickCounter(int maxClicks)
+    {
+        int clicks = 0;
+        while (true)
+        {
+            // Count clicks until enough
+            if (Input.GetMouseButtonDown(0))
+            {
+                clicks++;
+                Debug.Log("Clicks " + clicks + "/" + maxClicks);
+            }
+
+            if (clicks == maxClicks)
+                break;
+
+            yield return null;
+        }
+
+        repeatClickEnabled = false;
+        currentActionState = ActionState.Idle; // Swap back to idle
+    }
+
     private IEnumerator CameraMoveTowards(CameraState cameraState)
     {
         Debug.Log("start");
