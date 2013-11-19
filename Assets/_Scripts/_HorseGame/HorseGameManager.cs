@@ -30,7 +30,7 @@ public class HorseGameManager : GameManager
 	private Transform _playerPosition;
 	private Transform _birdPosition;
 	private float _levelLength;
-	private Texture2D _levelTexture;
+	public Texture2D _levelTexture;
 	#endregion
 
 	
@@ -60,8 +60,7 @@ public class HorseGameManager : GameManager
 		_progressBirdPos = new Rect (0, 0, progressCharacterSize, progressCharacterSize);
 		_progressBirdPos.center = new Vector2 (0, 25);
 		
-		_levelTexture = GameObject.Find ("Background").GetComponentInChildren<BackgroundManager> ().background;
-		
+			
 		gameObject.AddComponent<GUIText> ();
 		gameObject.transform.position = new Vector3 (0.5f, 0.5f, 0);
 		guiText.font = (Font)Resources.Load ("Fonts/Gretoon");
