@@ -9,6 +9,7 @@ public class HorseGameManager : GameManager
 		Bird,
 		None
 	}
+
 	#region MEMBERS
 	public BirdScript birdScript;
 	public AudioClip music;
