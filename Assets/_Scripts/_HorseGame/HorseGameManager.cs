@@ -15,9 +15,10 @@ public class HorseGameManager : GameManager
 	public AudioClip music;
 	public GameObject musicObject;
 	public float progressBarLength = 500;
-	public Texture2D playerTexture;
+	
 	public Texture2D birdTexture;
 	public float progressCharacterSize = 50;
+    public Texture2D _levelTexture;
 	
 	private CharacterWidgetScript _characterWidget;
 	private HorseCharacterController _horseScript;
@@ -31,7 +32,8 @@ public class HorseGameManager : GameManager
 	private Transform _playerPosition;
 	private Transform _birdPosition;
 	private float _levelLength;
-	public Texture2D _levelTexture;
+    private Texture2D _playerTexture;
+	
 	#endregion
 
 	
@@ -69,7 +71,16 @@ public class HorseGameManager : GameManager
 		guiText.alignment = TextAlignment.Center;
 		guiText.anchor = TextAnchor.MiddleCenter;
 		_horseScript = GameObject.Find ("Player").GetComponent<HorseCharacterController> ();
-		
+
+        foreach (var anim in _horseScript.GetComponentsInChildren<Animation2D>())
+        {
+            if (anim.animName == _horseScript._idleAnim)
+            {
+                _playerTexture = anim.frames;
+                break;
+            }
+        }
+
 		StartCoroutine(_InitiateCountdown());
 	}
 	
@@ -92,7 +103,7 @@ public class HorseGameManager : GameManager
 		_progressBirdPos.x = _PositionToProgress (_birdPosition);
 		GUI.DrawTexture (_progressBirdPos, birdTexture);
 		_progressPlayerPos.x = _PositionToProgress (_playerPosition);
-		GUI.DrawTexture (_progressPlayerPos, playerTexture);
+		GUI.DrawTexture (_progressPlayerPos, _playerTexture);
 		
 		if (_gameOver) {
 			if (_winner == Winner.Bird) {

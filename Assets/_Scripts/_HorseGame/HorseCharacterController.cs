@@ -24,11 +24,33 @@ public class HorseCharacterController : MonoBehaviour
 	private Transform _plane;
 	private string _runAnim;
 	private string _jumpAnim;
-	private string _idleAnim;
+	internal string _idleAnim;
 	
 	#endregion
 	
 	#region UNITY_METHODS
+    void Awake()
+    {
+        switch (Manager.GetCharacter())
+        {
+            case Character.Blonde:
+                _runAnim = "RunBlonde";
+                _jumpAnim = "JumpBlonde";
+                _idleAnim = "IdleBlonde";
+                break;
+            case Character.Brune:
+                _runAnim = "RunBrune";
+                _jumpAnim = "JumpBrune";
+                _idleAnim = "IdleBrune";
+                break;
+            default:
+                _runAnim = "RunBlonde";
+                _jumpAnim = "JumpBlonde";
+                _idleAnim = "IdleBlonde";
+                break;
+        }
+    }
+
 	void Start ()
 	{
 		_controller = GetComponent<CharacterController> ();
@@ -39,25 +61,6 @@ public class HorseCharacterController : MonoBehaviour
 		_currentSpeed = runningSpeed;
 		_movement.x = _currentSpeed;
 		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
-		
-		switch(Manager.GetCharacter())
-		{
-		case Character.Blonde:
-			_runAnim = "RunBlonde";
-			_jumpAnim = "JumpBlonde";
-			_idleAnim = "IdleBlonde";
-			break;
-		case Character.Brune:
-			_runAnim = "RunBrune";
-			_jumpAnim = "JumpBrune";
-			_idleAnim = "IdleBrune";
-			break;
-		default:
-			_runAnim = "RunBlonde";
-			_jumpAnim = "JumpBlonde";
-			_idleAnim = "IdleBlonde";
-			break;
-		}
 		
 		anim.PlayAnimation (_idleAnim);
 	}
