@@ -265,7 +265,6 @@ public class FoodGameManager : GameManager
 
     private IEnumerator CameraMoveTowards(CameraState cameraState)
     {
-        Debug.Log("start");
         Vector3 camPosition = Camera.main.transform.position;
         // Determine where the camera should go
         float targetX = 0f;

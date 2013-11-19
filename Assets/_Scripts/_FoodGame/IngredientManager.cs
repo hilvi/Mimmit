@@ -8,7 +8,7 @@ public class IngredientManager : MonoBehaviour
     public GameObject bananaPrefab;
     public GameObject pearPrefab;
 
-    private List<GameObject> ingredientList = new List<GameObject> ();
+    //private List<GameObject> ingredientList = new List<GameObject> ();
 
     void Start ()
     {
