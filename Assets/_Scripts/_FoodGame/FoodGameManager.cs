@@ -8,7 +8,8 @@ public class FoodGameManager : GameManager
     public GameObject musicObject;
     public AudioClip music;
 
-    [Range(1, 20)] public float cameraScrollingSpeed;
+    [Range(1, 20)]
+    public float cameraScrollingSpeed;
     public Rect leftScrollArrow, rightScrollArrow;
     private enum CameraState { Left, Center, Right }
     private CameraState currentCameraState;
@@ -169,10 +170,36 @@ public class FoodGameManager : GameManager
         if (Input.GetKeyDown(KeyCode.P))
         {
             // Cutting experiment, integrate this inside each food object
-            if (prepTable != null && ingredientManager != null) 
+            if (prepTable != null && ingredientManager != null)
             {
                 if (prepTable.GetFoodOnTable() != null)
                 {
+                    var foodOnTable = prepTable.GetFoodOnTable();
+                    foreach (IFoodObject food in foodOnTable)
+                    {
+                        var type = food.GetFoodType();
+                        if (type == FoodType.Apple)
+                        {
+                            var apple = (AppleFoodObject)food;
+                            if (apple.State == FoodState.Full)
+                            {
+                                var pos = apple.transform.position;
+                                pos.x += 4f;
+                                var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
+                                apple.State = FoodState.Half;
+                                newApple.State = FoodState.Half;
+                            }
+                            else if (apple.State == FoodState.Half)
+                            {
+                                var pos = apple.transform.position;
+                                pos.x += 4f;
+                                var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
+                                apple.State = FoodState.Quarter;
+                                newApple.State = FoodState.Quarter;
+                            }
+                        }
+                    }
+                    /*
                     if (prepTable.GetFoodOnTable().GetFoodType() != FoodType.Apple)
                         return;
 
@@ -195,6 +222,7 @@ public class FoodGameManager : GameManager
                     }
                     
                     Debug.Log("is apple");
+                     * */
                 }
             }
         }
@@ -312,9 +340,9 @@ public class FoodGameManager : GameManager
         float targetX = 0f;
         switch (cameraState)
         {
-            case CameraState.Left: targetX = -5f;  break;
-            case CameraState.Center: targetX = 0f;  break;
-            case CameraState.Right: targetX = 5f;  break;
+            case CameraState.Left: targetX = -5f; break;
+            case CameraState.Center: targetX = 0f; break;
+            case CameraState.Right: targetX = 5f; break;
         }
 
         // Prevent accidental clicks
@@ -329,7 +357,7 @@ public class FoodGameManager : GameManager
             Camera.main.transform.position = camPosition;
 
             // Exit loop when arrived
-            if (camPosition == targetPosition) 
+            if (camPosition == targetPosition)
                 break;
 
             yield return null;
