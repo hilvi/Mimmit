@@ -6,7 +6,7 @@ public class ActionQueueScript : MonoBehaviour
 {
     public class ActionIcon
     {
-        public Rect rect;
+        public Rect rect, nextRect;
         public Texture texture;
         public string name;
         public ActionIcon(Rect rect)
@@ -16,7 +16,8 @@ public class ActionQueueScript : MonoBehaviour
             this.name = "null";
         }
 
-        public void SetRect(Rect rect) {
+        public void SetRect(Rect rect)
+        {
             this.rect = rect;
         }
     }
@@ -27,44 +28,80 @@ public class ActionQueueScript : MonoBehaviour
     private bool slidingInAction = false;
     private List<ActionIcon> actionList = new List<ActionIcon>();
 
-    void Awake()
-    {
-        for (int i = 0; i < 5; i++)
-        {
-            Rect r = new Rect(queueAnchor.x, queueAnchor.y, 60f, 60f);
-            r.x -= (i * 60) + (i * 10);
-            actionList.Add(new ActionIcon(r));
-        }
-    }
+    // Action icon textures
+    public Texture cutApple, cutBanana, cutPear;
+    public Texture putApple, putBanana, putPear;
 
     void Update()
     {
         // Debug
         if (Input.GetKeyDown(KeyCode.F1))
-        {
-            StartCoroutine(SlideCurrentActionOut());
-            if (!slidingInAction)
-            {
-                if (actionList.Count > 0)
-                    StartCoroutine(SlideNextActionIn());
-            }
-        }
+            Slide();
     }
 
     void OnGUI()
     {
-        GUI.Box(currentActionRect, "current");
-
-        int index = 0;
         foreach (ActionIcon a in actionList)
-        {
-            GUI.Box(a.rect, (index++).ToString());
-        }
+            GUI.DrawTexture(a.rect, a.texture);
     }
 
     public void PushActionToQueue(string action)
     {
+        // Calculate rect based on current queue length
+        Rect iconRect = new Rect(queueAnchor.x, queueAnchor.y, 60f, 60f);
+        iconRect.x -= ((actionList.Count - 1) * 60f) + ((actionList.Count - 1) * 10f);
 
+        // If this is first action on list, override it with different settings
+        if (actionList.Count == 0)
+            iconRect = new Rect(currentActionRect);
+
+        if (action == "Put Apple")
+        {
+            ActionIcon ai = new ActionIcon(iconRect);
+            ai.texture = putApple;
+            ai.name = action;
+            actionList.Add(ai);
+
+        }
+        else if (action == "Put Banana")
+        {
+
+        }
+        else if (action == "Put Pear")
+        {
+
+        }
+        else if (action == "Cut Apple")
+        {
+            ActionIcon ai = new ActionIcon(iconRect);
+            ai.texture = cutApple;
+            ai.name = action;
+            actionList.Add(ai);
+        }
+        else if (action == "Cut Banana")
+        {
+
+        }
+        else if (action == "Cut Pear")
+        {
+
+        }
+        else
+        {
+            Debug.LogError("Unknown action is being inserted to action queue");
+            return;
+        }
+    }
+
+    public void Slide()
+    {
+        if (!slidingInAction)
+        {
+            if (actionList.Count > 0)
+                StartCoroutine(SlideCurrentActionOut());
+            if (actionList.Count > 1)
+                StartCoroutine(SlideNextActionIn());
+        }
     }
 
     private IEnumerator SlideCurrentActionOut()
@@ -74,17 +111,26 @@ public class ActionQueueScript : MonoBehaviour
 
         // Calculate movement ratio, so objects move at same pace
         float dy = Mathf.Abs(-100f - currentActionRect.y);
+
         while (true)
         {
-            // Move object away
-            currentActionRect.y = Mathf.MoveTowards(currentActionRect.y, -100f, Time.deltaTime * dy * 2f);
+            // Move object up
+            actionList[0].rect.y = 
+                Mathf.MoveTowards(actionList[0].rect.y, -100f, Time.deltaTime * dy * 4f);
 
             // If done, terminate
-            if (currentActionRect.y == -100f)
+            if (actionList[0].rect.y == -100f)
                 break;
 
             yield return null;
         }
+
+        // Wait until sliding is done before removing first element
+        while (slidingInAction)
+            yield return null;
+
+        // Remove first element
+        actionList.RemoveAt(0);
     }
 
     private IEnumerator SlideNextActionIn()
@@ -97,14 +143,14 @@ public class ActionQueueScript : MonoBehaviour
         slidingInAction = true;
 
         // These values set movement ratios, so everything will be done in exactly the same time
-        Rect t = actionList[0].rect;
-        float dx = (760f - t.x);
-        float dw = (90f - t.width);
-        float dh = (90f - t.height);
+        Rect t = actionList[1].rect;
+        float dx = (760f - t.x) * 2;
+        float dw = (90f - t.width) * 2;
+        float dh = (90f - t.height) * 2;
 
         // Pre-calculate new positions for every node other than big one
         float[] newX = new float[actionList.Count - 1];
-        for (int i = 1; i < actionList.Count; i++)
+        for (int i = 2; i < actionList.Count; i++)
         {
             newX[i - 1] = actionList[i].rect.x + 70f;
         }
@@ -112,14 +158,14 @@ public class ActionQueueScript : MonoBehaviour
         while (true)
         {
             // First value will move and also expand its size
-            Rect r = actionList[0].rect;
+            Rect r = actionList[1].rect;
             r.x = Mathf.MoveTowards(r.x, 760f, Time.deltaTime * dx);
             r.width = Mathf.MoveTowards(r.width, 90f, Time.deltaTime * dw);
             r.height = Mathf.MoveTowards(r.height, 90f, Time.deltaTime * dh);
-            actionList[0].SetRect(r);
+            actionList[1].SetRect(r);
 
             // Update the rest at same pace
-            for (int i = 1; i < actionList.Count; i++)
+            for (int i = 2; i < actionList.Count; i++)
             {
                 Rect rr = actionList[i].rect;
                 rr.x = Mathf.MoveTowards(rr.x, newX[i - 1], Time.deltaTime * dx);
@@ -132,10 +178,6 @@ public class ActionQueueScript : MonoBehaviour
 
             yield return null;
         }
-
-        // Change currently active action
-        currentActionRect = actionList[0].rect;
-        actionList.RemoveAt(0);
 
         slidingInAction = false;
     }

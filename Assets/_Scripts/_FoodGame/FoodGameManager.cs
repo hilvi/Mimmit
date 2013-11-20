@@ -219,6 +219,11 @@ public class FoodGameManager : GameManager
                 }
             }
         }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            actionQueue.PushActionToQueue("Put Apple");
+            actionQueue.PushActionToQueue("Cut Apple");
+        }
     }
 
     private IEnumerator HorizontalWaggler(int maxHits)
