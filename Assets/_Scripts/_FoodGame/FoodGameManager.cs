@@ -27,6 +27,7 @@ public class FoodGameManager : GameManager
 
     private IngredientManager ingredientManager;
     private PreparationTableScript prepTable;
+    private IngredientQueueScript ingredientQueue;
     #endregion
 
     #region UNITY_METHODS
@@ -60,6 +61,10 @@ public class FoodGameManager : GameManager
         ingredientManager = GameObject.Find("Ingredient Container").GetComponent<IngredientManager>();
         if (ingredientManager == null)
             Debug.LogError("Couldn't find ingredient mgr!");
+
+        ingredientQueue = GameObject.Find("Ingredient Queue").GetComponent<IngredientQueueScript>();
+        if (ingredientQueue == null)
+            Debug.LogError("Couldn't find ingredient queue!");
     }
 
     void Update()
@@ -199,30 +204,6 @@ public class FoodGameManager : GameManager
                             }
                         }
                     }
-                    /*
-                    if (prepTable.GetFoodOnTable().GetFoodType() != FoodType.Apple)
-                        return;
-
-                    var apple = (AppleFoodObject)(prepTable.GetFoodOnTable());
-                    if (apple.State == FoodState.Full)
-                    {
-                        apple.State = FoodState.Half;
-                        var pos = apple.transform.position;
-                        pos.x += 4f;
-                        var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
-                        newApple.State = FoodState.Half;
-                    }
-                    else if (apple.State == FoodState.Half)
-                    {
-                        apple.State = FoodState.Quarter;
-                        var pos = apple.transform.position;
-                        pos.x += 4f;
-                        var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
-                        newApple.State = FoodState.Quarter;
-                    }
-                    
-                    Debug.Log("is apple");
-                     * */
                 }
             }
         }

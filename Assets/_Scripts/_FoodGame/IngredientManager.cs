@@ -16,12 +16,12 @@ public class IngredientManager : MonoBehaviour
         Vector3 anchor = transform.position;
 
         // Spawns food randomly for testing
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
                 // Calculate new positions
                 var t = new Vector3 (anchor.x, anchor.y, anchor.z);
-                t.x += x * 2f;
-                t.y -= y * 2f;
+                t.x += x * 1f;
+                t.y -= y * 1f;
 
                 // Randomly choose a fruit
                 int choice = Random.Range (0, 3);
@@ -49,7 +49,7 @@ public class IngredientManager : MonoBehaviour
 
     public GameObject SpawnFood (FoodType foodType, Vector3 position)
     {
-        Quaternion angle = Quaternion.Euler(90, 180, 0); // Planes have to be rotated to be visible
+        Quaternion angle = Quaternion.identity; // Quaternion.Euler(90, 180, 0); // Planes have to be rotated to be visible
         GameObject o = null;
         switch (foodType) {
         case FoodType.Apple:
