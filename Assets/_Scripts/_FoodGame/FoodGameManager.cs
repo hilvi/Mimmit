@@ -175,34 +175,46 @@ public class FoodGameManager : GameManager
         if (Input.GetKeyDown(KeyCode.P))
         {
             // Cutting experiment, integrate this inside each food object
-            if (prepTable != null && ingredientManager != null)
+            var foodOnTable = prepTable.GetFoodOnTable();
+            foreach (IFoodObject food in foodOnTable)
             {
-                if (prepTable.GetFoodOnTable() != null)
+                var type = food.GetFoodType();
+                if (type == FoodType.Apple)
                 {
-                    var foodOnTable = prepTable.GetFoodOnTable();
-                    foreach (IFoodObject food in foodOnTable)
+                    var apple = (AppleFoodObject)food;
+                    if (apple.State == FoodState.Full)
                     {
-                        var type = food.GetFoodType();
-                        if (type == FoodType.Apple)
-                        {
-                            var apple = (AppleFoodObject)food;
-                            if (apple.State == FoodState.Full)
-                            {
-                                var pos = apple.transform.position;
-                                pos.x += 4f;
-                                var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
-                                apple.State = FoodState.Half;
-                                newApple.State = FoodState.Half;
-                            }
-                            else if (apple.State == FoodState.Half)
-                            {
-                                var pos = apple.transform.position;
-                                pos.x += 4f;
-                                var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
-                                apple.State = FoodState.Quarter;
-                                newApple.State = FoodState.Quarter;
-                            }
-                        }
+                        // Spawn new apple and set its properties
+                        var p1 = apple.transform.position;
+                        p1.x += 0.5f;
+                        var newApple = ingredientManager.SpawnFood(FoodType.Apple, p1).
+                            GetComponent(typeof(IFoodObject)) as AppleFoodObject;
+                        newApple.State = FoodState.Half;
+                        newApple.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+                        // Modify original apple properties
+                        var p2 = apple.transform.position;
+                        p2.x -= 0.5f;
+                        apple.transform.position = p2;
+                        apple.State = FoodState.Half;
+                        apple.transform.localRotation = Quaternion.Euler(0, 0, 270);
+                    }
+                    else if (apple.State == FoodState.Half)
+                    {
+                        // Spawn new apple and set its properties
+                        var p1 = apple.transform.position;
+                        p1.x += 0.5f;
+                        var newApple = ingredientManager.SpawnFood(FoodType.Apple, p1).
+                            GetComponent(typeof(IFoodObject)) as AppleFoodObject;
+                        newApple.State = FoodState.Quarter;
+                        newApple.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+                        // Modify original apple properties
+                        var p2 = apple.transform.position;
+                        p2.x -= 0.5f;
+                        apple.transform.position = p2;
+                        apple.State = FoodState.Quarter;
+                        apple.transform.localRotation = Quaternion.Euler(0, 0, 270);
                     }
                 }
             }
