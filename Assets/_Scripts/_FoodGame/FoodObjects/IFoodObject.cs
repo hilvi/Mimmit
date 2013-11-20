@@ -7,6 +7,13 @@ public enum FoodType
     Pear
 }
 
+public enum FoodState
+{
+    Full,
+    Half,
+    Quarter
+}
+
 public interface IFoodObject
 {
     void Handle ();

@@ -3,29 +3,36 @@ using System.Collections;
 
 public class PreparationTableScript : MonoBehaviour
 {
-    void OnTriggerEnter (Collider col)
+    private IFoodObject foodOnPrepTable;
+
+    void OnTriggerEnter(Collider col)
     {
-        if (col.CompareTag ("FoodObject")) {
-
-            IFoodObject foodObject = col.gameObject.GetComponent (typeof(IFoodObject)) as IFoodObject;
+        if (col.CompareTag("FoodObject"))
+        {
+            IFoodObject foodObject = col.gameObject.GetComponent(typeof(IFoodObject)) as IFoodObject;
             if (foodObject != null)
-                foodObject.Handle ();
-            else 
-                Debug.LogError ("FoodObject is missing script");
+                foodObject.Handle();
+            else
+                Debug.LogError("FoodObject is missing script");
 
-            Debug.Log ("Food came in");
+            Debug.Log("Food came in");
             StartCoroutine(SnapFoodToTable(col.gameObject));
         }
     }
 
-    private IEnumerator SnapFoodToTable(GameObject o) {
+    public IFoodObject GetFoodOnTable()
+    {
+        return foodOnPrepTable;
+    }
 
+    private IEnumerator SnapFoodToTable(GameObject o)
+    {
         // Ignore z
         Vector3 prepTablePos = new Vector3(transform.position.x, transform.position.y, 0f);
         Vector3 foodPos = o.transform.position;
         while (true)
         {
-            foodPos = Vector3.MoveTowards(foodPos, prepTablePos, Time.deltaTime * 5f);
+            foodPos = Vector3.MoveTowards(foodPos, prepTablePos, Time.deltaTime * 10f);
             if (foodPos == prepTablePos)
                 break;
 
@@ -33,5 +40,7 @@ public class PreparationTableScript : MonoBehaviour
 
             yield return null;
         }
+
+        foodOnPrepTable = o.GetComponent(typeof(IFoodObject)) as IFoodObject;
     }
 }

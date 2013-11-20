@@ -24,6 +24,8 @@ public class FoodGameManager : GameManager
     private bool verticalWaggleEnabled;
     private bool repeatClickEnabled;
 
+    private IngredientManager ingredientManager;
+    private PreparationTableScript prepTable;
     #endregion
 
     #region UNITY_METHODS
@@ -49,6 +51,14 @@ public class FoodGameManager : GameManager
 
         // Developer 
         actionStateLabelRect = new Rect(300, 0, 100, 20);
+
+        prepTable = GameObject.Find("Preparing Table").GetComponent<PreparationTableScript>();
+        if (prepTable == null)
+            Debug.LogError("Couldn't find preparing table!");
+
+        ingredientManager = GameObject.Find("Ingredient Container").GetComponent<IngredientManager>();
+        if (ingredientManager == null)
+            Debug.LogError("Couldn't find ingredient mgr!");
     }
 
     void Update()
@@ -155,6 +165,38 @@ public class FoodGameManager : GameManager
         if (Input.GetKeyDown(KeyCode.F4))
         {
             currentActionState = ActionState.RepeatClick;
+        }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            // Cutting experiment, integrate this inside each food object
+            if (prepTable != null && ingredientManager != null) 
+            {
+                if (prepTable.GetFoodOnTable() != null)
+                {
+                    if (prepTable.GetFoodOnTable().GetFoodType() != FoodType.Apple)
+                        return;
+
+                    var apple = (AppleFoodObject)(prepTable.GetFoodOnTable());
+                    if (apple.State == FoodState.Full)
+                    {
+                        apple.State = FoodState.Half;
+                        var pos = apple.transform.position;
+                        pos.x += 4f;
+                        var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
+                        newApple.State = FoodState.Half;
+                    }
+                    else if (apple.State == FoodState.Half)
+                    {
+                        apple.State = FoodState.Quarter;
+                        var pos = apple.transform.position;
+                        pos.x += 4f;
+                        var newApple = ingredientManager.SpawnFood(FoodType.Apple, pos).GetComponent(typeof(IFoodObject)) as AppleFoodObject;
+                        newApple.State = FoodState.Quarter;
+                    }
+                    
+                    Debug.Log("is apple");
+                }
+            }
         }
     }
 

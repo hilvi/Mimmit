@@ -12,7 +12,7 @@ public class IngredientManager : MonoBehaviour
 
     void Start ()
     {
-        Quaternion angle = Quaternion.Euler (-90, 0, 0); // Planes have to be rotated to be visible
+        //Quaternion angle = Quaternion.identity;
         Vector3 anchor = transform.position;
 
         // Spawns food randomly for testing
@@ -27,13 +27,13 @@ public class IngredientManager : MonoBehaviour
                 int choice = Random.Range (0, 3);
                 switch (choice) {
                 case 0:
-                    SpawnFood (FoodType.Apple, t, angle);
+                    SpawnFood (FoodType.Apple, t);
                     break;
                 case 1:
-                    SpawnFood (FoodType.Banana, t, angle);
+                    SpawnFood (FoodType.Banana, t);
                     break;
                 case 2:
-                    SpawnFood (FoodType.Pear, t, angle);
+                    SpawnFood (FoodType.Pear, t);
                     break;
                 }
             }
@@ -47,8 +47,9 @@ public class IngredientManager : MonoBehaviour
 	
     }
 
-    private void SpawnFood (FoodType foodType, Vector3 position, Quaternion angle)
+    public GameObject SpawnFood (FoodType foodType, Vector3 position)
     {
+        Quaternion angle = Quaternion.Euler(90, 180, 0); // Planes have to be rotated to be visible
         GameObject o = null;
         switch (foodType) {
         case FoodType.Apple:
@@ -64,5 +65,6 @@ public class IngredientManager : MonoBehaviour
 
         // Set parent under Ingredient Container
         o.transform.parent = transform;
+        return o;
     }
 }
