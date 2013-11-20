@@ -27,7 +27,7 @@ public class FoodGameManager : GameManager
 
     private IngredientManager ingredientManager;
     private PreparationTableScript prepTable;
-    private IngredientQueueScript ingredientQueue;
+    private ActionQueueScript actionQueue;
     #endregion
 
     #region UNITY_METHODS
@@ -62,9 +62,9 @@ public class FoodGameManager : GameManager
         if (ingredientManager == null)
             Debug.LogError("Couldn't find ingredient mgr!");
 
-        ingredientQueue = GameObject.Find("Ingredient Queue").GetComponent<IngredientQueueScript>();
-        if (ingredientQueue == null)
-            Debug.LogError("Couldn't find ingredient queue!");
+        actionQueue = GameObject.Find("Action Queue").GetComponent<ActionQueueScript>();
+        if (actionQueue == null)
+            Debug.LogError("Couldn't find action queue!");
     }
 
     void Update()

@@ -2,13 +2,30 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class IngredientQueueScript : MonoBehaviour
+public class ActionQueueScript : MonoBehaviour
 {
+    public class ActionIcon
+    {
+        public Rect rect;
+        public Texture texture;
+        public string name;
+        public ActionIcon(Rect rect)
+        {
+            this.rect = rect;
+            this.texture = null;
+            this.name = "null";
+        }
+
+        public void SetRect(Rect rect) {
+            this.rect = rect;
+        }
+    }
+
     public Rect currentActionRect;
     public Vector2 queueAnchor;
 
     private bool slidingInAction = false;
-    private List<Rect> actionList = new List<Rect>();
+    private List<ActionIcon> actionList = new List<ActionIcon>();
 
     void Awake()
     {
@@ -16,7 +33,7 @@ public class IngredientQueueScript : MonoBehaviour
         {
             Rect r = new Rect(queueAnchor.x, queueAnchor.y, 60f, 60f);
             r.x -= (i * 60) + (i * 10);
-            actionList.Add(r);
+            actionList.Add(new ActionIcon(r));
         }
     }
 
@@ -39,10 +56,15 @@ public class IngredientQueueScript : MonoBehaviour
         GUI.Box(currentActionRect, "current");
 
         int index = 0;
-        foreach (Rect r in actionList)
+        foreach (ActionIcon a in actionList)
         {
-            GUI.Box(r, (index++).ToString());
+            GUI.Box(a.rect, (index++).ToString());
         }
+    }
+
+    public void PushActionToQueue(string action)
+    {
+
     }
 
     private IEnumerator SlideCurrentActionOut()
@@ -75,7 +97,7 @@ public class IngredientQueueScript : MonoBehaviour
         slidingInAction = true;
 
         // These values set movement ratios, so everything will be done in exactly the same time
-        Rect t = actionList[0];
+        Rect t = actionList[0].rect;
         float dx = (760f - t.x);
         float dw = (90f - t.width);
         float dh = (90f - t.height);
@@ -84,24 +106,24 @@ public class IngredientQueueScript : MonoBehaviour
         float[] newX = new float[actionList.Count - 1];
         for (int i = 1; i < actionList.Count; i++)
         {
-            newX[i - 1] = actionList[i].x + 70f;
+            newX[i - 1] = actionList[i].rect.x + 70f;
         }
 
         while (true)
         {
             // First value will move and also expand its size
-            Rect r = actionList[0];
+            Rect r = actionList[0].rect;
             r.x = Mathf.MoveTowards(r.x, 760f, Time.deltaTime * dx);
             r.width = Mathf.MoveTowards(r.width, 90f, Time.deltaTime * dw);
             r.height = Mathf.MoveTowards(r.height, 90f, Time.deltaTime * dh);
-            actionList[0] = r;
+            actionList[0].SetRect(r);
 
             // Update the rest at same pace
             for (int i = 1; i < actionList.Count; i++)
             {
-                Rect rr = actionList[i];
+                Rect rr = actionList[i].rect;
                 rr.x = Mathf.MoveTowards(rr.x, newX[i - 1], Time.deltaTime * dx);
-                actionList[i] = rr;
+                actionList[i].SetRect(rr);
             }
 
             // If done, terminate
@@ -112,7 +134,7 @@ public class IngredientQueueScript : MonoBehaviour
         }
 
         // Change currently active action
-        currentActionRect = actionList[0];
+        currentActionRect = actionList[0].rect;
         actionList.RemoveAt(0);
 
         slidingInAction = false;
