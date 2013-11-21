@@ -21,8 +21,10 @@ public class GameManager : Overlay
 	public override void Awake () 
 	{
 		base.Awake ();
-		if(currentLevel == 1){SetGameState(GameState.Tutorial);print(GetGameState());}
-		else SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
+		if(currentLevel == 1)
+            SetGameState(GameState.Tutorial);
+		else
+            SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
 
 		Time.timeScale = 1;
 		

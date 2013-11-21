@@ -47,7 +47,7 @@ public class HorseGameManager : GameManager
 			InGameMenuGUI.music.audio.clip = music;
 			InGameMenuGUI.music.audio.Play ();
 		}
-		_characterWidget = GetComponent<CharacterWidgetScript> ();
+		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript> ();
 		//SetGameState (GameState.Pregame);
 		
 		float __width = Screen.width / 2;

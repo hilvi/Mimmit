@@ -82,6 +82,11 @@ public class InGameMenuGUI : Overlay
 		GameState __currentState = _gameManager.GetGameState ();
 		if(__currentState == GameState.Tutorial)
 		{
+            if (tutorial == null)
+            {
+                _gameManager.SetGameState(GameState.Pregame);
+                return;
+            }
 			int __depth = GUI.depth;
 			GUI.depth = 0;
 			GUI.Box (_tutorialRegion,tutorial,noStyle);
@@ -105,7 +110,7 @@ public class InGameMenuGUI : Overlay
 			{
 				_gameManager.PauseGame ();
 			}
-			if (GUI.Button (_tutorialButtonRegion, PauseButton, MGUI.noStyle)) 
+			if (tutorial != null && GUI.Button (_tutorialButtonRegion, PauseButton, MGUI.noStyle)) 
 			{
 				_previousState = __currentState;
 				_gameManager.SetGameState(GameState.Tutorial);
