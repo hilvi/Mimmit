@@ -47,7 +47,7 @@ public class GrabGameManager : GameManager
 		
 		_diffuse = Shader.Find ("Diffuse");
 		_audioSource = GetComponent<AudioSource> ();
-		_characterWidget = GetComponent<CharacterWidgetScript>();
+		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
