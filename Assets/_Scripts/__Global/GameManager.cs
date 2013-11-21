@@ -3,7 +3,7 @@ using System.Collections;
 
 public enum GameState 
 { 
-	Pregame, Running, Paused, Won, Lost 
+	Tutorial,Pregame, Running, Paused, Won, Lost 
 }
 
 public class GameManager : Overlay 
@@ -18,9 +18,12 @@ public class GameManager : Overlay
 	#endregion
 	
 	#region UNITY_METHODS
-	public virtual void Start () 
+	public override void Awake () 
 	{
-		SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
+		base.Awake ();
+		if(currentLevel == 1){SetGameState(GameState.Tutorial);print(GetGameState());}
+		else SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
+
 		Time.timeScale = 1;
 		
 		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));
@@ -32,6 +35,7 @@ public class GameManager : Overlay
 			}
 		}
 	}
+	public virtual void Start(){}
 	#endregion
 	
 	#region METHODS

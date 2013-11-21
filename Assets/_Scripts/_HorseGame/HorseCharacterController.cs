@@ -69,7 +69,7 @@ public class HorseCharacterController : MonoBehaviour
 	{			
 		GameState __state = _gameManager.GetGameState();
 		
-		if (__state == GameState.Pregame || __state == GameState.Lost || __state == GameState.Won) 
+		if (__state == GameState.Pregame || __state == GameState.Lost || __state == GameState.Won || __state == GameState.Tutorial) 
 		{
 			particleEmit.emit = false;
 			anim.PlayAnimation (_idleAnim);

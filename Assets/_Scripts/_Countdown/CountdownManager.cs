@@ -5,7 +5,11 @@ public class CountdownManager : MonoBehaviour {
 	
 	#region MEMBERS
 	public GameObject countdownScript;
-	
+
+	[Range(2,10)]
+	public int counter;
+
+	public HorseGameManager manager;
 	public bool CountdownDone {
 		get {
 			return _countdownDone;
@@ -18,10 +22,11 @@ public class CountdownManager : MonoBehaviour {
 	#region UNITY_METHODS
 	void Start () {
 		_countdownDone = false;
-		StartCoroutine(_Countdown());
+		StartCoroutine(_Countdown(manager));
 	}
 
-	void Update () {
+	void Update () 
+	{
 	
 	}
 	#endregion
@@ -31,13 +36,20 @@ public class CountdownManager : MonoBehaviour {
 		_spawnPosition = position;
 	}
 	
-	private IEnumerator _Countdown() {
+	private IEnumerator _Countdown(HorseGameManager manager) {
 		GameObject cs = null;
-		for (int i = 3; i >= 0; i--) {
+		for (int i = counter; i >= 0; i--) {
 			float t = 1f;
 			while (t > 0f) {
-				t -= Time.deltaTime;
-				yield return null;
+				if(manager.GetGameState() == GameState.Tutorial)
+				{
+					yield return null;
+				}
+				else
+				{
+					t -= Time.deltaTime;
+					yield return null;
+				}
 			}
 			
 			if (i != 0) {
