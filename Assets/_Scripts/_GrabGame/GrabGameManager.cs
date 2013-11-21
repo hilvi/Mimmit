@@ -36,6 +36,9 @@ public class GrabGameManager : GameManager
 	private float[] _lanes;
 	private bool patternFinished = true;
 	private GUIStyle _counterStyle = new GUIStyle();
+    private int _spawnCounter = 0;
+
+    private List<FallingObjectSettings> _fallOrder;
 	
 	// Use this for initialization
 	public override void Start ()
@@ -44,7 +47,7 @@ public class GrabGameManager : GameManager
 		
 		_diffuse = Shader.Find ("Diffuse");
 		_audioSource = GetComponent<AudioSource> ();
-		_characterWidget = GetComponent<CharacterWidgetScript>();
+		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -57,11 +60,14 @@ public class GrabGameManager : GameManager
 		_worldWidth = __worldSize.x;
 		_worldHeight = __worldSize.y;
 		
-		foreach (FallingObjectSettings settings in fallingObjects) {
-			if (settings.collect) {
-				_collectables += settings.numberToCollect;
+		for(int i = 0; i < fallingObjects.Length; i++) {
+			if (fallingObjects[i].collect) {
+				_collectables += fallingObjects[i].numberToCollect;
 			}
+            fallingObjects[i].id = i;
 		}
+
+        _fallOrder = new List<FallingObjectSettings>(fallingObjects);
 
 		InitiateLanes(spawnLanes);
 
@@ -70,6 +76,7 @@ public class GrabGameManager : GameManager
 		_counterStyle.normal.textColor = Color.white;
 		_counterStyle.alignment = TextAnchor.MiddleCenter;
 
+        ShuffleFallingObjects();
 
 		SetGameState (GameState.Running);
 	}
@@ -194,13 +201,31 @@ public class GrabGameManager : GameManager
 
 	int GetObjectId()
 	{
-		int __id;
-		do {
-			__id = Random.Range (0, fallingObjects.Length);
-		} while(fallingObjects[__id].numberToCollect == 0 && fallingObjects[__id].collect);
+        do
+        {
+            _spawnCounter++;
+            if (_spawnCounter >= _fallOrder.Count)
+            {
+                _spawnCounter = 0;
+                ShuffleFallingObjects();
+            }
+        } while (_fallOrder[_spawnCounter].numberToCollect == 0 && _fallOrder[_spawnCounter].collect);
 
-		return __id;
+        return _fallOrder[_spawnCounter].id;
 	}
+
+    void ShuffleFallingObjects()
+    {
+        for (int i = 0; i < _fallOrder.Count; i++)
+        {
+            FallingObjectSettings tmp;
+            int newPos = Random.Range(0, _fallOrder.Count);
+
+            tmp = _fallOrder[newPos];
+            _fallOrder[newPos] = _fallOrder[i];
+            _fallOrder[i] = tmp;
+        }
+    }
 
 	bool CheckIfLaneFree(int lane)
 	{
@@ -235,7 +260,7 @@ public class GrabGameManager : GameManager
 		__script.oscillation = Random.Range (settings.minOscillationAmplitude, settings.maxOscillationAmplitude);
 		__script.manager = this;
 		__script.collect = settings.collect;
-		__script.id = id;
+        __script.id = id;
 		
 		Material __mat = new Material (_diffuse);
 		__mat.mainTexture = settings.texture;
