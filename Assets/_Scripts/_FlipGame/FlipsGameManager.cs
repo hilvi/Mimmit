@@ -121,6 +121,7 @@ public class FlipsGameManager : GameManager
 	{
 		CountdownManager __cdm = GetComponent<CountdownManager> ();
 		__cdm.SetSpawnPosition(new Vector3(0f, 0f, -1f));
+        __cdm.StartCountdown(this);
 		
 		while (!__cdm.CountdownDone) {
 			yield return null;

@@ -7,9 +7,7 @@ public class CountdownManager : MonoBehaviour {
 	public GameObject countdownScript;
 
 	[Range(2,10)]
-	public int counter;
-
-	public HorseGameManager manager;
+	public int counter = 3;
 	public bool CountdownDone {
 		get {
 			return _countdownDone;
@@ -20,10 +18,6 @@ public class CountdownManager : MonoBehaviour {
 	#endregion
 	
 	#region UNITY_METHODS
-	void Start () {
-		_countdownDone = false;
-		StartCoroutine(_Countdown(manager));
-	}
 
 	void Update () 
 	{
@@ -36,7 +30,13 @@ public class CountdownManager : MonoBehaviour {
 		_spawnPosition = position;
 	}
 	
-	private IEnumerator _Countdown(HorseGameManager manager) {
+    public void StartCountdown(GameManager manager)
+    {
+        _countdownDone = false;
+        StartCoroutine(_Countdown(manager));
+    }
+
+	private IEnumerator _Countdown(GameManager manager) {
 		GameObject cs = null;
 		for (int i = counter; i >= 0; i--) {
 			float t = 1f;
