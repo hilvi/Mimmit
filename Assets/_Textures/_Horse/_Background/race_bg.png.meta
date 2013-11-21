@@ -37,11 +37,11 @@ TextureImporter:
   spritePivot: {x: .5, y: .5}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
-  textureType: 5
+  textureType: 2
   buildTargetSettings:
   - buildTarget: Web
     maxTextureSize: 4096
-    textureFormat: 3
+    textureFormat: -3
     compressionQuality: 50
   spriteSheet:
     sprites: []
