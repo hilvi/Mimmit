@@ -8,6 +8,8 @@ public class MaahalainenScript : MonoBehaviour {
 	private Rect _guiRect;
 	public Inventory inventory;
 	public GameObject stonePile;
+	public Texture2D itemTexture;
+	public Items item;
 	#endregion
 
 	#region UNITY_METHODS
@@ -20,9 +22,9 @@ public class MaahalainenScript : MonoBehaviour {
 
 	void OnTriggerEnter()
 	{
-		if(inventory.InventoryContains(Items.PickAxe))
+		if(inventory.InventoryContains(item))
 		{
-			Destroy (stonePile);
+			Destroy (stonePile,1.0f);
 			return;
 		}
 		_showGUI = true;
@@ -36,7 +38,7 @@ public class MaahalainenScript : MonoBehaviour {
 	{
 		if(_showGUI)
 		{
-			GUI.Box (_guiRect, "Get the pickaxe");
+			GUI.Box (_guiRect, itemTexture);
 		}
 	}
 	#endregion
