@@ -78,10 +78,10 @@ public class HorseCharacterController : MonoBehaviour
 			
 		if (_controller.isGrounded) 
 		{
-			if (Input.GetButtonDown ("Fire1"))
-			SideStep ();
+			/*if (Input.GetButtonDown ("Fire1"))
+				SideStep ();
 			if (Input.GetButtonUp ("Fire1"))
-				SideStepReturn ();
+				SideStepReturn ();*/
 			
 			if (_controller.velocity.x != 0)
 			{
