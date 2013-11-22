@@ -21,9 +21,9 @@ public class GameSelectionScript : Overlay
 	private Camera _localCamera;
 	private AudioSource _localAudioSource;
 	private NavigationGUIScript navGUI;
+	private GameSelectionButton[] gameButtons;
 	#endregion
 
-	private GameSelectionButton[] gameButtons;
 	
 	#region UNITY_METHODS
 	public override void Awake ()
@@ -106,6 +106,10 @@ public class GameSelectionScript : Overlay
 	
 	void Update ()
 	{
+		// Prevent interaction if paused
+		if (Manager.GetNavigationState () == NavigationState.Pause)
+			return;
+
 		// Mouse scrolling
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
 		
