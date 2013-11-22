@@ -43,7 +43,7 @@ public class GameSelectionScript : Overlay
 		// Initialize mouse scroll regions
 		float __regionWidth = Screen.width / 3f;
 		float __regionVerticalOffset = Screen.height / 8f;
-		float __regionHeight = Screen.height - Screen.height / 4f;
+		float __regionHeight = Screen.height;
 		leftScrollRegion = new Rect (0f, __regionVerticalOffset, __regionWidth, __regionHeight);
 		rightScrollRegion = new Rect (Screen.width - __regionWidth, __regionVerticalOffset, __regionWidth, __regionHeight);
 		
