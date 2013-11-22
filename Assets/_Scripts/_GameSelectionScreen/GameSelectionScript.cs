@@ -110,12 +110,8 @@ public class GameSelectionScript : Overlay
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
 		
 		// Check if player is hovering any button
-		bool __buttonHovering = false;
 		for (int i = 0; i < gameButtons.Length; i++) {
 			bool __contains = (gameButtons [i].CalcStaticRect ().Contains (__mouse));
-			
-			if  (__contains)
-				__buttonHovering = true;
 			
 			// Mouse input
 			if (Input.GetMouseButtonDown (0)) {
@@ -127,12 +123,12 @@ public class GameSelectionScript : Overlay
 			}
 		}
 
-		if (leftScrollRegion.Contains (__mouse) && !__buttonHovering) {
+		if (leftScrollRegion.Contains (__mouse)) {
 			float __force = 1f - __mouse.x / leftScrollRegion.width;
 			currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
 		}
 		
-		if (rightScrollRegion.Contains (__mouse) && !__buttonHovering) {
+		if (rightScrollRegion.Contains (__mouse)) {
 			float __force = 1f - (Screen.width-__mouse.x) / rightScrollRegion.width;
 			currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
 		}
