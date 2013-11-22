@@ -11,19 +11,22 @@ public class GameSelectionScript : Overlay
 	public float scrollingSpeed;
 	public string[] sceneNames;
 	public MovieTexture[] buttonTextures;
+	public Texture2D leftArrowTexture, rightArrowTexture;
 
 	// Entire background will be shifted by this value to create an illusion of "centering" the camera
 	public float centerPivotOffset; 
 	// This will be define how much background is shifted from center pivot. 
 	private float currentPivotOffset;
+	// Rectangles
 	private Rect backgroundRect;
 	private Rect leftScrollRegion, rightScrollRegion;
+	private Rect leftArrowRect, rightArrowRect;
+	// References
 	private Camera _localCamera;
 	private AudioSource _localAudioSource;
 	private NavigationGUIScript navGUI;
 	private GameSelectionButton[] gameButtons;
 	#endregion
-
 	
 	#region UNITY_METHODS
 	public override void Awake ()
@@ -46,7 +49,11 @@ public class GameSelectionScript : Overlay
 		float __regionHeight = Screen.height;
 		leftScrollRegion = new Rect (0f, __regionVerticalOffset, __regionWidth, __regionHeight);
 		rightScrollRegion = new Rect (Screen.width - __regionWidth, __regionVerticalOffset, __regionWidth, __regionHeight);
-		
+
+		// Initialize arrow positions
+		leftArrowRect = new Rect (10f, 515f, 100f, 75f);
+		rightArrowRect = new Rect (850f, 515f, 100f, 75f);
+
 		navGUI = GetComponent<NavigationGUIScript>();
 	}
 	
@@ -174,7 +181,11 @@ public class GameSelectionScript : Overlay
 			GUI.Box (gameButtons [i].CalcRect (), gameButtons [i].startSceneName);
 			#endif
 		}
-		
+
+		// Draw left and right arrows
+		GUI.DrawTexture (leftArrowRect, leftArrowTexture);
+		GUI.DrawTexture (rightArrowRect, rightArrowTexture);
+
 		navGUI.Draw();
 	}
 	#endregion
