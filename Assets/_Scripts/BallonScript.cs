@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BallonScript : MonoBehaviour {
+public class BallonScript : Overlay {
 
 	public Texture2D[] texture;
 	GUITexture guiT;
@@ -13,13 +13,15 @@ public class BallonScript : MonoBehaviour {
 	bool once = true;
 	bool onceOut = true;
 	AudioSource audioSource;
+
 	void Start () 
 	{
 		guiT = GetComponent<GUITexture>();
 		guiT.texture = texture[index];
 		audioSource = GetComponent<AudioSource>();
 		audioSource.volume = 0;
-		StartCoroutine(FadeIn());
+		StartCoroutine(_FadeIn());
+		FadeIn ();
 	}
 	
 	// Update is called once per frame
@@ -43,10 +45,10 @@ public class BallonScript : MonoBehaviour {
 		if(index == texture.Length && Input.anyKeyDown && onceOut)
 		{
 			onceOut = false;
-			StartCoroutine(FadeOut ());
+			StartCoroutine(_FadeOut ());
 		}
 	}
-	IEnumerator FadeIn()
+	IEnumerator _FadeIn()
 	{
 		while(audioSource.volume < 1)
 		{
@@ -54,13 +56,13 @@ public class BallonScript : MonoBehaviour {
 			yield return null;
 		}
 	}
-	IEnumerator FadeOut()
+	IEnumerator _FadeOut()
 	{
 		while(audioSource.volume > 0)
 		{
 			audioSource.volume -= Time.deltaTime;
 			yield return null;
 		}
-		Application.LoadLevel("GameSelectionScene");
+		LoadLevel("GameSelectionScene");
 	}
 }
