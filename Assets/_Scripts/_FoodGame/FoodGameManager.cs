@@ -17,7 +17,7 @@ public class FoodGameManager : GameManager
 
     private Transform grabbedObject;
 
-    private enum ActionState { Idle, VerticalWaggle, HorizontalWaggle, RepeatClick }
+    public enum ActionState { Idle, VerticalWaggle, HorizontalWaggle, RepeatClick }
     private ActionState currentActionState;
     private Rect actionStateLabelRect;
 
@@ -122,10 +122,21 @@ public class FoodGameManager : GameManager
     #endregion
 
     #region METHODS
+    public ActionState GetActionState()
+    {
+        return currentActionState;
+    }
+
+    public void SetActionState(ActionState state)
+    {
+        currentActionState = state;
+    }
+
     private void HandleIdleState()
     {
         UpdateHoldDrag();
     }
+
     private void HandleHorizontalWaggleState()
     {
         if (!horizontalWaggleEnabled)
@@ -155,23 +166,6 @@ public class FoodGameManager : GameManager
 
     private void UpdateActionState()
     {
-        // Developer/debugger controls
-        if (Input.GetKeyDown(KeyCode.F1))
-        {
-            currentActionState = ActionState.Idle;
-        }
-        if (Input.GetKeyDown(KeyCode.F2))
-        {
-            currentActionState = ActionState.HorizontalWaggle;
-        }
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            currentActionState = ActionState.VerticalWaggle;
-        }
-        if (Input.GetKeyDown(KeyCode.F4))
-        {
-            currentActionState = ActionState.RepeatClick;
-        }
         if (Input.GetKeyDown(KeyCode.P))
         {
             // Cutting experiment, integrate this inside each food object
