@@ -125,17 +125,10 @@ public class InGameMenuGUI : Overlay
 	#endregion
 	
 	#region METHODS
-	IEnumerator _LoadMainMenu (AudioSource source)
+	IEnumerator _LoadGameSelectionScreen (AudioSource source)
 	{
 		Time.timeScale = 1.0f;
-		ScreenChoice __choice = Manager.GetScreenChoice ();
-		if (__choice == ScreenChoice.Map) {
-			LoadLevel ("MapWorld");
-		} else if (__choice == ScreenChoice.Button) {
-			LoadLevel ("GameSelectionScene");
-		} else {
-			LoadLevel ("GameSelectionScene");
-		}
+		LoadLevel ("GameSelectionScene");
 		
 		if (source != null) {
 			while (source.volume > 0) {
@@ -184,7 +177,7 @@ public class InGameMenuGUI : Overlay
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			//Only for debug for horse game since SoundCam object is not there yet.
 			if (obj != null)
-				StartCoroutine (_LoadMainMenu (obj.audio));
+				StartCoroutine (_LoadGameSelectionScreen (obj.audio));
 			else {
 				Time.timeScale = 1.0f;
 				LoadLevel ("GameSelectionScene");
@@ -200,7 +193,7 @@ public class InGameMenuGUI : Overlay
 	{
 		if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
-			StartCoroutine (_LoadMainMenu (obj.audio));
+			StartCoroutine (_LoadGameSelectionScreen (obj.audio));
 		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
 			_gameManager.RestartGame ();
 		} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
@@ -215,7 +208,7 @@ public class InGameMenuGUI : Overlay
 	{
 		if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
-			StartCoroutine (_LoadMainMenu (obj.audio));
+			StartCoroutine (_LoadGameSelectionScreen (obj.audio));
 		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
 			_gameManager.RestartGame ();
 		}
