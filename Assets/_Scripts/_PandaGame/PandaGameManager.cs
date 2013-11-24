@@ -34,6 +34,10 @@ public class PandaGameManager : GameManager
     }
 	
 	void Update () {
+        // If game is paused, prevent any interaction
+        if (GetGameState() == GameState.Paused)
+            return;
+
         // Left mouse down - Start drawing
         if (Input.GetMouseButtonDown(0))
         {
