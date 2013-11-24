@@ -43,6 +43,10 @@ public class PandaGameManager : GameManager
             var __o = (GameObject)(Instantiate(linePrefab));
             __o.transform.parent = _lineContainer.transform;
             _line = __o.GetComponent<MagicLine>();
+            
+            // Set starting position
+            Vector3 __t = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            _line.SetStartingPosition(new Vector2(__t.x, __t.y));
         }
 
         //  Left mouse up  - Stop drawing

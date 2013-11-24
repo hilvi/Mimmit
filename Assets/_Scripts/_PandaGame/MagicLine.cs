@@ -5,42 +5,57 @@ using System.Collections.Generic;
 public class MagicLine : MonoBehaviour
 {
     #region MEMBERS
-    private int samples = 0;
-    private EdgeCollider2D edgeCollider;
-    private LineRenderer lineRenderer;
+    private int _samples = 0;
+    private EdgeCollider2D _edgeCollider;
+    private LineRenderer _lineRenderer;
+
+    // Keep track of previous position to prevent 
+    // drawing continuously on the same spot.
+    private const float _minLineDelta = 0.1f;
+    private Vector2 _previousPosition; 
     #endregion
 
     #region UNITY_METHODS
     void Awake()
     {
         // Set references
-        edgeCollider = GetComponent<EdgeCollider2D>();
-        lineRenderer = GetComponent<LineRenderer>();
-        lineRenderer.SetVertexCount(0);
+        _edgeCollider = GetComponent<EdgeCollider2D>();
+        _lineRenderer = GetComponent<LineRenderer>();
+        _lineRenderer.SetVertexCount(0);
 
         // Reset whatever points edge collider might have
-        edgeCollider.points = new Vector2[2];
+        _edgeCollider.points = new Vector2[2];
     }
     #endregion
 
     #region METHODS
     public void Step()
     {
+
         // Get mouse position and convert to world pos
         Vector3 __pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         __pos.z = 0f; // Ditch z-axis, because line renderer only accepts Vector3
-        samples++; // Count samples for indexing
+        Vector2 __pos2d = new Vector2(__pos.x, __pos.y);
 
-        Vector2[] __oldPointSet = edgeCollider.points;
-        if (samples == 1 || samples == 2)
+        // If distance to previous point is too close, don't draw
+        float __distance = Vector2.Distance(__pos2d, _previousPosition);
+        if (__distance < _minLineDelta)
+            return;
+        else
+            // Count samples for tracking point indices
+            _samples++;
+        
+        Vector2[] __oldPointSet = _edgeCollider.points;
+        if (_samples == 1 || _samples == 2)
         {
             // Special case, because edge collider always have at least two points
-            __oldPointSet[samples - 1] = new Vector2(__pos.x, __pos.y);
-            edgeCollider.points = __oldPointSet;
+            __oldPointSet[_samples - 1] = __pos2d;
+            _edgeCollider.points = __oldPointSet;
 
             // Update line renderer
-            lineRenderer.SetVertexCount(samples);
-            lineRenderer.SetPosition(samples - 1, __pos);
+            _lineRenderer.SetVertexCount(_samples);
+            _lineRenderer.SetPosition(_samples - 1, __pos);
+            _previousPosition = __pos2d;
         }
         else
         {
@@ -50,13 +65,19 @@ public class MagicLine : MonoBehaviour
                 __newPointSet[i] = __oldPointSet[i];
 
             // Assign new point and save new point set to edge collider
-            __newPointSet[__oldPointSet.Length] = new Vector2(__pos.x, __pos.y);
-            edgeCollider.points = __newPointSet;
+            __newPointSet[__oldPointSet.Length] = __pos2d;
+            _edgeCollider.points = __newPointSet;
 
             // Update line renderer
-            lineRenderer.SetVertexCount(samples);
-            lineRenderer.SetPosition(samples - 1, __pos);
+            _lineRenderer.SetVertexCount(_samples);
+            _lineRenderer.SetPosition(_samples - 1, __pos);
+            _previousPosition = __pos2d;
         }
+    }
+
+    public void SetStartingPosition(Vector2 position)
+    {
+        _previousPosition = position;
     }
     #endregion
 }
