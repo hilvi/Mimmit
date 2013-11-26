@@ -13,7 +13,7 @@ public class CarrotScript : MonoBehaviour
 	#region UNITY_METHODS
 	void Start ()
 	{
-		_controller = GameObject.Find ("Player").GetComponent<HorseCharacterController> ();
+		_controller = GameObject.FindGameObjectWithTag ("Player").GetComponent<HorseCharacterController> ();
 		_renderer = GetComponentInChildren<Renderer> ();
 		_particle = transform.Find ("Particle");
 		_transform = GetComponent<Transform>();
@@ -31,7 +31,7 @@ public class CarrotScript : MonoBehaviour
 	}
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.gameObject.name == "Player") {
+		if (col.gameObject.tag == "Player") {
 			StartCoroutine (DoubleSpeed (2f));
 			_renderer.enabled = false;
 			_particle.gameObject.SetActive (false);

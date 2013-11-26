@@ -9,7 +9,7 @@ using System.Collections;
 public class InGameMenuGUI : Overlay
 {	
 	#region MEMBERS
-	public Texture Restart, PlayButton, MainMenuButton, PauseButton;
+	public Texture restart, playButton, mainMenuButton, pauseButton,tutorialButton;
 	public static GameObject music;
 	public MovieTexture tutorial;
 	public Texture2D frame;
@@ -95,7 +95,8 @@ public class InGameMenuGUI : Overlay
 			if(GUI.Button (_tutorialFrame,frame, noStyle))
 			{
 				tutorial.Stop();
-				if(_previousState == GameState.Tutorial){
+				if(_previousState == GameState.Tutorial)
+				{
 					_gameManager.SetGameState(GameState.Pregame);
 				}
 				else
@@ -106,11 +107,11 @@ public class InGameMenuGUI : Overlay
 		// While the game is in progress, only display the pause button
 		if (__currentState == GameState.Running || __currentState == GameState.Pregame) 
 		{
-			if (GUI.Button (_pauseButtonRegion, PauseButton, MGUI.noStyle)) 
+			if (GUI.Button (_pauseButtonRegion, pauseButton, MGUI.noStyle)) 
 			{
 				_gameManager.PauseGame ();
 			}
-			if (tutorial != null && GUI.Button (_tutorialButtonRegion, PauseButton, MGUI.noStyle)) 
+			if (tutorial != null && GUI.Button (_tutorialButtonRegion, tutorialButton, MGUI.noStyle)) 
 			{
 				_previousState = __currentState;
 				_gameManager.SetGameState(GameState.Tutorial);
@@ -129,11 +130,16 @@ public class InGameMenuGUI : Overlay
 	{
 		Time.timeScale = 1.0f;
 		ScreenChoice __choice = Manager.GetScreenChoice ();
-		if (__choice == ScreenChoice.Map) {
+		if (__choice == ScreenChoice.Map) 
+		{
 			LoadLevel ("MapWorld");
-		} else if (__choice == ScreenChoice.Button) {
+		} 
+		else if (__choice == ScreenChoice.Button) 
+		{
 			LoadLevel ("GameSelectionScene");
-		} else {
+		} 
+		else 
+		{
 			LoadLevel ("GameSelectionScene");
 		}
 		
@@ -151,8 +157,10 @@ public class InGameMenuGUI : Overlay
 	IEnumerator _LoadWinScene (AudioSource source)
 	{
 		
-		if (source != null) {
-			while (source.volume > 0) {
+		if (source != null) 
+		{
+			while (source.volume > 0) 
+			{
 				source.volume -= 0.02f;	
 				yield return null;
 			}
@@ -165,22 +173,24 @@ public class InGameMenuGUI : Overlay
 		
 	private void _ShowBottomMenu ()
 	{
-		switch (_gameManager.GetGameState ()) {
-		case GameState.Paused:
-			_HandlePauseState ();
-			break;
-		case GameState.Won:
-			_HandleWonState ();
-			break;
-		case GameState.Lost:
-			_HandleLostState ();
-			break;
+		switch (_gameManager.GetGameState ()) 
+		{
+			case GameState.Paused:
+				_HandlePauseState ();
+				break;
+			case GameState.Won:
+				_HandleWonState ();
+				break;
+			case GameState.Lost:
+				_HandleLostState ();
+				break;
 		}
 	}
 	
 	private void _HandlePauseState ()
 	{
-		if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
+		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
+		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			//Only for debug for horse game since SoundCam object is not there yet.
 			if (obj != null)
@@ -189,21 +199,30 @@ public class InGameMenuGUI : Overlay
 				Time.timeScale = 1.0f;
 				LoadLevel ("GameSelectionScene");
 			}
-		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
+		} 
+		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
+		{
 			_gameManager.RestartGame ();
-		} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
+		} 
+		else if (MGUI.HoveredButton (_nextLevelButtonRegion, playButton)) 
+		{
 			_gameManager.UnpauseGame ();
 		}
 	}
 	
 	private void _HandleWonState ()
 	{
-		if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
+		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
+		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			StartCoroutine (_LoadMainMenu (obj.audio));
-		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
+		} 
+		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
+		{
 			_gameManager.RestartGame ();
-		} else if (MGUI.HoveredButton (_nextLevelButtonRegion, PlayButton)) {
+		} 
+		else if (MGUI.HoveredButton (_nextLevelButtonRegion, playButton)) 
+		{
 			if(!_gameManager.isLastLevel)
 				_gameManager.GoToNextLevel();
 			else
@@ -213,10 +232,13 @@ public class InGameMenuGUI : Overlay
 	
 	private void _HandleLostState ()
 	{
-		if (MGUI.HoveredButton (_mainMenuButtonRegion, MainMenuButton)) {
+		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
+		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			StartCoroutine (_LoadMainMenu (obj.audio));
-		} else if (MGUI.HoveredButton (_restartButtonRegion, Restart)) {
+		} 
+		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
+		{
 			_gameManager.RestartGame ();
 		}
 	}

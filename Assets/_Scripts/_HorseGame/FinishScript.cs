@@ -11,10 +11,12 @@ public class FinishScript : MonoBehaviour
 	#region UNITY_METHODS
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.gameObject.name == "Player") {
+		if (col.gameObject.tag == "Player") 
+		{
 			manager.PlayerFinish ();
 		}
-		if (col.gameObject.name == "Bird") {
+		if (col.gameObject.name == "Bird") 
+		{
 			manager.BirdFinish ();
 		}
 	}

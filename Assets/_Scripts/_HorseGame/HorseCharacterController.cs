@@ -21,18 +21,20 @@ public class HorseCharacterController : MonoBehaviour
 	private CharacterController _controller;
 	private Vector3 _movement;
 	private float _currentSpeed;
+	private float _pondJumpSpeed;
+	private float _currentJumpSpeed;
 	private bool _sideStepping = false;
 	private Transform _plane;
-	private string _runAnim;
-	private string _jumpAnim;
-	internal string _idleAnim;
-	
+	private string _runAnim = "Run";
+	private string _jumpAnim = "Jump";
+	internal string _idleAnim = "Idle";
+		
 	#endregion
 	
 	#region UNITY_METHODS
     void Awake()
     {
-        switch (Manager.GetCharacter())
+       /* switch (Manager.GetCharacter())
         {
             case Character.Blonde:
                 _runAnim = "RunBlonde";
@@ -48,13 +50,13 @@ public class HorseCharacterController : MonoBehaviour
 				_runAnim = "RunFox";
 				_jumpAnim = "JumpFox";
 				_idleAnim = "IdleFox";
-			break;*/
+			break;
             default:
                 _runAnim =  "RunBlonde";
                 _jumpAnim = "JumpBlonde";
                 _idleAnim = "IdleBlonde";
                 break;
-        }
+        }*/
     }
 
 	void Start ()
@@ -65,6 +67,8 @@ public class HorseCharacterController : MonoBehaviour
 		
 		_plane = transform.Find ("Plane");
 		_currentSpeed = runningSpeed;
+		_currentJumpSpeed = jumpSpeed;
+		_pondJumpSpeed = jumpSpeed / 2f;
 		_movement.x = _currentSpeed;
 		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
 		
@@ -104,7 +108,7 @@ public class HorseCharacterController : MonoBehaviour
 			}
 			if (Input.GetButtonDown ("Jump") && !_sideStepping) 
 			{	
-				_movement.y = jumpSpeed;
+				_movement.y = _currentJumpSpeed;
 			}
 			
 		} 
@@ -121,6 +125,7 @@ public class HorseCharacterController : MonoBehaviour
 		RaycastHit hit;
 		if(Physics.Raycast (rayPosition.position,transform.right, out hit,0.5f))
 		{
+			print (hit.collider.gameObject.name);
 			if(Vector3.Angle (hit.normal,-transform.right)< 30)
 			{
 				_movement.x = 0;
@@ -144,12 +149,12 @@ public class HorseCharacterController : MonoBehaviour
 	{
 		if (_currentSpeed > runningSpeed)
 			return;
-			//_currentSpeed = (mudSpeed + powerUpSpeed) / 2;
-		else
-			_currentSpeed = mudSpeed;
 
+		_currentSpeed = mudSpeed;
+		_currentJumpSpeed = _pondJumpSpeed;
 		Animator2D __anim = GetComponentInChildren<Animator2D>();
 		__anim.speed /= 2;
+
 	}
 	
 	/// <summary>
@@ -160,9 +165,9 @@ public class HorseCharacterController : MonoBehaviour
 	{
 		if (_currentSpeed > runningSpeed)
 			return;
-		else
-			_currentSpeed = runningSpeed;
-		
+
+		_currentSpeed = runningSpeed;
+		_currentJumpSpeed = jumpSpeed;
 		Animator2D __anim = GetComponentInChildren<Animator2D>();
 		__anim.speed *= 2;
 	}

@@ -19,6 +19,7 @@ public class HorseGameManager : GameManager
 	public Texture2D birdTexture;
 	public float progressCharacterSize = 50;
     public Texture2D _levelTexture;
+	public GameObject blonde, brune, fox, boy;
 	
 	private CharacterWidgetScript _characterWidget;
 	private HorseCharacterController _horseScript;
@@ -33,11 +34,35 @@ public class HorseGameManager : GameManager
 	private Transform _birdPosition;
 	private float _levelLength;
     private Texture2D _playerTexture;
+	private GameObject _player;
 	
 	#endregion
 
 	
 	#region UNITY_METHODS
+	public override void Awake()
+	{
+		base.Awake ();	
+		Vector3 __position = new Vector3(0,0.8f,0);
+		switch(Manager.GetCharacter())
+		{
+		case Character.Blonde:
+			_player = (GameObject)Instantiate(blonde, __position, Quaternion.identity);
+			break;
+		case Character.Brune:
+			_player = (GameObject)Instantiate(brune, __position, Quaternion.identity);
+			break;
+		case Character.Boy:
+			_player = (GameObject)Instantiate(boy, __position, Quaternion.identity);
+			break;
+		case Character.Fox:
+			_player = (GameObject)Instantiate(fox, __position, Quaternion.identity);
+			break;
+		default:
+			_player = (GameObject)Instantiate(brune, __position, Quaternion.identity);
+			break;
+		}
+	}
 	public override void Start ()
 	{
 		base.Start ();
@@ -54,10 +79,10 @@ public class HorseGameManager : GameManager
 		Transform __finishPosition = GameObject.Find ("FinishLine").transform;
 		_progressBar = new Rect (0, 0, progressBarLength, 25);
 		_progressBar.center = new Vector2 (__width, 25);
-		_playerPosition = GameObject.Find ("Player").transform;
+		_playerPosition = _player.transform;
 		_birdPosition = GameObject.Find ("Bird").transform;
 		
-		_levelLength = __finishPosition.position.x - _playerPosition.position.x;
+		_levelLength = __finishPosition.position.x - _player.transform.position.x;
 		_progressPlayerPos = new Rect (0, 0, progressCharacterSize, progressCharacterSize);
 		_progressPlayerPos.center = new Vector2 (0, 25);
 		_progressBirdPos = new Rect (0, 0, progressCharacterSize, progressCharacterSize);
@@ -70,7 +95,7 @@ public class HorseGameManager : GameManager
 		guiText.fontSize = 60;
 		guiText.alignment = TextAlignment.Center;
 		guiText.anchor = TextAnchor.MiddleCenter;
-		_horseScript = GameObject.Find ("Player").GetComponent<HorseCharacterController> ();
+		_horseScript = _player.GetComponent<HorseCharacterController> ();
 
         foreach (var anim in _horseScript.GetComponentsInChildren<Animation2D>())
         {
@@ -88,10 +113,12 @@ public class HorseGameManager : GameManager
 	{
 		if (!_gameOver)
 			return;
-		if (_winner == Winner.Player) {
+		if (_winner == Winner.Player) 
+		{
 			_characterWidget.TriggerHappyEmotion ();
 			SetGameState (GameState.Won);
-		} else if (_winner == Winner.Bird) {
+		} else if (_winner == Winner.Bird) 
+		{
 			_characterWidget.TriggerSadEmotion ();
 			SetGameState (GameState.Lost);
 		}
