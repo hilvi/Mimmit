@@ -73,7 +73,6 @@ public class HorseGameManager : GameManager
 			InGameMenuGUI.music.audio.Play ();
 		}
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript> ();
-		//SetGameState (GameState.Pregame);
 		
 		float __width = Screen.width / 2;
 		Transform __finishPosition = GameObject.Find ("FinishLine").transform;
@@ -149,7 +148,8 @@ public class HorseGameManager : GameManager
 		_horseScript.SetSpeed (0);
 		if (_birdFinished == false)
 			_winner = Winner.Player;
-		if (_birdFinished && _playerFinished) {
+		if (_birdFinished && _playerFinished) 
+		{
 			_gameOver = true;
 		}
 	}

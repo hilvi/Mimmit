@@ -87,12 +87,8 @@ public class GameManager : Overlay
 	{
 		//Reset global time scale
 		Time.timeScale = 1;
-		if (!isLastLevel){
-			int i = currentLevel + 1;
-			LoadLevel(gameName + i.ToString());
-		}else
-			LoadLevel("WinScene");	
-
+		int i = currentLevel + 1;
+		LoadLevel(gameName + i.ToString());
 	}
 	
 	public void EndGame() 

@@ -32,32 +32,6 @@ public class HorseCharacterController : MonoBehaviour
 	#endregion
 	
 	#region UNITY_METHODS
-    void Awake()
-    {
-       /* switch (Manager.GetCharacter())
-        {
-            case Character.Blonde:
-                _runAnim = "RunBlonde";
-                _jumpAnim = "JumpBlonde";
-                _idleAnim = "IdleBlonde";
-                break;
-            case Character.Brune:
-                _runAnim = "RunBrune";
-                _jumpAnim = "JumpBrune";
-                _idleAnim = "IdleBrune";
-                break;
-			/*case Character.Fox:
-				_runAnim = "RunFox";
-				_jumpAnim = "JumpFox";
-				_idleAnim = "IdleFox";
-			break;
-            default:
-                _runAnim =  "RunBlonde";
-                _jumpAnim = "JumpBlonde";
-                _idleAnim = "IdleBlonde";
-                break;
-        }*/
-    }
 
 	void Start ()
 	{
@@ -125,7 +99,6 @@ public class HorseCharacterController : MonoBehaviour
 		RaycastHit hit;
 		if(Physics.Raycast (rayPosition.position,transform.right, out hit,0.5f))
 		{
-			print (hit.collider.gameObject.name);
 			if(Vector3.Angle (hit.normal,-transform.right)< 30)
 			{
 				_movement.x = 0;

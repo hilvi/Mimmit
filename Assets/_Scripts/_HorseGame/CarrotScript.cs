@@ -29,10 +29,12 @@ public class CarrotScript : MonoBehaviour
 		__scale.x = __scale.y = Mathf.Abs (__value) + __min;
 		_transform.localScale = __scale;
 	}
+
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.gameObject.tag == "Player") {
-			StartCoroutine (DoubleSpeed (2f));
+		if (col.gameObject.tag == "Player") 
+		{
+			StartCoroutine (DoubleSpeed());
 			_renderer.enabled = false;
 			_particle.gameObject.SetActive (false);
 			_controller.particle.gameObject.SetActive (true);
@@ -41,10 +43,11 @@ public class CarrotScript : MonoBehaviour
 	#endregion
 	
 	#region METHODS
-	public IEnumerator DoubleSpeed (float addSpeed)
+	public IEnumerator DoubleSpeed ()
 	{
 		_controller.SetSpeed (_controller.GetSpeed () + 2f);
-		while (_controller.GetSpeed() > _controller.runningSpeed) {
+		while (_controller.GetSpeed() > _controller.runningSpeed) 
+		{
 			_controller.SetSpeed (_controller.GetSpeed () - Time.deltaTime);
 			yield return null;
 		}
