@@ -15,6 +15,7 @@ public class HorseCharacterController : MonoBehaviour
 	public Animator2D anim;
 	public Transform particle;
 	public ParticleEmitter particleEmit;
+	public Transform rayPosition;
 	
 	private HorseGameManager _gameManager;
 	private CharacterController _controller;
@@ -43,8 +44,13 @@ public class HorseCharacterController : MonoBehaviour
                 _jumpAnim = "JumpBrune";
                 _idleAnim = "IdleBrune";
                 break;
+			/*case Character.Fox:
+				_runAnim = "RunFox";
+				_jumpAnim = "JumpFox";
+				_idleAnim = "IdleFox";
+			break;*/
             default:
-                _runAnim = "RunBlonde";
+                _runAnim =  "RunBlonde";
                 _jumpAnim = "JumpBlonde";
                 _idleAnim = "IdleBlonde";
                 break;
@@ -82,7 +88,8 @@ public class HorseCharacterController : MonoBehaviour
 				SideStep ();
 			if (Input.GetButtonUp ("Fire1"))
 				SideStepReturn ();*/
-			
+
+
 			if (_controller.velocity.x != 0)
 			{
 				anim.PlayAnimation (_runAnim);
@@ -108,8 +115,21 @@ public class HorseCharacterController : MonoBehaviour
 					particleEmit.emit = false;
 			_movement.y -= gravity * Time.deltaTime;
 		}
-		
-		_movement.x = _currentSpeed;
+
+		// This part is due to the fact that the character controller has problem with slope
+		// This is a known problem they have not yet resolved. So I check the slope manually.
+		RaycastHit hit;
+		if(Physics.Raycast (rayPosition.position,transform.right, out hit,0.5f))
+		{
+			if(Vector3.Angle (hit.normal,-transform.right)< 30)
+			{
+				_movement.x = 0;
+			}
+		}
+		else
+		{
+			_movement.x = _currentSpeed;
+		} 
 		_controller.Move (_movement * Time.deltaTime);
 	}
 	#endregion
