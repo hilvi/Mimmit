@@ -11,19 +11,23 @@ public class GameSelectionScript : Overlay
 	public float scrollingSpeed;
 	public string[] sceneNames;
 	public MovieTexture[] buttonTextures;
+	public Texture2D frame;
+	public Texture2D [] arrows;
 
 	// Entire background will be shifted by this value to create an illusion of "centering" the camera
 	public float centerPivotOffset; 
 	// This will be define how much background is shifted from center pivot. 
-	private float currentPivotOffset;
-	private Rect backgroundRect;
-	private Rect leftScrollRegion, rightScrollRegion;
+	private float _currentPivotOffset;
+	private Rect _backgroundRect;
+	private Rect _leftScrollRegion, _rightScrollRegion;
 	private Camera _localCamera;
 	private AudioSource _localAudioSource;
-	private NavigationGUIScript navGUI;
+	private NavigationGUIScript _navGUI;
+	private GUIStyle _noStyle = new GUIStyle();
+	private Rect _leftArrow, _rightArrow;
 	#endregion
 
-	private GameSelectionButton[] gameButtons;
+	private GameSelectionButton[] _gameButtons;
 	
 	#region UNITY_METHODS
 	public override void Awake ()
@@ -38,16 +42,16 @@ public class GameSelectionScript : Overlay
 		}
 		
 		// Initialize background
-		backgroundRect = new Rect (0f, 0f, hugeBackground.width, hugeBackground.height);
+		_backgroundRect = new Rect (0f, 0, Screen.width * 2, hugeBackground.height);
 
 		// Initialize mouse scroll regions
 		float __regionWidth = Screen.width / 3f;
 		float __regionVerticalOffset = Screen.height / 8f;
 		float __regionHeight = Screen.height - Screen.height / 4f;
-		leftScrollRegion = new Rect (0f, __regionVerticalOffset, __regionWidth, __regionHeight);
-		rightScrollRegion = new Rect (Screen.width - __regionWidth, __regionVerticalOffset, __regionWidth, __regionHeight);
+		_leftScrollRegion = new Rect (0f, __regionVerticalOffset, __regionWidth, __regionHeight);
+		_rightScrollRegion = new Rect (Screen.width - __regionWidth, __regionVerticalOffset, __regionWidth, __regionHeight);
 		
-		navGUI = GetComponent<NavigationGUIScript>();
+		_navGUI = GetComponent<NavigationGUIScript>();
 	}
 	
 	void Start ()
@@ -72,9 +76,10 @@ public class GameSelectionScript : Overlay
 		__buttonPositions [3].y = (Screen.height / 2f) - 0.27f * Screen.height / 3.5f;
 		
 		// Construct game buttons
-		gameButtons = new GameSelectionButton[4];
-		for (int i = 0; i < gameButtons.Length; i++) {
-			gameButtons [i] = new GameSelectionButton (
+		_gameButtons = new GameSelectionButton[4];
+		for (int i = 0; i < _gameButtons.Length; i++) 
+		{
+			_gameButtons [i] = new GameSelectionButton (
 				__buttonPositions [i].x, // Position x
 				__buttonPositions [i].y, // Position y
 				__buttonWidth, // Size width
@@ -102,6 +107,11 @@ public class GameSelectionScript : Overlay
 			((MovieTexture)buttonTextures[i]).Play();
 		}
 		#endif
+		float __marginArrow = 5;
+		float __arrWidth = 50;
+		float __arrHeight = 100;
+		_leftArrow = new Rect(__marginArrow, Screen.height / 2 - __arrHeight, __arrWidth, __arrHeight);
+		_rightArrow = new Rect(Screen.width - __arrWidth - __marginArrow,Screen.height / 2 - __arrHeight,  __arrWidth, __arrHeight);
 	}
 	
 	void Update ()
@@ -110,43 +120,52 @@ public class GameSelectionScript : Overlay
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
 		
 		// Check if player is hovering any button
-		bool __buttonHovering = false;
-		for (int i = 0; i < gameButtons.Length; i++) {
-			bool __contains = (gameButtons [i].CalcStaticRect ().Contains (__mouse));
+		//bool __buttonHovering = false;
+		for (int i = 0; i < _gameButtons.Length; i++) 
+		{
+			bool __contains = (_gameButtons [i].CalcStaticRect ().Contains (__mouse));
 			
-			if  (__contains)
-				__buttonHovering = true;
+			/*if  (__contains)
+				__buttonHovering = true;*/
 			
 			// Mouse input
-			if (Input.GetMouseButtonDown (0)) {
-				if (__contains && gameButtons [i].startSceneName != "") {
+			if (Input.GetMouseButtonDown (0)) 
+			{
+				if (__contains && _gameButtons [i].startSceneName != "") 
+				{
 					_localAudioSource.Play ();
-					StartCoroutine (_FadeOutAndLoad (gameButtons [i].startSceneName));
+					StartCoroutine (_FadeOutAndLoad (_gameButtons [i].startSceneName));
 					break;
 				}
 			}
 		}
 
-		if (leftScrollRegion.Contains (__mouse) && !__buttonHovering) {
-			float __force = 1f - __mouse.x / leftScrollRegion.width;
-			currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
+		if (_leftScrollRegion.Contains (__mouse) /*&& !__buttonHovering*/) 
+		{
+			float __force = 1f - __mouse.x / _leftScrollRegion.width;
+			_currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
 		}
 		
-		if (rightScrollRegion.Contains (__mouse) && !__buttonHovering) {
-			float __force = 1f - (Screen.width-__mouse.x) / rightScrollRegion.width;
-			currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
+		if (_rightScrollRegion.Contains (__mouse) /*&& !__buttonHovering*/) 
+		{
+			float __force = 1f - (Screen.width-__mouse.x) / _rightScrollRegion.width;
+			_currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
 		}
 		
-		currentPivotOffset = Mathf.Clamp (currentPivotOffset, 
+		_currentPivotOffset = Mathf.Clamp (_currentPivotOffset, 
 			-Mathf.Abs(centerPivotOffset), Mathf.Abs(centerPivotOffset));
 		
-		for (int i = 0; i < gameButtons.Length; i++) {
-			gameButtons [i].horizontalOffset = currentPivotOffset;
+		for (int i = 0; i < _gameButtons.Length; i++) 
+		{
+			_gameButtons [i].horizontalOffset = _currentPivotOffset;
 			// If hovering, float button
-			if (gameButtons [i].CalcStaticRect().Contains(__mouse)) {
-				gameButtons[i].FloatUp();
-			} else {
-				gameButtons[i].FloatBack();
+			if (_gameButtons [i].CalcStaticRect().Contains(__mouse)) 
+			{
+				_gameButtons[i].FloatUp();
+			} 
+			else 
+			{
+				_gameButtons[i].FloatBack();
 			}
 		}
 	}
@@ -155,8 +174,8 @@ public class GameSelectionScript : Overlay
 	void OnGUI ()
 	{
 		// Draw background
-		backgroundRect = new Rect (centerPivotOffset + currentPivotOffset, 0f, hugeBackground.width, hugeBackground.height);
-		GUI.DrawTexture (backgroundRect, hugeBackground);
+		_backgroundRect = new Rect (centerPivotOffset + _currentPivotOffset, -200f, Screen.width * 2f , Screen.height * 1.7f);
+		GUI.DrawTexture (_backgroundRect, hugeBackground);
 		
 		#if UNITY_EDITOR
 		// Draw mouse scroll regions
@@ -165,17 +184,27 @@ public class GameSelectionScript : Overlay
 		#endif
 
 		// Draw buttons
-		for (int i = 0; i < gameButtons.Length; i++) {
-			GUI.Box(gameButtons[i].CalcBGRect(), "");
-			
+		for (int i = 0; i < _gameButtons.Length; i++) 
+		{
+			//GUI.Box(_gameButtons[i].CalcBGRect(), "");
+			Rect __frameRect = _gameButtons[i].CalcRect();
+			__frameRect.x -= 25;
+			__frameRect.y -= 15;
+			__frameRect.width += 45;
+			__frameRect.height += 25;
 			#if UNITY_PRO
-			GUI.DrawTexture(gameButtons[i].CalcRect(), gameButtons[i].texture);
+			//GUI.DrawTexture(_gameButtons[i].CalcRect(), _gameButtons[i].texture);
+			GUI.Box(_gameButtons[i].CalcRect(),_gameButtons[i].texture,_noStyle);
 			#else
 			GUI.Box (gameButtons [i].CalcRect (), gameButtons [i].startSceneName);
 			#endif
+			GUI.DrawTexture(__frameRect,frame/*,_noStyle*/);
+			GUI.DrawTexture(_leftArrow, arrows[0]);
+			GUI.DrawTexture(_rightArrow, arrows[1]);
+
 		}
 		
-		navGUI.Draw();
+		_navGUI.Draw();
 	}
 	#endregion
 	
