@@ -66,5 +66,21 @@ public class PandaGameManager : GameManager
             _line.Step();
         }
     }
+
+    void OnEnable()
+    {
+        GoalScript.OnBallCapture += WinGame;
+    }
+
+    void OnDisable()
+    {
+        GoalScript.OnBallCapture -= WinGame;
+    }
+
     #endregion
+
+    public void WinGame()
+    {
+        SetGameState(GameState.Won);
+    }
 }
