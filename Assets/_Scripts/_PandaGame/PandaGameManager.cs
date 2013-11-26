@@ -10,9 +10,10 @@ public class PandaGameManager : GameManager
     public AudioClip music;
     // Line Drawing 
     public GameObject linePrefab;
-    private bool _dragging;
     private MagicLine _line;
     private GameObject _lineContainer; // Store lines, keep hierarchy clean
+    private enum LineDrawState { Neutral, Drawing, Erasing }
+    private LineDrawState _currentLineDrawState = LineDrawState.Neutral;
     #endregion
 
     #region UNITY_METHODS
@@ -38,33 +39,48 @@ public class PandaGameManager : GameManager
         if (GetGameState() == GameState.Paused)
             return;
 
-        // Left mouse down - Start drawing
-        if (Input.GetMouseButtonDown(0))
-        {
-            _dragging = true;
+        // Make decision on which state is currently active
+        switch (_currentLineDrawState) {
+            case LineDrawState.Neutral:
+                // We only select a draw state when current state is neutral
+                if (Input.GetMouseButtonDown(0)) 
+                {
+                    _currentLineDrawState = LineDrawState.Drawing;
 
-            // Preserve active line, because GetComponent is relatively expensive 
-            var __o = (GameObject)(Instantiate(linePrefab));
-            __o.transform.parent = _lineContainer.transform;
-            _line = __o.GetComponent<MagicLine>();
-            
-            // Set starting position
-            Vector3 __t = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _line.SetStartingPosition(new Vector2(__t.x, __t.y));
+                    // Preserve active line, because GetComponent is relatively expensive 
+                    var __o = (GameObject)(Instantiate(linePrefab));
+                    __o.transform.parent = _lineContainer.transform;
+                    _line = __o.GetComponent<MagicLine>();
+
+                    // Set starting position
+                    Vector3 __t = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    _line.SetStartingPosition(new Vector2(__t.x, __t.y));
+                }
+                else if (Input.GetMouseButtonDown(1))
+                {
+                    _currentLineDrawState = LineDrawState.Erasing;
+                }
+                break;
+            case LineDrawState.Drawing:
+                // Reset to neutral state 
+                if (Input.GetMouseButtonUp(0))
+                {
+                    _currentLineDrawState = LineDrawState.Neutral;
+
+                    _line = null;
+                }
+                break;
+            case LineDrawState.Erasing:
+                // Reset to neutral state 
+                if (Input.GetMouseButtonUp(1))
+                {
+                    _currentLineDrawState = LineDrawState.Neutral;
+                }
+                break;
         }
 
-        //  Left mouse up  - Stop drawing
-        if (Input.GetMouseButtonUp(0))
-        {
-            _dragging = false;
-            _line = null;
-        }
-
-        // If currently drawing, advance magic line by one frame
-        if (_dragging && _line != null)
-        {
-            _line.Step();
-        }
+        // Handle draw state
+        _HandleDrawState(_currentLineDrawState);
     }
 
     void OnEnable()
@@ -82,5 +98,60 @@ public class PandaGameManager : GameManager
     public void WinGame()
     {
         SetGameState(GameState.Won);
+    }
+    private void _HandleDrawState(LineDrawState state)
+    {
+        if (state == LineDrawState.Drawing)
+        {
+            // Advance magic line by one frame
+            if (_line != null)
+            {
+                _line.Step();
+            }
+        }
+        else if (state == LineDrawState.Erasing)
+        {
+            // Get mouse position and convert to world pos
+            Vector3 __pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            __pos.z = 0f; // Ditch z-axis, because line renderer only accepts Vector3
+            Vector2 __pos2d = new Vector2(__pos.x, __pos.y);
+
+            /* 
+             * Goal is to find the closest line to cursor.
+             * Since lines have multiple points, and we are only interested
+             * in endpoints, distances have to be computed for two points for
+             * each line instead of one.
+             */ 
+            var __c = _lineContainer.GetComponentsInChildren<MagicLine>();
+            if (__c != null)
+            {
+                float __furthestPoint = Mathf.Infinity;
+                MagicLine __closestLine = null;
+
+                // Find closest line
+                foreach (var line in __c)
+                {
+                    Vector2 __a = line.GetStartPoint();
+                    Vector2 __b = line.GetEndPoint();
+
+                    // Select only closest of the two for consideration
+                    float __distA = Vector2.Distance(__a, __pos2d);
+                    float __distB = Vector2.Distance(__b, __pos2d);
+                    float __considered = (__distA < __distB) ? __distA : __distB;
+
+                    if (__considered < __furthestPoint)
+                    {
+                        __furthestPoint = __considered;
+                        __closestLine = line;
+                    }
+                }
+
+                // Finally strip the line
+                if (__closestLine != null)
+                {
+                    __closestLine.Strip();
+                }
+            }
+        }
     }
 }
