@@ -37,7 +37,8 @@ public class LevelGenerator : MonoBehaviour
 		_AssignMaterials ();
 		Material buf;
 		
-		for (int i=0; i < _cardTextures.Length; i++) { // This "shuffles" the texture array by swapping each element with another one at random
+		for (int i=0; i < _cardTextures.Length; i++) 
+		{ // This "shuffles" the texture array by swapping each element with another one at random
 			int newPos = Random.Range (0, _cardTextures.Length);
 			buf = _cardTextures [newPos];
 			_cardTextures [newPos] = _cardTextures [i];
@@ -51,14 +52,16 @@ public class LevelGenerator : MonoBehaviour
 		_cardTextures = new Material[count];
 		int i;
 		Material buf;
-		for (i=0; i < textures.Length; i++) {
+		for (i=0; i < textures.Length; i++) 
+		{
 			int newPos = Random.Range (0, textures.Length - 1);
 			buf = textures [newPos];
 			textures [newPos] = textures [i];
 			textures [i] = buf; 
 		}
 		
-		for (i=0; i < count; i++) {
+		for (i=0; i < count; i++) 
+		{
 			_cardTextures [i] = textures [(i / 2) % textures.Length]; 
 			// For three suits, this expression will generate the following repeating sequence of indices: 0,0,1,1,2,2,0,0,1,1,2,2,0,0,1,1,2,2,...
 		}
@@ -76,16 +79,19 @@ public class LevelGenerator : MonoBehaviour
 		float shiftW = (colCount - 1f) / 2f; // We calculate these shifts here to reduce the calculations inside the loop
 		float shiftH = (rowCount - 1f) / 2f;
 		
-		if (colCount >= _defaultRowCount) { // We want to resize the cards to fit the screen regardless of the dimensions of the field
+		if (colCount >= _defaultRowCount) 
+		{ // We want to resize the cards to fit the screen regardless of the dimensions of the field
 			ratio *= _defaultRowCount / colCount;
 		}
-		if (rowCount * ratio >= _defaultColCount) { // The ratio is calculated in relation to the "default" dimensions (2x3)
+		if (rowCount * ratio >= _defaultColCount) 
+		{ // The ratio is calculated in relation to the "default" dimensions (2x3)
 			ratio *= _defaultColCount / (rowCount * ratio);
 		}
 		
-		for (j = -shiftH; j <= shiftH; j++) {
-			for (i = -shiftW; i <= shiftW; i++) {
-
+		for (j = -shiftH; j <= shiftH; j++) 
+		{
+			for (i = -shiftW; i <= shiftW; i++) 
+			{
 				cardPosition = new Vector3 ((_cardW + cardDist) * i * ratio, (_cardH + cardDist) * j * ratio, 0f); // Calculate the card's position
 				card = (GameObject)Instantiate (cardPrefab, cardPosition, Quaternion.identity); // Place the card prefab onto the stage
 

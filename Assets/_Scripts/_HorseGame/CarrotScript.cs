@@ -8,6 +8,7 @@ public class CarrotScript : MonoBehaviour
 	private Renderer _renderer;
 	private Transform _particle;
 	private Transform _transform;
+	private string player = "Player";
 	#endregion
 	
 	#region UNITY_METHODS
@@ -32,7 +33,7 @@ public class CarrotScript : MonoBehaviour
 
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.gameObject.tag == "Player") 
+		if (col.gameObject.tag == player) 
 		{
 			StartCoroutine (DoubleSpeed());
 			_renderer.enabled = false;

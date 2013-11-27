@@ -21,15 +21,19 @@ public class FlipsGameManager : GameManager
 	private int _cardsGuessed = 0;
 	private Camera _cam;
 	private static GameObject _obj;
+
+	private string _card = "Card";
+	private string _memorySwift = "MemorySwift";
+	private string _memoryFound = "MemoryFound";
+	private string _memoryReturn = "MemoryReturn";
 	#endregion
 	
 	#region UNITY_METHODS
 	public override void Start ()
 	{
 		base.Start ();
-		//obj = null;
-		//obj = GameObject.FindGameObjectWithTag("SoundCam");
-		if (InGameMenuGUI.music == null) {
+		if (InGameMenuGUI.music == null) 
+		{
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
 			InGameMenuGUI.music.audio.clip = music;
 			InGameMenuGUI.music.audio.Play ();
@@ -59,12 +63,14 @@ public class FlipsGameManager : GameManager
 			Ray ray = _cam.ScreenPointToRay (inputManager.GetCursorPosition ());
 			RaycastHit hit;
 			
-			if (inputManager.IsButtonDown () && Physics.Raycast (ray, out hit) && !_secondCard) {
-				if (hit.collider.CompareTag ("Card")) {
+			if (inputManager.IsButtonDown () && Physics.Raycast (ray, out hit) && !_secondCard) 
+			{
+				if (hit.collider.CompareTag (_card)) 
+				{
 					Card card = hit.collider.gameObject.transform.parent.GetComponent<Card> ();
 					if (card.IsFaceDown ()) {
 						StartCoroutine (card.Rotate ());
-						sound.PlayAudio ("MemorySwift");
+						sound.PlayAudio (_memorySwift);
 						if (_firstCard == null) 
 							_firstCard = card;
 						else {
@@ -73,23 +79,27 @@ public class FlipsGameManager : GameManager
 					}
 				}
 			}
-			if (_secondCard != null) {
-				if (_firstCard.IsFaceUp () && _secondCard.IsFaceUp ()) {
-					if (_firstCard.GetSuit () == _secondCard.GetSuit ()) {
+			if (_secondCard != null) 
+			{
+				if (_firstCard.IsFaceUp () && _secondCard.IsFaceUp ()) 
+				{
+					if (_firstCard.GetSuit () == _secondCard.GetSuit ()) 
+					{
 						_cardsGuessed += 2;
 						_firstCard.Disappear ();
 						_secondCard.Disappear ();
-						sound.PlayAudio ("MemoryFound");
-						if (_cardsGuessed >= _cardsTotal) {
+						sound.PlayAudio (_memoryFound);
+						if (_cardsGuessed >= _cardsTotal) 
+						{
 							SetGameState (GameState.Won);
 							return;
 						}
-					} else {
+					} 
+					else {
 						StartCoroutine (_firstCard.Rotate ());
 						StartCoroutine (_secondCard.Rotate ());
-						sound.PlayAudio ("MemoryReturn");
+						sound.PlayAudio (_memoryReturn);
 					}
-						
 					_firstCard = null;
 					_secondCard = null;			
 				}
@@ -108,10 +118,11 @@ public class FlipsGameManager : GameManager
 	private void _HideAllCards ()
 	{
 		Card card;
-		GameObject [] obj = GameObject.FindGameObjectsWithTag ("Card");
+		GameObject [] obj = GameObject.FindGameObjectsWithTag (_card);
 		foreach (GameObject cardBack in obj) {
 			card = cardBack.transform.parent.GetComponent<Card> ();
-			if (card.IsFaceUp ()) {
+			if (card.IsFaceUp ()) 
+			{
 				StartCoroutine (card.Rotate ());
 			}
 		}
@@ -123,7 +134,8 @@ public class FlipsGameManager : GameManager
 		__cdm.SetSpawnPosition(new Vector3(0f, 0f, -1f));
         __cdm.StartCountdown(this);
 		
-		while (!__cdm.CountdownDone) {
+		while (!__cdm.CountdownDone)
+		{
 			yield return null;
 		}
 		

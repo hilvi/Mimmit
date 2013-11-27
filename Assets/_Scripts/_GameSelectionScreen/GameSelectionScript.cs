@@ -116,6 +116,8 @@ public class GameSelectionScript : Overlay
 	
 	void Update ()
 	{
+		NavigationState __state = Manager.GetNavigationState();
+		if(__state == NavigationState.Pause)return;
 		// Mouse scrolling
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
 		
@@ -124,9 +126,6 @@ public class GameSelectionScript : Overlay
 		for (int i = 0; i < _gameButtons.Length; i++) 
 		{
 			bool __contains = (_gameButtons [i].CalcStaticRect ().Contains (__mouse));
-			
-			/*if  (__contains)
-				__buttonHovering = true;*/
 			
 			// Mouse input
 			if (Input.GetMouseButtonDown (0)) 
@@ -140,13 +139,13 @@ public class GameSelectionScript : Overlay
 			}
 		}
 
-		if (_leftScrollRegion.Contains (__mouse) /*&& !__buttonHovering*/) 
+		if (_leftScrollRegion.Contains (__mouse)) 
 		{
 			float __force = 1f - __mouse.x / _leftScrollRegion.width;
 			_currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
 		}
 		
-		if (_rightScrollRegion.Contains (__mouse) /*&& !__buttonHovering*/) 
+		if (_rightScrollRegion.Contains (__mouse) ) 
 		{
 			float __force = 1f - (Screen.width-__mouse.x) / _rightScrollRegion.width;
 			_currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
