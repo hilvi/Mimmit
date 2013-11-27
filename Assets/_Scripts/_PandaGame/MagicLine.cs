@@ -73,6 +73,9 @@ public class MagicLine : MonoBehaviour
             _lineRenderer.SetPosition(_samples - 1, __pos);
             _previousPosition = __pos2d;
         }
+
+        // Line has been modified, re-compute tiling
+        RecalculateTiling();
     }
 
     public void Strip()
@@ -151,6 +154,9 @@ public class MagicLine : MonoBehaviour
             // Reduce number of samples
             _samples--;
         }
+
+        // Line has been modified, re-compute tiling
+        RecalculateTiling();
     }
 
     public void SetStartingPosition(Vector2 position)
@@ -172,6 +178,21 @@ public class MagicLine : MonoBehaviour
             return Vector2.zero;
 
         return _edgeCollider.points[_edgeCollider.points.Length - 1];
+    }
+
+    private void RecalculateTiling()
+    {
+        Vector2[] __pointSet = _edgeCollider.points;
+        float __length = __pointSet.Length;
+        float __totalLength = 0f;
+
+        // Step along the line, compute distance between two consecutive points
+        for (int i = 0, j = 1; j < __length - 1; i++, j++)
+            __totalLength += Vector2.Distance(__pointSet[i], __pointSet[j]);
+
+        // Calculate new tiling value
+        Vector2 __newTiling = new Vector2(Mathf.Ceil(__totalLength), 1f);
+        _lineRenderer.material.mainTextureScale = __newTiling;
     }
     #endregion
 }
