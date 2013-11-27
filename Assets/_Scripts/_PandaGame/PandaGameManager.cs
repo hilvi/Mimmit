@@ -12,7 +12,7 @@ public class PandaGameManager : GameManager
     public GameObject linePrefab;
     private MagicLine _line;
     private GameObject _lineContainer; // Store lines, keep hierarchy clean
-    private enum LineDrawState { Neutral, Drawing, Erasing }
+    private enum LineDrawState { Neutral, Drawing, Erasing, Locked }
     private LineDrawState _currentLineDrawState = LineDrawState.Neutral;
     #endregion
 
@@ -86,21 +86,34 @@ public class PandaGameManager : GameManager
     void OnEnable()
     {
         GoalScript.OnBallCapture += WinGame;
+        PandaBallScript.OnBallActivate += LockDrawing;
     }
 
     void OnDisable()
     {
         GoalScript.OnBallCapture -= WinGame;
+        PandaBallScript.OnBallActivate -= LockDrawing;
     }
 
     #endregion
 
-    public void WinGame()
+    #region MEMBERS
+    private void WinGame()
     {
         SetGameState(GameState.Won);
     }
+
+    private void LockDrawing()
+    {
+        _currentLineDrawState = LineDrawState.Locked;
+    }
+
     private void _HandleDrawState(LineDrawState state)
     {
+        // Drawing is locked, don't do anything
+        if (state == LineDrawState.Locked)
+            return;
+
         if (state == LineDrawState.Drawing)
         {
             // Advance magic line by one frame
@@ -154,4 +167,5 @@ public class PandaGameManager : GameManager
             }
         }
     }
+    #endregion
 }

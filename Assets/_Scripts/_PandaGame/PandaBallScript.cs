@@ -3,6 +3,9 @@ using System.Collections;
 
 public class PandaBallScript : MonoBehaviour
 {
+    public delegate void ActivateBall();
+    public static event ActivateBall OnBallActivate;
+
     private bool _activated = false;
     private Rigidbody2D _rigidBody;
     private CircleCollider2D _circleCollider;
@@ -31,6 +34,7 @@ public class PandaBallScript : MonoBehaviour
             {
                 _rigidBody.isKinematic = false;
                 _activated = true;
+                OnBallActivate();
             }
         }
     }
