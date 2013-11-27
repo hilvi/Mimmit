@@ -6,8 +6,9 @@ public class PictureSelector
 {
 	#region MEMBERS
 	private ColoringGameManager _manager;
-	
+#if UNITY_EDITOR
 	private Rect _pictureSelectRegion;		// 20,200,160,380
+#endif
 	private Rect _selectUpBtnRegion;		// 20,200,160,40
 	private Rect _selectDownBtnRegion;		// 20,540,160,40
 	private Rect[] _selectPictureRegion;	// 
@@ -40,14 +41,17 @@ public class PictureSelector
 	
 	#region METHODS
 	public PictureSelector (ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
-		Texture2D upArrowTexture, Texture2D downArrowTexture) {
-		_manager = manager;
+		Texture2D upArrowTexture, Texture2D downArrowTexture) 
+	{
+#if UNITY_EDITOR
 		_pictureSelectRegion = region;
+		_pictureSelectRegion = new Rect(20,200,160,380);
+#endif
+		_manager = manager;
 		_thumbnails = thumbnails;
 		_upArrowTexture = upArrowTexture;
 		_downArrowTexture = downArrowTexture;
-		
-		_pictureSelectRegion = new Rect(20,200,160,380);
+
 		_selectUpBtnRegion = new Rect(100, 100, 40, 30);
 		_selectDownBtnRegion = new Rect(100, 565, 40, 30);
 		

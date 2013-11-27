@@ -107,8 +107,8 @@ public class GameSelectionScript : Overlay
 			((MovieTexture)buttonTextures[i]).Play();
 		}
 		#endif
-		float __marginArrow = 5;
-		float __arrWidth = 50;
+		float __marginArrow = 0;
+		float __arrWidth = 75;
 		float __arrHeight = 100;
 		_leftArrow = new Rect(__marginArrow, Screen.height / 2 - __arrHeight, __arrWidth, __arrHeight);
 		_rightArrow = new Rect(Screen.width - __arrWidth - __marginArrow,Screen.height / 2 - __arrHeight,  __arrWidth, __arrHeight);
@@ -197,7 +197,7 @@ public class GameSelectionScript : Overlay
 			#else
 			GUI.Box (gameButtons [i].CalcRect (), gameButtons [i].startSceneName);
 			#endif
-			GUI.DrawTexture(__frameRect,frame/*,_noStyle*/);
+			GUI.DrawTexture(__frameRect,frame);
 			GUI.DrawTexture(_leftArrow, arrows[0]);
 			GUI.DrawTexture(_rightArrow, arrows[1]);
 

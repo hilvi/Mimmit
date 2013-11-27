@@ -13,7 +13,9 @@ public class PaintToolbar
 	private const int _gridWidth = 3;
 	private const int _gridHeight = 6;
 	private const float _brushWidth = 66f;
+#if UNITY_EDITOR
 	private Rect _toolbarRegion;		// 780,20,160,560
+#endif
 	private Rect _eraseToolRegion;		// 800,40,120,120
 	private Rect _resetToolRegion;		// 800,180,120,120
 	private Rect _saveToolRegion;		// 
@@ -34,7 +36,9 @@ public class PaintToolbar
 	{
 		
 		_manager = manager;
+#if UNITY_EDITOR
 		_toolbarRegion = region;
+#endif
 		_eraserTexture = eraserTexture;
 		_tickTexture = tickTexture;
 		_resetTexture = resetTexture;
