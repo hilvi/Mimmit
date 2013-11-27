@@ -191,7 +191,7 @@ public class MagicLine : MonoBehaviour
             __totalLength += Vector2.Distance(__pointSet[i], __pointSet[j]);
 
         // Calculate new tiling value
-        Vector2 __newTiling = new Vector2(Mathf.Ceil(__totalLength), 1f);
+        Vector2 __newTiling = new Vector2(__totalLength, 1f);
         _lineRenderer.material.mainTextureScale = __newTiling;
     }
     #endregion
