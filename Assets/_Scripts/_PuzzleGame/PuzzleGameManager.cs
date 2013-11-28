@@ -12,6 +12,8 @@ public class PuzzleGameManager : GameManager
     //public int puzzleWidth;
     //public int puzzleHeight;
     public float snapDistance = 10;
+    public GameObject musicObject;
+    public AudioClip music;
 
     GameObject _picked = null;
 
@@ -22,12 +24,21 @@ public class PuzzleGameManager : GameManager
     {
         base.Start();
 
+        if (InGameMenuGUI.music == null)
+        {
+            InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
+            InGameMenuGUI.music.audio.clip = music;
+            InGameMenuGUI.music.audio.Play();
+            InGameMenuGUI.music.audio.loop = true;
+        }
+
         foreach (GameObject piece in GameObject.FindGameObjectsWithTag("PuzzlePiece"))
         {
             _pieces.Add(piece);
         }
 
         CreatePuzzle();
+        SetGameState(GameState.Running);
     }
 
     void CreatePuzzle()
@@ -156,7 +167,7 @@ public class PuzzleGameManager : GameManager
     void Update()
     {
         if (GameWon())
-            Debug.Log("Victory!");
+            SetGameState(GameState.Won);
 
         if (_picked != null)
         {
