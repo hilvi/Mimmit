@@ -27,7 +27,10 @@ public class FrontPageScript : Overlay
 	{
 		if (MGUI.HoveredButton (_buttonRect, texture)) 
 		{
-			LoadLevel ("ChoiceScene");
+			if (Application.CanStreamedLevelBeLoaded ("ChoiceScene")) 
+			{
+				Application.LoadLevel ("ChoiceScene");
+			}
 		}
 	}
 	#endregion

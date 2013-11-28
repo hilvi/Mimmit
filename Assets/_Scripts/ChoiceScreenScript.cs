@@ -21,7 +21,8 @@ public class ChoiceScreenScript : Overlay
 	{
 		base.Awake ();
 		Object o = FindObjectOfType (typeof(Camera));
-		if (o == null) {
+		if (o == null) 
+		{
 			Instantiate (cam, new Vector3 (0, 0, 0), Quaternion.identity);
 		}
 	}
@@ -60,31 +61,37 @@ public class ChoiceScreenScript : Overlay
 
 	void OnGUI ()
 	{
-		if (MGUI.HoveredButton (_blondeRect, blonde)) {
+		if (MGUI.HoveredButton (_blondeRect, blonde)) 
+		{
 			_audioSource.Play ();
 			Manager.SetCharacter (Character.Blonde);
 			_characterChosen = true;
 		}
-		if (MGUI.HoveredButton (_bruneRect, brunette)) {
+		if (MGUI.HoveredButton (_bruneRect, brunette)) 
+		{
 			_audioSource.Play ();
 			Manager.SetCharacter (Character.Brune);
 			_characterChosen = true;
 		}
-		if (MGUI.HoveredButton (_foxRect, fox)) {
+		if (MGUI.HoveredButton (_foxRect, fox)) 
+		{
 			_audioSource.Play ();
 			Manager.SetCharacter (Character.Fox);
 			_characterChosen = true;
 		}
-		if (MGUI.HoveredButton (_boyRect, boy)) {
+		if (MGUI.HoveredButton (_boyRect, boy)) 
+		{
 			_audioSource.Play ();
 			Manager.SetCharacter (Character.Boy);
 			_characterChosen = true;
 		}
-		if (_characterChosen) {
+		if (_characterChosen) 
+		{
 			if (!_buttonIsSliding && !_buttonSlideIsDone)
 				StartCoroutine (SlideButton ());
 			
-			if (MGUI.HoveredButton (_mapRect, map) && _buttonSlideIsDone) {
+			if (MGUI.HoveredButton (_mapRect, map) && _buttonSlideIsDone) 
+			{
 				LoadLevelAndPlaySound ("GameSelectionScene", _audioSource);
 			}
 		}
@@ -97,7 +104,10 @@ public class ChoiceScreenScript : Overlay
 			yield return null;
 		}
 		Manager.SetScreenChoice (ScreenChoice.Button);
-		LoadLevel ("GameSelectionScene");
+		if(Application.CanStreamedLevelBeLoaded("GameSelectionScene"))
+		{
+			Application.LoadLevel ("GameSelectionScene");
+		}
 	}
 	
 	private IEnumerator SlideButton ()

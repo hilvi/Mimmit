@@ -38,7 +38,10 @@ public class NavigationGUIScript : Overlay {
 		// Left button
 		if (MGUI.HoveredButton(new Rect(MGUI.margin*3, Screen.height - (Screen.width/6), Screen.width/7, Screen.width/7), homeButton)) 
 		{
-			LoadLevel("ChoiceScene");
+			if(Application.CanStreamedLevelBeLoaded("ChoiceScene"))
+			{
+				Application.LoadLevel("ChoiceScene");
+			}
 			Time.timeScale = 1.0f;
 			Manager.SetNavigationState(NavigationState.Running);
 			

@@ -132,15 +132,15 @@ public class InGameMenuGUI : Overlay
 		ScreenChoice __choice = Manager.GetScreenChoice ();
 		if (__choice == ScreenChoice.Map) 
 		{
-			LoadLevel ("MapWorld");
+			_LoadNewLevel ("MapWorld");
 		} 
 		else if (__choice == ScreenChoice.Button) 
 		{
-			LoadLevel ("GameSelectionScene");
+			_LoadNewLevel ("GameSelectionScene");
 		} 
 		else 
 		{
-			LoadLevel ("GameSelectionScene");
+			_LoadNewLevel ("GameSelectionScene");
 		}
 		
 		if (source != null) {
@@ -166,12 +166,18 @@ public class InGameMenuGUI : Overlay
 				yield return null;
 			}
 		}
-		LoadLevel ("WinScene");
+		_LoadNewLevel ("WinScene");
 		Time.timeScale = 1.0f;
 		music = null;
 		Destroy (source.gameObject);
 	}
-		
+	private void _LoadNewLevel(string scene)
+	{
+		if(Application.CanStreamedLevelBeLoaded(scene))
+		{
+			Application.LoadLevel(scene);
+		}
+	}	
 	private void _ShowBottomMenu ()
 	{
 		switch (_gameManager.GetGameState ()) 
@@ -196,9 +202,10 @@ public class InGameMenuGUI : Overlay
 			//Only for debug for horse game since SoundCam object is not there yet.
 			if (obj != null)
 				StartCoroutine (_LoadMainMenu (obj.audio));
-			else {
+			else 
+			{
 				Time.timeScale = 1.0f;
-				LoadLevel ("GameSelectionScene");
+				_LoadNewLevel ("GameSelectionScene");
 			}
 		} 
 		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 

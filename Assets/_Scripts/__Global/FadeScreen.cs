@@ -31,7 +31,6 @@ public class FadeScreen : MonoBehaviour
 	public bool fadeOutComplete {
 		get 
 		{
-			print (_GetColor().a);
 			return _GetColor().a > 0.95f;
 		}
 	}

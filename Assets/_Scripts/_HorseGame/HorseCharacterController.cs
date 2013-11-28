@@ -28,7 +28,7 @@ public class HorseCharacterController : MonoBehaviour
 	private string _runAnim = "Run";
 	private string _jumpAnim = "Jump";
 	internal string _idleAnim = "Idle";
-	private string jump = "jump";
+	private string _jump = "Jump";
 		
 	#endregion
 	
@@ -81,7 +81,7 @@ public class HorseCharacterController : MonoBehaviour
 				if(particleEmit.emit == true)
 					particleEmit.emit = false;
 			}
-			if (Input.GetButtonDown (jump) && !_sideStepping) 
+			if (Input.GetButtonDown (_jump) && !_sideStepping) 
 			{	
 				_movement.y = _currentJumpSpeed;
 			}
