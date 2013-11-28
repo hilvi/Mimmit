@@ -121,10 +121,10 @@ public class PaintToolbar
 	public void OnGUI ()
 	{
 		#if UNITY_EDITOR
-		GUI.Box(_toolbarRegion, "toolbar");
+		/*GUI.Box(_toolbarRegion, "toolbar");
 		GUI.Box(_eraseToolRegion, "eraseTool");
 		GUI.Box(_resetToolRegion, "resetTool");
-		GUI.Box(_saveToolRegion, "save");
+		GUI.Box(_saveToolRegion, "save");*/
 		#endif
 		
 		GUI.DrawTexture (_eraseToolRegion, _eraserTexture);
@@ -132,9 +132,10 @@ public class PaintToolbar
 		if (_saveTexture != null)
 			GUI.DrawTexture (_saveToolRegion, _saveTexture);
 		
-		for (int i = 0; i < _colorPalletteRegion.Length; i++) {
+		for (int i = 0; i < _colorPalletteRegion.Length; i++) 
+		{
 			#if UNITY_EDITOR
-			GUI.Box(_colorPalletteRegion[i], _colorPallette[i].name);
+			//GUI.Box(_colorPalletteRegion[i], _colorPallette[i].name);
 			#endif
 			
 			GUI.DrawTexture (_colorPalletteRegion [i], _colorPallette [i].texture);

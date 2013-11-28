@@ -30,6 +30,7 @@ public class ColoringGameManager : GameManager {
 	public AudioClip clickColor;
 	public AudioClip clickErase;
 	public AudioClip clickButton;
+	public Texture2D cursor;
 	#endregion
 	
 	#region PRIVATE
@@ -40,6 +41,8 @@ public class ColoringGameManager : GameManager {
 	private CharacterWidgetScript _characterWidget;
 	
 	private int _currentPictureIndex = 0;
+	private Vector2 _hotSpot = Vector2.zero;
+	private CursorMode _cursorMode = CursorMode.Auto;
 	#endregion
 
 	#region UNITY_METHODS
@@ -96,7 +99,14 @@ public class ColoringGameManager : GameManager {
 				_pictureSelector.HandleMouseWheel(-1);
 			}
 		}
-		
+		if(pictureRegion.Contains(InputManager.MouseScreenToGUI()))
+		{
+			Cursor.SetCursor(null,_hotSpot,_cursorMode);
+		}
+		else
+		{
+			Cursor.SetCursor(cursor,_hotSpot,_cursorMode);
+		}
 	}
 	
 	void OnGUI () 

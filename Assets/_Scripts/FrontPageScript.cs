@@ -5,13 +5,19 @@ public class FrontPageScript : Overlay
 {	
 	#region MEMBERS
 	public Texture2D texture;
+	public Texture2D cursor;
 	Rect _buttonRect;
 	GUITexture _background;
+	private Vector2 _hotSpot = Vector2.zero;
+	private CursorMode _cursorMode = CursorMode.Auto;
 	#endregion
 
 	#region UNITY_METHODS
 	void Start ()
 	{
+
+
+
 		_background = GetComponent<GUITexture> ();
 		// Setting background to full screen
 		float width = Screen.width;
@@ -25,6 +31,7 @@ public class FrontPageScript : Overlay
 
 	void OnGUI ()
 	{
+		Cursor.SetCursor(cursor,_hotSpot,_cursorMode);
 		if (MGUI.HoveredButton (_buttonRect, texture)) 
 		{
 			if (Application.CanStreamedLevelBeLoaded ("ChoiceScene")) 
