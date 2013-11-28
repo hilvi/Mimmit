@@ -142,9 +142,22 @@ public class PuzzleGameManager : GameManager
         _picked.transform.position = __pickedPos;
     }
 
+    bool GameWon()
+    {
+        foreach (GameObject piece in _pieces)
+        {
+            if (piece.collider.enabled == true)
+                return false;
+        }
+        return true;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (GameWon())
+            Debug.Log("Victory!");
+
         if (_picked != null)
         {
             Vector3 __pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
