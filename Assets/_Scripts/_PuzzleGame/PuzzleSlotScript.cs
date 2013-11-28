@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class PuzzleSlotScript : MonoBehaviour {
-	public int x = -1;
-	public int y = -1;
+    public GameObject puzzlePiece;
 
 	// Use this for initialization
 	void Start () {

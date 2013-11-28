@@ -6,11 +6,11 @@ public class PuzzleGameManager : GameManager
 {
 
     public Texture2D picture;
-    public PuzzlePiece[] pieces;
+    //public PuzzlePiece[] pieces;
     public GameObject puzzlePiece;
     public GameObject puzzleSlot;
-    public int puzzleWidth;
-    public int puzzleHeight;
+    //public int puzzleWidth;
+    //public int puzzleHeight;
     public float snapDistance = 10;
 
     GameObject _picked = null;
@@ -22,19 +22,59 @@ public class PuzzleGameManager : GameManager
     {
         base.Start();
 
+        foreach (GameObject piece in GameObject.FindGameObjectsWithTag("PuzzlePiece"))
+        {
+            _pieces.Add(piece);
+        }
+
         CreatePuzzle();
     }
 
     void CreatePuzzle()
+    {
+        foreach (GameObject piece in _pieces)
+        {
+            GameObject __obj = Instantiate(puzzleSlot) as GameObject;
+            PuzzleSlotScript __slotScript = __obj.GetComponent<PuzzleSlotScript>();
+
+            __slotScript.puzzlePiece = piece;
+
+            Vector3 __pos = piece.transform.position;
+            __pos.z = 10;
+            __obj.transform.position = __pos;
+            __obj.transform.localScale = piece.transform.localScale;
+        }
+        ShufflePieces();
+    }
+
+    void ShufflePieces()
+    {
+        foreach (GameObject piece in _pieces)
+        {
+            Vector2 __randPos = Random.insideUnitCircle;
+            Vector3 __pos = puzzlePiece.transform.position;
+            __pos.x += 1.2f * __randPos.x;
+            __pos.y += 2 * __randPos.y;
+            __pos.z = Random.value;
+            piece.transform.position = __pos;
+        }
+    }
+
+    /*void CreatePuzzle()
     {
         foreach (PuzzlePiece piece in pieces)
         {
             GameObject __obj = Instantiate(puzzlePiece) as GameObject;
             __obj.renderer.material.mainTexture = piece.picture;
 
+            float __height = piece.picture.height;
+            float __width = piece.picture.width;
+
+            float __ratio = __height / __width;
+
             Vector3 __size = __obj.transform.localScale;
             __size.x *= piece.size.x;
-            __size.z *= piece.size.y;
+            __size.y *= piece.size.y * __ratio;
             __obj.transform.localScale = __size;
 
             Vector2 __randPos = Random.insideUnitCircle;
@@ -51,9 +91,8 @@ public class PuzzleGameManager : GameManager
             _pieces.Add(__obj);
         }
         CreateGrid();
-    }
-
-    void CreateGrid()
+    }*/
+    /*void CreateGrid()
     {
         Vector3 __startPos = puzzleSlot.transform.position;
         foreach (GameObject piece in _pieces)
@@ -74,7 +113,7 @@ public class PuzzleGameManager : GameManager
             __obj.transform.position = __gridPos;
         }
 
-    }
+    }*/
 
     IEnumerator LerpToPos(GameObject obj, Vector3 pos)
     {
@@ -138,12 +177,11 @@ public class PuzzleGameManager : GameManager
                 {
                     if (hit.collider.gameObject.tag == "PuzzleSlot")
                     {
-                        PuzzlePieceScript __pieceScript = _picked.GetComponent<PuzzlePieceScript>();
                         PuzzleSlotScript __slotScript = hit.collider.gameObject.GetComponent<PuzzleSlotScript>();
 
                         float distance = Vector2.Distance(_picked.transform.position, hit.collider.gameObject.transform.position);
 
-                        if (__pieceScript.x == __slotScript.x && __pieceScript.y == __slotScript.y && distance < snapDistance)
+                        if (__slotScript.puzzlePiece == _picked && distance < snapDistance)
                         {
                             _picked.collider.enabled = false;
                             StartCoroutine(LerpToPos(_picked, hit.collider.gameObject.transform.position));
