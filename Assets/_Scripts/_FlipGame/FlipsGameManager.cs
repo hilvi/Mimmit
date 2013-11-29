@@ -40,7 +40,6 @@ public class FlipsGameManager : GameManager
 		}
 		
 		_cardsTotal = levelGenerator.CardCount ();
-		SetGameState (GameState.Pregame);
 		_cam = Camera.main;
 		
 		StartCoroutine (_InitiateCountdown ());

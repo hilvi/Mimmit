@@ -22,7 +22,7 @@ public class InGameMenuGUI : Overlay
 	private Rect _nextLevelButtonRegion;
 	private Rect _tutorialRegion;
 	private Rect _tutorialFrame;
-	public Rect _crossRect;
+	private Rect _crossRect;
 	private GUIStyle noStyle = new GUIStyle();
 	private GameState _previousState;
 	#endregion
@@ -36,13 +36,15 @@ public class InGameMenuGUI : Overlay
 		float __height = Screen.height;
 		float __sizeButton = __width / 15;
 		float __margin = 5f;
-		_tutorialButtonRegion = new Rect(__width - __sizeButton * 2f - __margin * 2f,__margin,
+		/*_tutorialButtonRegion = new Rect(__width - __sizeButton * 2f - __margin * 2f,__margin,
 		                                 __sizeButton, __sizeButton);
 
-		_pauseButtonRegion = new Rect (
+		/*_pauseButtonRegion = new Rect (
             __width - __sizeButton - __margin, __margin,
-            __sizeButton, __sizeButton);
-
+            __sizeButton, __sizeButton);*/
+		float __heightPos= 100;
+		_pauseButtonRegion = new Rect(__margin,__heightPos,__sizeButton,__sizeButton);
+		_tutorialButtonRegion = new Rect(__margin + __sizeButton , __heightPos, __sizeButton,__sizeButton);
 
 		float __widthA = __width / 6;
 		float __widthB = __width / 7;
@@ -64,22 +66,8 @@ public class InGameMenuGUI : Overlay
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
-
-		float __tutWidth = Screen.width / 3;
-		float __tutHeight = Screen.height / 2;
-		_tutorialRegion = new Rect(__width / 2 - __tutWidth / 2, 
-		                           __height / 2 - __tutHeight / 2,
-		                           __tutWidth, __tutHeight-10
-			);
-		float __offside = 60;
-		_tutorialFrame = new Rect(__width / 2 - __tutWidth / 2 - __offside / 2, 
-		                          __height / 2 - __tutHeight / 2- __offside /2,
-		                          __tutWidth + __offside, __tutHeight + __offside
-		                          );
 		_previousState = _gameManager.GetGameState ();
-		/*float _crossSize = 50;
-		_crossRect = new Rect(0,0,_crossSize,_crossSize);
-		_crossRect.xMax = _tutorialFrame.xMax;*/
+		SetTutorialRect();
 	}
 	
 	void OnGUI ()
@@ -248,6 +236,23 @@ public class InGameMenuGUI : Overlay
 		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
 		{
 			_gameManager.RestartGame ();
+		}
+	}
+	private void SetTutorialRect()
+	{
+		string __str = _gameManager.gameName;
+		switch(__str)
+		{
+			case "Flip_":
+				_tutorialRegion = new Rect(320,170,360,290);
+				_tutorialFrame = new Rect(295,145,400,360);
+				_crossRect = new Rect(615,345,50,50);
+				break;
+			case "Horse_":
+				_tutorialRegion = new Rect(320,150,320,290);
+				_tutorialFrame = new Rect(290,120,380,360);
+				_crossRect = new Rect(580,295,50,50);
+				break;
 		}
 	}
 	#endregion
