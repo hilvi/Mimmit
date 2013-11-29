@@ -66,7 +66,7 @@ public class PuzzleGameManager : GameManager
             Vector3 __pos = puzzlePiece.transform.position;
             __pos.x += 1.2f * __randPos.x;
             __pos.y += 2 * __randPos.y;
-            __pos.z = Random.value;
+            __pos.z = -Random.value - 5;
             piece.transform.position = __pos;
         }
     }
@@ -129,10 +129,11 @@ public class PuzzleGameManager : GameManager
     IEnumerator LerpToPos(GameObject obj, Vector3 pos)
     {
         float __time = 0;
+		pos.z = obj.transform.position.z;
         while (Vector2.Distance(obj.transform.position, pos) > 0.05f)
         {
             __time += Time.deltaTime;
-            obj.transform.position = Vector2.Lerp(obj.transform.position, pos, __time);
+            obj.transform.position = Vector3.Lerp(obj.transform.position, pos, __time);
             yield return null;
         }
         //Scrap z-axis.
@@ -146,7 +147,8 @@ public class PuzzleGameManager : GameManager
         float min = float.MaxValue;
         foreach (GameObject piece in _pieces)
         {
-            min = Mathf.Min(min, piece.transform.position.z);
+			if(piece.collider.enabled != false)
+            	min = Mathf.Min(min, piece.transform.position.z);
         }
         Vector3 __pickedPos = _picked.transform.position;
         __pickedPos.z = min - 0.0001f;
