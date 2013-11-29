@@ -15,9 +15,6 @@ public class FrontPageScript : Overlay
 	#region UNITY_METHODS
 	void Start ()
 	{
-
-
-
 		_background = GetComponent<GUITexture> ();
 		// Setting background to full screen
 		float width = Screen.width;

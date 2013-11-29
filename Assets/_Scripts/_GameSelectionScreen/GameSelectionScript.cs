@@ -211,10 +211,7 @@ public class GameSelectionScript : Overlay
 	IEnumerator _FadeOutAndLoad (string scene)
 	{
 		AudioSource source = _localCamera.audio;
-		if(Application.CanStreamedLevelBeLoaded(scene))
-		{
-			Application.LoadLevel(scene);
-		}
+		LoadLevel(scene);
 		while (source.volume > 0.2f || _localAudioSource.isPlaying) 
 		{
 			source.volume -= Time.deltaTime * 0.2f;

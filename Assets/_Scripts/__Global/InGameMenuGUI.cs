@@ -13,6 +13,7 @@ public class InGameMenuGUI : Overlay
 	public static GameObject music;
 	public MovieTexture tutorial;
 	public Texture2D frame;
+	public Texture2D cross;
 	private GameManager _gameManager;
 	private Rect _tutorialButtonRegion;
 	private Rect _pauseButtonRegion;
@@ -21,6 +22,7 @@ public class InGameMenuGUI : Overlay
 	private Rect _nextLevelButtonRegion;
 	private Rect _tutorialRegion;
 	private Rect _tutorialFrame;
+	public Rect _crossRect;
 	private GUIStyle noStyle = new GUIStyle();
 	private GameState _previousState;
 	#endregion
@@ -75,6 +77,9 @@ public class InGameMenuGUI : Overlay
 		                          __tutWidth + __offside, __tutHeight + __offside
 		                          );
 		_previousState = _gameManager.GetGameState ();
+		/*float _crossSize = 50;
+		_crossRect = new Rect(0,0,_crossSize,_crossSize);
+		_crossRect.xMax = _tutorialFrame.xMax;*/
 	}
 	
 	void OnGUI ()
@@ -102,6 +107,7 @@ public class InGameMenuGUI : Overlay
 				else
 					_gameManager.SetGameState(_previousState);
 			}
+			GUI.Box(_crossRect,cross,noStyle);
 			return;
 		}
 		// While the game is in progress, only display the pause button
@@ -132,15 +138,15 @@ public class InGameMenuGUI : Overlay
 		ScreenChoice __choice = Manager.GetScreenChoice ();
 		if (__choice == ScreenChoice.Map) 
 		{
-			_LoadNewLevel ("MapWorld");
+			LoadLevel ("MapWorld");
 		} 
 		else if (__choice == ScreenChoice.Button) 
 		{
-			_LoadNewLevel ("GameSelectionScene");
+			LoadLevel ("GameSelectionScene");
 		} 
 		else 
 		{
-			_LoadNewLevel ("GameSelectionScene");
+			LoadLevel ("GameSelectionScene");
 		}
 		
 		if (source != null) {
@@ -166,18 +172,12 @@ public class InGameMenuGUI : Overlay
 				yield return null;
 			}
 		}
-		_LoadNewLevel ("WinScene");
+		LoadLevel ("WinScene");
 		Time.timeScale = 1.0f;
 		music = null;
 		Destroy (source.gameObject);
 	}
-	private void _LoadNewLevel(string scene)
-	{
-		if(Application.CanStreamedLevelBeLoaded(scene))
-		{
-			Application.LoadLevel(scene);
-		}
-	}	
+
 	private void _ShowBottomMenu ()
 	{
 		switch (_gameManager.GetGameState ()) 
@@ -205,7 +205,7 @@ public class InGameMenuGUI : Overlay
 			else 
 			{
 				Time.timeScale = 1.0f;
-				_LoadNewLevel ("GameSelectionScene");
+				LoadLevel ("GameSelectionScene");
 			}
 		} 
 		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 

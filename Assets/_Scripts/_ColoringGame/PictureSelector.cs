@@ -24,7 +24,7 @@ public class PictureSelector
 	#region UNITY_METHODS
 	public void OnGui() {
 		#if UNITY_EDITOR
-		//GUI.Box(_pictureSelectRegion, "pictureSelect");
+		GUI.Box(_pictureSelectRegion, "pictureSelect");
 		for (int i = 0; i < 3; i++) {
 			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
 		}

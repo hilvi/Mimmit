@@ -26,7 +26,10 @@ public class Overlay : MonoBehaviour
 
 	public void LoadLevel (string level)
 	{
-		StartCoroutine (_LoadLevel (level));
+		if(Application.CanStreamedLevelBeLoaded(level))
+		{
+			StartCoroutine (_LoadLevel (level));
+		}
 	}
 
 	public void LoadLevelAndPlaySound (string level, AudioSource audio)
