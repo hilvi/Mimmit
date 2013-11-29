@@ -132,24 +132,28 @@ public class DiffGameManager : GameManager
 	private void _Hit (Vector2 pos)
 	{
 		Rect click = new Rect ();
-		click.width = click.height = clickSize;
+		
 		foreach (Rect err in new List<Rect>(errs.Keys)) {
 			if (err.Contains (pos)) {
 				if (!errs [err]) {
 					errs [err] = true;
+					click.width = click.height = Mathf.Min(err.height, err.width);
 					click.center = err.center;
 					_hits.Add (click);
 					_errorLeft--;
+					
 					_audioSource.clip = hitSound;
 					_audioSource.Play ();
 				}
 				return;
 			}
 		}
-		_audioSource.clip = missSound;
-		_audioSource.Play ();
+		click.width = click.height = clickSize;
 		click.center = pos;
 		_misses.Add (click, 2f);
+		
+		_audioSource.clip = missSound;
+		_audioSource.Play ();
 	}
 	
 	private Texture2D _CreateBorders (Texture2D a, Color borderColor, int borderThickness)

@@ -15,19 +15,22 @@ public class FadeScreen : MonoBehaviour
 		_texture = new Texture2D(1,1);
 		_SetColor(Color.clear);
     }
-	void OnGUI() {
+	void OnGUI() 
+	{
 		GUI.depth = -1000;
 		GUI.DrawTexture(_screen, _texture);
 	}
 	
 	#region PROPERTIES
 	public bool fadeInComplete {
-		get {
+		get 
+		{
 			return _GetColor().a < 0.05f;
 		}
 	}
 	public bool fadeOutComplete {
-		get {
+		get 
+		{
 			return _GetColor().a > 0.95f;
 		}
 	}
@@ -35,22 +38,26 @@ public class FadeScreen : MonoBehaviour
     
 	#region PUBLIC METHODS
 
-	public IEnumerator FadeIn() {
+	public IEnumerator FadeIn() 
+	{
 		float __time = 0;
 		_SetColor(Color.black);
 		_target = Color.clear;
-		while(!fadeInComplete) {
+		while(!fadeInComplete) 
+		{
 			__time += Time.deltaTime;
 			_SetColor (Color.Lerp(_GetColor(), _target, fadeSpeed * __time));
 			yield return null;
 		}
 		_SetColor(Color.clear);
 	}
-	public IEnumerator FadeOut() {
+	public IEnumerator FadeOut() 
+	{
 		float __time = 0;
 		_SetColor(Color.clear);
 		_target = Color.black;
-		while(!fadeOutComplete) {
+		while(!fadeOutComplete) 
+		{
 			__time += Time.deltaTime;
 			_SetColor (Color.Lerp(_GetColor(), _target, fadeSpeed * __time));
 			yield return null;
@@ -60,11 +67,14 @@ public class FadeScreen : MonoBehaviour
 	#endregion
 	
 	#region PRIVATE METHODS
-	private void _SetColor(Color color) {
+	private void _SetColor(Color color) 
+	{
 		_texture.SetPixel(0,0,color);
 		_texture.Apply ();
 	}
-	private Color _GetColor() {
+
+	private Color _GetColor() 
+	{
 		return _texture.GetPixel(0,0);
 	}
 	#endregion

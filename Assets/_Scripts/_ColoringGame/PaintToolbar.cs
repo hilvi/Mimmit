@@ -13,7 +13,9 @@ public class PaintToolbar
 	private const int _gridWidth = 3;
 	private const int _gridHeight = 6;
 	private const float _brushWidth = 66f;
+#if UNITY_EDITOR
 	private Rect _toolbarRegion;		// 780,20,160,560
+#endif
 	private Rect _eraseToolRegion;		// 800,40,120,120
 	private Rect _resetToolRegion;		// 800,180,120,120
 	private Rect _saveToolRegion;		// 
@@ -34,19 +36,17 @@ public class PaintToolbar
 	{
 		
 		_manager = manager;
+#if UNITY_EDITOR
 		_toolbarRegion = region;
+#endif
 		_eraserTexture = eraserTexture;
 		_tickTexture = tickTexture;
 		_resetTexture = resetTexture;
 		_saveTexture = saveTexture;
 		
-		/*_saveToolRegion = new Rect (810, 120, 100, 100);
-		
-		_eraseToolRegion = new Rect (790, 240, 60, 60);
-		_resetToolRegion = new Rect (870, 240, 60, 60);*/
-		_eraseToolRegion = new Rect (740, 110, 60, 60);
-		_resetToolRegion = new Rect (810, 110, 60, 60);
-		_saveToolRegion = new Rect (880, 110, 60, 60);
+		_eraseToolRegion = new Rect (744, 115, 60, 60);
+		_resetToolRegion = new Rect (810, 115, 60, 60);
+		_saveToolRegion = new Rect (875, 115, 60, 60);
 		
 	
 		// Generate brush grid
@@ -67,19 +67,25 @@ public class PaintToolbar
 		
 		// Generate HSL color pallette for each brush
 		Color[] __HSLpallette = new Color[_gridWidth * _gridHeight];
-		int __index = 0;
-		for (int y = 1; y <= _gridHeight; y++) {
-			for (int x = 1; x <= _gridWidth; x++) { 
-				float __h = (float)y / (float)_gridHeight;
-				float __s = (float)x / (float)_gridWidth;
-				
-				//if (x == 0)
-					//__s += (float)1f / ((float)_gridWidth * 2f); // Slight bias to prevent similar colors
-				
-				__HSLpallette [__index] = HSLToRGB (__h, __s, 0.5f);
-				__index++;
-			}
-		}
+		
+		__HSLpallette[0] = new Color(0.07f,0.07f,0.07f);				 	
+		__HSLpallette[1] = new Color(1f,1f,1f);		
+		__HSLpallette[2] = new Color(0.5f,0.5f,0.5f);		
+		__HSLpallette[3] = new Color(0f,1f,1f);			
+		__HSLpallette[4] = new Color(0f,0f,1f);			
+		__HSLpallette[5] = new Color(0f,0f,0.5f);		
+		__HSLpallette[6] = new Color(1f,0f,1f);			
+		__HSLpallette[7] = new Color(1f,0f,0f);
+		__HSLpallette[8] = new Color(0.55f,0f,0f);
+		__HSLpallette[9] = new Color(1f,1f,0f);
+		__HSLpallette[10] = new Color(1f,0.5f,0f);
+		__HSLpallette[11] = new Color(0.65f,0.16f,0.16f);
+		__HSLpallette[12] = new Color(0.5f,1f,0f);
+		__HSLpallette[13] = new Color(0f,1.0f,0f);
+		__HSLpallette[14] = new Color(0f,0.5f,0f);
+		__HSLpallette[15] = new Color(1f,0.86f,0.65f);
+		__HSLpallette[16] = new Color(0.82f,0.4f,0.1f);
+		__HSLpallette[17] = new Color(1f,0.5f,1f);
 		
 		// Setup the actual color pallette. Start from top-left, row-major order
 		_colorPallette.Add (-1, new PaintBrush (-1, "Erase", Color.white));
@@ -156,16 +162,20 @@ public class PaintToolbar
 	
 	public void HandleMouse (Vector2 position)
 	{
-		if (_eraseToolRegion.Contains (position)) {
+		if (_eraseToolRegion.Contains (position)) 
+		{
 			// Selects erase tool (id = -1)
 			CurrentBrush = _colorPallette [-1];
+			CurrentBrush.eraser = true;
 		}
 		
-		if (_resetToolRegion.Contains (position)) {
+		if (_resetToolRegion.Contains (position)) 
+		{
 			_manager.ResetPictureToOriginal ();		
 		}
 		
-		if (_saveToolRegion.Contains (position)) {
+		if (_saveToolRegion.Contains (position)) 
+		{
 			_SavePicture ();
 		}
 		
@@ -174,6 +184,7 @@ public class PaintToolbar
 			if (_colorPalletteRegion [i].Contains (position)) {
 				// Set new brush
 				CurrentBrush = _colorPallette [i];
+				CurrentBrush.eraser = false;
 			}
 		}
 	}
@@ -212,41 +223,6 @@ public class PaintToolbar
 	private bool IsBitSet (byte b, int pos)
 	{
 		return (b & (1 << pos)) != 0;
-	}
-	
-	/*
-	 * HSL-color space functions (HSLToRGB and HueToRGB) are from:
-	 * http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-	 */ 
-	private Color HSLToRGB (float hue, float saturation, float lightness)
-	{
-		Color __c = new Color (0f, 0f, 0f, 1f);
-		if (saturation == 0f) {
-			__c.r = __c.g = __c.b = 1f;
-		} else {
-			float q = lightness < 0.5f ? lightness * (1f + saturation) : lightness + saturation - lightness * saturation;
-			float p = 2 * lightness - q;
-			__c.r = HueToRGB (p, q, hue + 1f / 3f);
-			__c.g = HueToRGB (p, q, hue);
-			__c.b = HueToRGB (p, q, hue - 1f / 3f);
-		}
-		
-		return __c;
-	}
-	
-	private float HueToRGB (float p, float q, float t)
-	{
-		if (t < 0f)
-			t += 1f;
-		if (t > 1f)
-			t -= 1f;
-		if (t < 1f / 6f)
-			return p + (q - p) * 6f * t;
-		if (t < 1f / 2f)
-			return q;
-		if (t < 2f / 3f)
-			return p + (q - p) * (2f / 3f - t) * 6f;
-		return p;
 	}
 }
 

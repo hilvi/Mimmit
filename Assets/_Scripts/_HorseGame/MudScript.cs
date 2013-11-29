@@ -15,7 +15,7 @@ public class MudScript : MonoBehaviour
 	#region UNITY_METHODS
 	void Start ()
 	{
-		_horseScript = GameObject.Find ("Player").GetComponent<HorseCharacterController> ();
+		_horseScript = GameObject.FindGameObjectWithTag ("Player").GetComponent<HorseCharacterController> ();
 	}
 
 	void OnTriggerEnter ()

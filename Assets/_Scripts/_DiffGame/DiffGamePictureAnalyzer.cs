@@ -11,7 +11,9 @@ public class DiffGamePictureAnalyzer : MonoBehaviour
 	private Texture2D[] _modifiedErrorPictures;
 	private Texture2D[] _differenceMaps;
 	private int _levelIndex = 0;
+#if UNITY_EDITOR
 	private bool _cheatModeEnabled = false;
+#endif
 	#endregion
 	
 	#region UNITY_METHODS

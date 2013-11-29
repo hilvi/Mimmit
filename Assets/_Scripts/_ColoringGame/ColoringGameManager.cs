@@ -27,6 +27,9 @@ public class ColoringGameManager : GameManager {
 	public Texture2D downArrowTexture;
 	public Texture2D resetTexture;
 	public Texture2D saveTexture;
+	public AudioClip clickColor;
+	public AudioClip clickErase;
+	public AudioClip clickButton;
 	#endregion
 	
 	#region PRIVATE
@@ -56,7 +59,7 @@ public class ColoringGameManager : GameManager {
 			upArrowTexture, downArrowTexture);
 		
 		_toolbar = new PaintToolbar(this, toolbarRegion, 
-			/*new Vector2(800f, 325f)*/new Vector2(740f,180f), new Vector2(5f, 5f),
+			new Vector2(740f,180f), new Vector2(5f, 5f),
 			paintBrushTextures, eraserTexture, 
 			tickTexture, resetTexture,
 			saveTexture);
@@ -84,7 +87,6 @@ public class ColoringGameManager : GameManager {
 		if(pictureSelectRegion.Contains(InputManager.MouseScreenToGUI()))
 		{
 			float __mouse = Input.GetAxis("Mouse ScrollWheel");
-			print(__mouse);
 			if(__mouse > 0)
 			{
 				_pictureSelector.HandleMouseWheel(1);
@@ -135,15 +137,42 @@ public class ColoringGameManager : GameManager {
 		Vector2 __p = Input.mousePosition;
 		__p.y = Screen.height - __p.y; // y-axis flips
 		
-		if (chosenCharRegion.Contains(__p)) {
+		if (chosenCharRegion.Contains(__p)) 
+		{
 			_HandleChosenCharClick(__p);
-		} else if (pictureSelectRegion.Contains(__p)) {
+		} 
+		// Click on the preview section
+		else if (pictureSelectRegion.Contains(__p)) 
+		{
+			audio.clip = clickButton;
+			audio.volume = 0.5f;
+			audio.Play ();
 			_pictureSelector.HandleMouse(__p);
-		} else if (pictureRegion.Contains(__p)) {
+		} 
+		// Click on the drawing
+		else if (pictureRegion.Contains(__p)) 
+		{
+			if(_toolbar.CurrentBrush.eraser)
+			{
+				audio.clip = clickErase;
+			}
+			else
+			{
+				audio.clip = clickColor;
+			}
+			audio.volume = 0.5f;
+			audio.Play ();		
 			_frame.Paint(__p, _toolbar.CurrentBrush.color);
-		} else if (toolbarRegion.Contains(__p)) {
+		} 
+		// Click the toolbar
+		else if (toolbarRegion.Contains(__p)) 
+		{
+			audio.clip = clickButton;
+			audio.volume = 0.5f;
+			audio.Play ();
 			_toolbar.HandleMouse(__p);
 		}
+		
 	}
 	
 	private void _HandleChosenCharClick(Vector2 position) {

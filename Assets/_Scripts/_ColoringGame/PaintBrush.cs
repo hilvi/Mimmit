@@ -7,6 +7,7 @@ public class PaintBrush
 	public string name;
 	public Color color;
 	public Texture2D texture;
+	public bool eraser = false;
 
 	public PaintBrush(int id, string name, Color color) {
 		this.id = id;

@@ -15,20 +15,25 @@ public class HorseCharacterController : MonoBehaviour
 	public Animator2D anim;
 	public Transform particle;
 	public ParticleEmitter particleEmit;
+	public Transform rayPosition;
 	
 	private HorseGameManager _gameManager;
 	private CharacterController _controller;
 	private Vector3 _movement;
 	private float _currentSpeed;
+	private float _pondJumpSpeed;
+	private float _currentJumpSpeed;
 	private bool _sideStepping = false;
 	private Transform _plane;
-	private string _runAnim;
-	private string _jumpAnim;
-	private string _idleAnim;
-	
+	private string _runAnim = "Run";
+	private string _jumpAnim = "Jump";
+	internal string _idleAnim = "Idle";
+	private string _jump = "Jump";
+		
 	#endregion
 	
 	#region UNITY_METHODS
+
 	void Start ()
 	{
 		_controller = GetComponent<CharacterController> ();
@@ -37,27 +42,10 @@ public class HorseCharacterController : MonoBehaviour
 		
 		_plane = transform.Find ("Plane");
 		_currentSpeed = runningSpeed;
+		_currentJumpSpeed = jumpSpeed;
+		_pondJumpSpeed = jumpSpeed / 2f;
 		_movement.x = _currentSpeed;
 		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
-		
-		switch(Manager.GetCharacter())
-		{
-		case Character.Blonde:
-			_runAnim = "RunBlonde";
-			_jumpAnim = "JumpBlonde";
-			_idleAnim = "IdleBlonde";
-			break;
-		case Character.Brune:
-			_runAnim = "RunBrune";
-			_jumpAnim = "JumpBrune";
-			_idleAnim = "IdleBrune";
-			break;
-		default:
-			_runAnim = "RunBlonde";
-			_jumpAnim = "JumpBlonde";
-			_idleAnim = "IdleBlonde";
-			break;
-		}
 		
 		anim.PlayAnimation (_idleAnim);
 	}
@@ -66,7 +54,7 @@ public class HorseCharacterController : MonoBehaviour
 	{			
 		GameState __state = _gameManager.GetGameState();
 		
-		if (__state == GameState.Pregame || __state == GameState.Lost || __state == GameState.Won) 
+		if (__state == GameState.Pregame || __state == GameState.Lost || __state == GameState.Won || __state == GameState.Tutorial) 
 		{
 			particleEmit.emit = false;
 			anim.PlayAnimation (_idleAnim);
@@ -75,11 +63,12 @@ public class HorseCharacterController : MonoBehaviour
 			
 		if (_controller.isGrounded) 
 		{
-			if (Input.GetButtonDown ("Fire1"))
-			SideStep ();
+			/*if (Input.GetButtonDown ("Fire1"))
+				SideStep ();
 			if (Input.GetButtonUp ("Fire1"))
-				SideStepReturn ();
-			
+				SideStepReturn ();*/
+
+
 			if (_controller.velocity.x != 0)
 			{
 				anim.PlayAnimation (_runAnim);
@@ -92,9 +81,9 @@ public class HorseCharacterController : MonoBehaviour
 				if(particleEmit.emit == true)
 					particleEmit.emit = false;
 			}
-			if (Input.GetButtonDown ("Jump") && !_sideStepping) 
+			if (Input.GetButtonDown (_jump) && !_sideStepping) 
 			{	
-				_movement.y = jumpSpeed;
+				_movement.y = _currentJumpSpeed;
 			}
 			
 		} 
@@ -105,8 +94,21 @@ public class HorseCharacterController : MonoBehaviour
 					particleEmit.emit = false;
 			_movement.y -= gravity * Time.deltaTime;
 		}
-		
-		_movement.x = _currentSpeed;
+
+		// This part is due to the fact that the character controller has problem with slope
+		// This is a known problem they have not yet resolved. So I check the slope manually.
+		RaycastHit hit;
+		if(Physics.Raycast (rayPosition.position,transform.right, out hit,0.5f))
+		{
+			if(Vector3.Angle (hit.normal,-transform.right)< 30)
+			{
+				_movement.x = 0;
+			}
+		}
+		else
+		{
+			_movement.x = _currentSpeed;
+		} 
 		_controller.Move (_movement * Time.deltaTime);
 	}
 	#endregion
@@ -121,12 +123,12 @@ public class HorseCharacterController : MonoBehaviour
 	{
 		if (_currentSpeed > runningSpeed)
 			return;
-			//_currentSpeed = (mudSpeed + powerUpSpeed) / 2;
-		else
-			_currentSpeed = mudSpeed;
 
+		_currentSpeed = mudSpeed;
+		_currentJumpSpeed = _pondJumpSpeed;
 		Animator2D __anim = GetComponentInChildren<Animator2D>();
 		__anim.speed /= 2;
+
 	}
 	
 	/// <summary>
@@ -137,9 +139,9 @@ public class HorseCharacterController : MonoBehaviour
 	{
 		if (_currentSpeed > runningSpeed)
 			return;
-		else
-			_currentSpeed = runningSpeed;
-		
+
+		_currentSpeed = runningSpeed;
+		_currentJumpSpeed = jumpSpeed;
 		Animator2D __anim = GetComponentInChildren<Animator2D>();
 		__anim.speed *= 2;
 	}
