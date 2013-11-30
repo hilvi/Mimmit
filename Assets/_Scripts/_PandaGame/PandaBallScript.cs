@@ -99,5 +99,9 @@ public class PandaBallScript : MonoBehaviour
     private void SetGameOver()
     {
         _gameOver = true;
+
+        // Stop ball so mommy bear can lick it clean
+        _rigidBody.velocity = Vector2.zero;
+        _rigidBody.angularVelocity = 0;
     }
 }
