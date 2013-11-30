@@ -42,7 +42,7 @@ public class PandaBallScript : MonoBehaviour
             {
                 // If balls velocity equal zero, start measuring time
                 Vector2 _velocity = _rigidBody.velocity;
-                if (Vector2.SqrMagnitude(_velocity) == 0f)
+                if (Vector2.SqrMagnitude(_velocity) < 0.1f)
                 {
                     _stuckTime += Time.deltaTime;
 
