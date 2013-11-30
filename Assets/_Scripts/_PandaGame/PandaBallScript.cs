@@ -11,7 +11,8 @@ public class PandaBallScript : MonoBehaviour
     public delegate void BallStucked();
     public static event BallStucked OnBallStuck;
 
-    private const float BOOST_MULTIPLIER = 100f;
+    public float powerupBoostMultiplier = 1f;
+    private const float BOOST_FACTOR = 100f;
 
     private bool _activated = false;
     private bool _stuck = false;
@@ -93,7 +94,7 @@ public class PandaBallScript : MonoBehaviour
 
     private void BoostBall()
     {
-        _rigidBody.AddForce(_rigidBody.velocity * BOOST_MULTIPLIER);
+        _rigidBody.AddForce(_rigidBody.velocity * BOOST_FACTOR * powerupBoostMultiplier);
     }
 
     private void SetGameOver()
