@@ -86,21 +86,27 @@ public class PandaGameManager : GameManager
     void OnEnable()
     {
         GoalScript.OnBallCapture += WinGame;
+        PandaBallScript.OnBallStuck += LoseGame;
         PandaBallScript.OnBallActivate += LockDrawing;
     }
 
     void OnDisable()
     {
         GoalScript.OnBallCapture -= WinGame;
+        PandaBallScript.OnBallStuck -= LoseGame;
         PandaBallScript.OnBallActivate -= LockDrawing;
     }
-
     #endregion
 
     #region MEMBERS
     private void WinGame()
     {
         SetGameState(GameState.Won);
+    }
+
+    private void LoseGame()
+    {
+        SetGameState(GameState.Lost);
     }
 
     private void LockDrawing()

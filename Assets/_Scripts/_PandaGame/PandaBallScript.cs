@@ -8,9 +8,15 @@ public class PandaBallScript : MonoBehaviour
     public delegate void ActivateBall();
     public static event ActivateBall OnBallActivate;
 
+    public delegate void BallStucked();
+    public static event BallStucked OnBallStuck;
+
     private const float BOOST_MULTIPLIER = 100f;
 
     private bool _activated = false;
+    private bool _stuck = false;
+    private float _stuckTime = 0f;
+    private bool _gameOver = false;
     private Rigidbody2D _rigidBody;
     private CircleCollider2D _circleCollider;
 
@@ -23,14 +29,42 @@ public class PandaBallScript : MonoBehaviour
 
     void Update()
     {
-        // If ball is already activated, forget further action
-        if (_activated)
+        // If game is over, prevent further updates
+        if (_gameOver)
             return;
 
-        // Check if user has pressed left mouse btn
-        if (Input.GetMouseButtonDown(0))
+        // If ball is activated, check if it gets stuck
+        if (_activated)
         {
-            /* Check if cursor position has collided with CircleCollider2D
+            // If ball is not stuck yet, check if it gets stuck
+            if (!_stuck)
+            {
+                // If balls velocity equal zero, start measuring time
+                Vector2 _velocity = _rigidBody.velocity;
+                if (Vector2.SqrMagnitude(_velocity) == 0f)
+                {
+                    _stuckTime += Time.deltaTime;
+
+                    // If measured time is long enough, we can say that ball is stuck
+                    if (_stuckTime > 1f)
+                    {
+                        OnBallStuck();
+                        _stuck = true;
+                    }
+                }
+                else
+                {
+                    // If ball moves after staying still for a while, reset stuck timer
+                    _stuckTime = 0f;
+                }
+            }
+        }
+
+        // Check if user has pressed left mouse btn and ball is not already active
+        if (Input.GetMouseButtonDown(0) && !_activated)
+        {
+            /* 
+             * Check if cursor position has collided with CircleCollider2D
              * in world space. If yes, drop the ball.
              */
             Vector3 __t = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -47,16 +81,23 @@ public class PandaBallScript : MonoBehaviour
     void OnEnable()
     {
         PowerupScript.OnBallCapture += BoostBall;
+        GoalScript.OnBallCapture += SetGameOver;
     }
 
     void OnDisable()
     {
         PowerupScript.OnBallCapture -= BoostBall;
+        GoalScript.OnBallCapture -= SetGameOver;
     }
     #endregion
 
     private void BoostBall()
     {
         _rigidBody.AddForce(_rigidBody.velocity * BOOST_MULTIPLIER);
+    }
+
+    private void SetGameOver()
+    {
+        _gameOver = true;
     }
 }
