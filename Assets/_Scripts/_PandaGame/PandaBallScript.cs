@@ -8,10 +8,13 @@ public class PandaBallScript : MonoBehaviour
     public delegate void ActivateBall();
     public static event ActivateBall OnBallActivate;
 
+    private const float BOOST_MULTIPLIER = 100f;
+
     private bool _activated = false;
     private Rigidbody2D _rigidBody;
     private CircleCollider2D _circleCollider;
 
+    #region UNITY_METHODS
     void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
@@ -39,5 +42,21 @@ public class PandaBallScript : MonoBehaviour
                 OnBallActivate();
             }
         }
+    }
+
+    void OnEnable()
+    {
+        PowerupScript.OnBallCapture += BoostBall;
+    }
+
+    void OnDisable()
+    {
+        PowerupScript.OnBallCapture -= BoostBall;
+    }
+    #endregion
+
+    private void BoostBall()
+    {
+        _rigidBody.AddForce(_rigidBody.velocity * BOOST_MULTIPLIER);
     }
 }
