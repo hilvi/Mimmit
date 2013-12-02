@@ -42,8 +42,8 @@ public class PictureSelector
 		_upArrowTexture = upArrowTexture;
 		_downArrowTexture = downArrowTexture;
 
-		_selectUpBtnRegion = new Rect(120, 100, 40, 30);
-		_selectDownBtnRegion = new Rect(120, 565, 40, 30);
+		_selectUpBtnRegion = new Rect(120, 140, 40, 30);
+		_selectDownBtnRegion = new Rect(120, 520, 40, 30);
 		
 		for (int i = 0; i < _pictureCount; i++) 
 		{
@@ -57,7 +57,7 @@ public class PictureSelector
 		for (int i = 0; i < 2; i++) 
 		{
 			_selectPictureRegion[i] = new Rect(75f, __v, 140, 160);
-			__v += 150;
+			__v += 170;
 		}
 		
 		// TODO, load picture thumbnails here
