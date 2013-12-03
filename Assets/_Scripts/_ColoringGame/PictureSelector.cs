@@ -6,9 +6,6 @@ public class PictureSelector
 {
 	#region MEMBERS
 	private ColoringGameManager _manager;
-#if UNITY_EDITOR
-	private Rect _pictureSelectRegion;		// 20,200,160,380
-#endif
 	private Rect _selectUpBtnRegion;		// 20,200,160,40
 	private Rect _selectDownBtnRegion;		// 20,540,160,40
 	private Rect[] _selectPictureRegion;	// 
@@ -23,7 +20,7 @@ public class PictureSelector
 	#endregion
 	
 	#region UNITY_METHODS
-	public void OnGui() 
+	public void OnGUI() 
 	{
         for (int i = 0; i < _visiblePictures; i++) 
 		{
