@@ -36,15 +36,8 @@ public class InGameMenuGUI : Overlay
 		float __height = Screen.height;
 		float __sizeButton = __width / 15;
 		float __margin = 5f;
-		/*_tutorialButtonRegion = new Rect(__width - __sizeButton * 2f - __margin * 2f,__margin,
-		                                 __sizeButton, __sizeButton);
-
-		/*_pauseButtonRegion = new Rect (
-            __width - __sizeButton - __margin, __margin,
-            __sizeButton, __sizeButton);*/
-		float __heightPos= 100;
-		_pauseButtonRegion = new Rect(__margin,__heightPos,__sizeButton,__sizeButton);
-		_tutorialButtonRegion = new Rect(__margin + __sizeButton , __heightPos, __sizeButton,__sizeButton);
+		_pauseButtonRegion = new Rect(__margin + 100f, __margin, __sizeButton, __sizeButton);
+		_tutorialButtonRegion = new Rect(__margin + + 100f + __sizeButton , __margin, __sizeButton, __sizeButton);
 
 		float __widthA = __width / 6;
 		float __widthB = __width / 7;

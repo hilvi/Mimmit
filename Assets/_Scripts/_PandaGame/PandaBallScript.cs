@@ -3,6 +3,8 @@ using System.Collections;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(CircleCollider2D))]
+[RequireComponent(typeof(MeshFilter))]
+[RequireComponent(typeof(MeshRenderer))]
 public class PandaBallScript : MonoBehaviour
 {
     public delegate void ActivateBall();
@@ -18,14 +20,22 @@ public class PandaBallScript : MonoBehaviour
     private bool _stuck = false;
     private float _stuckTime = 0f;
     private bool _gameOver = false;
+
+    private enum PandaState { FastRolling, SlowRolling, Standing };
+
+    // References
     private Rigidbody2D _rigidBody;
     private CircleCollider2D _circleCollider;
+    private MeshRenderer _meshRenderer;
 
     #region UNITY_METHODS
     void Awake()
     {
         _rigidBody = GetComponent<Rigidbody2D>();
         _circleCollider = GetComponent<CircleCollider2D>();
+        _meshRenderer = GetComponent<MeshRenderer>();
+
+        SelectActiveMaterial(PandaState.Standing);
     }
 
     void Update()
@@ -58,6 +68,32 @@ public class PandaBallScript : MonoBehaviour
                     // If ball moves after staying still for a while, reset stuck timer
                     _stuckTime = 0f;
                 }
+            }
+
+            // While ball is activated, check its angular velocity and calculate material transformation
+            float __angularSpeed = Mathf.Abs(_rigidBody.angularVelocity);
+            if (__angularSpeed < 200f)
+            {
+                SelectActiveMaterial(PandaState.SlowRolling);
+            }
+            else
+            {
+                // Normalize angular speed between 0..1
+                __angularSpeed -= 200f;
+                float __transformPCT = __angularSpeed / 400f;
+                __transformPCT = Mathf.Clamp01(__transformPCT);
+
+                // Create color mask and its inverse
+                Color __mask = new Color(1f, 1f, 1f, __transformPCT);
+                Color __inverseMask = new Color(1f, 1f, 1f, 1f - __transformPCT);
+
+                // Reset all materials
+                SelectActiveMaterial(PandaState.SlowRolling);
+
+                // Apply masks
+                Material[] __mats = _meshRenderer.materials;
+                __mats[(int)PandaState.SlowRolling].color = __inverseMask;
+                __mats[(int)PandaState.FastRolling].color = __mask;
             }
         }
 
@@ -92,6 +128,17 @@ public class PandaBallScript : MonoBehaviour
     }
     #endregion
 
+    private void SelectActiveMaterial(PandaState state)
+    {
+        Material[] __mats = _meshRenderer.materials;
+        for (int i = 0; i < 3; i++)
+        {
+            __mats[i].color = Color.clear;
+        }
+
+        __mats[(int)state].color = Color.white;
+    }
+
     private void BoostBall()
     {
         _rigidBody.AddForce(_rigidBody.velocity * BOOST_FACTOR * powerupBoostMultiplier);
@@ -102,7 +149,14 @@ public class PandaBallScript : MonoBehaviour
         _gameOver = true;
 
         // Stop ball so mommy bear can lick it clean
+        _rigidBody.isKinematic = true;
         _rigidBody.velocity = Vector2.zero;
         _rigidBody.angularVelocity = 0;
+
+        // Reset transform
+        transform.localRotation = Quaternion.identity;
+
+        // Reset texture
+        SelectActiveMaterial(PandaState.Standing);
     }
 }

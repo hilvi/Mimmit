@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class ColoringGameManager : GameManager {
 	
 	#region PUBLIC
-	public Rect chosenCharRegion;		// 20,20,160,160
+	//public Rect chosenCharRegion;		// 20,20,160,160
 	public Rect pictureSelectRegion;	// 20,200,160,380
 	public Rect pictureRegion;			// 200,20,560,560
 	public Rect toolbarRegion;			// 780,100,160,480
@@ -68,13 +68,8 @@ public class ColoringGameManager : GameManager {
 			saveTexture);
 		
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
-
-		#if DEVELOPER_MODE
-		pictureRegion = new Rect(200, 20, 560, 560);
-		_frame = new PaintFrame(this, pictureRegion, _CreateDebugGridTexture(560, 560, 40, 40));
-		#else
+		
 		_frame = new PaintFrame(this, pictureRegion, cachedPictures[0]);
-		#endif
 	}
 	
 	void Update () 
@@ -84,6 +79,7 @@ public class ColoringGameManager : GameManager {
 		
 		if (Input.GetMouseButtonDown(0)) 
 		{
+			print (Input.mousePosition);
 			_HandleMouseClick();
 			_characterWidget.TriggerHappyEmotion();
 		}
@@ -99,7 +95,16 @@ public class ColoringGameManager : GameManager {
 				_pictureSelector.HandleMouseWheel(-1);
 			}
 		}
-		if(pictureRegion.Contains(InputManager.MouseScreenToGUI()))
+
+	}
+	
+	void OnGUI () 
+	{
+		_pictureSelector.OnGui();
+		_frame.OnGUI();
+		_toolbar.OnGUI();
+
+		if(pictureRegion.Contains(Event.current.mousePosition))
 		{
 			Cursor.SetCursor(null,_hotSpot,_cursorMode);
 		}
@@ -107,17 +112,6 @@ public class ColoringGameManager : GameManager {
 		{
 			Cursor.SetCursor(cursor,_hotSpot,_cursorMode);
 		}
-	}
-	
-	void OnGUI () 
-	{
-		#if UNITY_EDITOR
-		GUI.Box(chosenCharRegion, "chosenChar");
-		#endif
-		
-		_pictureSelector.OnGui();
-		_frame.OnGUI();
-		_toolbar.OnGUI();
 	}
 	#endregion
 	
@@ -136,7 +130,8 @@ public class ColoringGameManager : GameManager {
 		return _frame.VolatilePicture;
 	}
 	
-	public void LoadPictureByIndex(int index) {
+	public void LoadPictureByIndex(int index) 
+	{
 		Debug.Log("Loading picture index: " + index.ToString());
 		
 		_frame.VolatilePicture = cachedPictures[index];
@@ -144,15 +139,9 @@ public class ColoringGameManager : GameManager {
 	}
 	
 	private void _HandleMouseClick() {
-		Vector2 __p = Input.mousePosition;
-		__p.y = Screen.height - __p.y; // y-axis flips
-		
-		if (chosenCharRegion.Contains(__p)) 
-		{
-			_HandleChosenCharClick(__p);
-		} 
+		Vector3 __p = InputManager.MouseScreenToGUI();
 		// Click on the preview section
-		else if (pictureSelectRegion.Contains(__p)) 
+		if (pictureSelectRegion.Contains(__p)) 
 		{
 			audio.clip = clickButton;
 			audio.volume = 0.5f;
