@@ -14,6 +14,7 @@ public class PictureSelector
 	private Rect[] _selectPictureRegion;	// 
 	
 	private int _pictureIndexOffset = 0;
+    private int _visiblePictures = 2;
 	private const int _pictureCount = 10;
 	private List<string> _pictureNames = new List<string>();
 	private Texture2D[] _thumbnails;
@@ -23,8 +24,8 @@ public class PictureSelector
 	
 	#region UNITY_METHODS
 	public void OnGui() 
-	{	
-		for (int i = 0; i < 2; i++) 
+	{
+        for (int i = 0; i < _visiblePictures; i++) 
 		{
 			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
 		}
@@ -76,7 +77,7 @@ public class PictureSelector
 		}
 		
 		// Prevent index overflow
-		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 4);
+        _pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - _visiblePictures);
 		
 		// Picture selection
 		for (int i = 0; i < 2; i++) 
@@ -94,7 +95,7 @@ public class PictureSelector
 		// Navigation buttons
 		_pictureIndexOffset += modifier < 0 ? 1 : -1; 
 		// Prevent index overflow
-		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 3);
+        _pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - _visiblePictures);
 		
 	}
 	#endregion
