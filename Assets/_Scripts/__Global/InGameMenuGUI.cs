@@ -246,6 +246,11 @@ public class InGameMenuGUI : Overlay
 				_tutorialFrame = new Rect(290,120,380,360);
 				_crossRect = new Rect(580,295,50,50);
 				break;
+			case "Panda_":
+				_tutorialRegion = new Rect(320,160,320,290);
+				_tutorialFrame = new Rect(285,135,395,360);
+				_crossRect = new Rect(580,180,50,50);	
+				break;
 		}
 	}
 	#endregion
