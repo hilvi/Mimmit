@@ -17,11 +17,10 @@ public class PandaGameManager : GameManager
     #endregion
 
     #region UNITY_METHODS
-    public override void Start()
+    public override void Awake()
     {
         // Boilerplate
-        base.Start();
-        SetGameState(GameState.Running);
+		base.Awake();
 
         if (InGameMenuGUI.music == null)
         {
