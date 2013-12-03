@@ -28,6 +28,9 @@ public class PictureSelector
 		}
 		GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
 		GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
+
+		GUI.Box (_selectUpBtnRegion, "up");
+		GUI.Box (_selectDownBtnRegion, "down");
 	}
 	#endregion
 	
