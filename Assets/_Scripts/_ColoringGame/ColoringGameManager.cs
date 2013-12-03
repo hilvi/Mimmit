@@ -100,7 +100,7 @@ public class ColoringGameManager : GameManager {
 	
 	void OnGUI () 
 	{
-		_pictureSelector.OnGui();
+		_pictureSelector.OnGUI();
 		_frame.OnGUI();
 		_toolbar.OnGUI();
 
@@ -140,6 +140,7 @@ public class ColoringGameManager : GameManager {
 	
 	private void _HandleMouseClick() {
 		Vector3 __p = InputManager.MouseScreenToGUI();
+
 		// Click on the preview section
 		if (pictureSelectRegion.Contains(__p)) 
 		{
