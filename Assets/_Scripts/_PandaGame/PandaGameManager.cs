@@ -7,9 +7,11 @@ public class PandaGameManager : GameManager
     #region MEMBERS
     // Boilerplate
     public GameObject musicObject;
-    public AudioClip music;
+	public AudioClip music;
     // Line Drawing 
     public GameObject linePrefab;
+	public MovieTexture mainTutorial;
+	public MovieTexture boulderTutorial;
     private MagicLine _line;
     private GameObject _lineContainer; // Store lines, keep hierarchy clean
     private enum LineDrawState { Neutral, Drawing, Erasing, Locked }
@@ -21,6 +23,20 @@ public class PandaGameManager : GameManager
     {
         // Boilerplate
 		base.Awake();
+
+		// Hack to override tutorial for different levels
+		if (base.currentLevel == 1) 
+		{
+			SetGameState(GameState.Tutorial);
+			var __gui = GetComponent<InGameMenuGUI>();
+			__gui.tutorial = mainTutorial;
+		}
+		else if (base.currentLevel == 4) 
+		{
+			SetGameState(GameState.Tutorial);
+			var __gui = GetComponent<InGameMenuGUI>();
+			__gui.tutorial = boulderTutorial;
+		}
 
         if (InGameMenuGUI.music == null)
         {
@@ -35,7 +51,7 @@ public class PandaGameManager : GameManager
 	
 	void Update () {
         // If game is paused, prevent any interaction
-        if (GetGameState() == GameState.Paused)
+        if (GetGameState() != GameState.Running && GetGameState() != GameState.Pregame)
             return;
 
         // Make decision on which state is currently active
