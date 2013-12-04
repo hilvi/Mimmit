@@ -20,17 +20,6 @@ public class CarrotScript : MonoBehaviour
 		_transform = GetComponent<Transform>();
 	}
 
-	void Update()
-	{
-		float __min = 1.0f;
-		float __amplitude = 0.5f;
-		float __frequency = 2.0f;
-		Vector3 __scale = _transform.localScale;
-		float __value = __amplitude * Mathf.Cos (Time.time * __frequency);
-		__scale.x = __scale.y = Mathf.Abs (__value) + __min;
-		_transform.localScale = __scale;
-	}
-
 	void OnTriggerEnter (Collider col)
 	{
 		if (col.gameObject.tag == player) 
