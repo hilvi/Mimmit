@@ -9,6 +9,7 @@ public class GameSelectionScript : Overlay
 	public GameObject camPrefab;
 	public Texture2D hugeBackground;
 	public float scrollingSpeed;
+	public float backScroll;
 	public string[] sceneNames;
 	public MovieTexture[] buttonTextures;
 	public Texture2D frame;
@@ -18,13 +19,16 @@ public class GameSelectionScript : Overlay
 	public float centerPivotOffset; 
 	// This will be define how much background is shifted from center pivot. 
 	private float _currentPivotOffset;
-	private Rect _backgroundRect;
+	public Rect _backgroundRect;
 	private Rect _leftScrollRegion, _rightScrollRegion;
 	private Camera _localCamera;
 	private AudioSource _localAudioSource;
 	private NavigationGUIScript _navGUI;
 	private GUIStyle _noStyle = new GUIStyle();
 	private Rect _leftArrow, _rightArrow;
+	private float _xBackPosition;
+	private float _moveBack;
+	private float _slowBackMovement;
 	#endregion
 
 	private GameSelectionButton[] _gameButtons;
@@ -34,15 +38,23 @@ public class GameSelectionScript : Overlay
 	{
 		base.Awake ();
 		Object o = FindObjectOfType (typeof(Camera));
-		if (o == null) {
+		if (o == null) 
+		{
 			GameObject c = (GameObject)Instantiate (camPrefab, new Vector3 (0, 0, 0), Quaternion.identity);
 			_localCamera = c.camera;
-		} else {
+		} 
+		else
+		{
 			_localCamera = (Camera)o;
 		}
 		
 		// Initialize background
-		_backgroundRect = new Rect (0f, 0, Screen.width * 2, hugeBackground.height);
+		_xBackPosition = 250f;
+		_moveBack = -_xBackPosition;
+
+		_backgroundRect = new Rect (_moveBack, 0, Screen.width + _xBackPosition * 2, Screen.height);
+
+		_slowBackMovement = Mathf.Abs (centerPivotOffset) / _xBackPosition;
 
 		// Initialize mouse scroll regions
 		float __regionWidth = Screen.width / 3f;
@@ -62,7 +74,7 @@ public class GameSelectionScript : Overlay
 		// Manual placement will replace this in future.
 		float __buttonWidth = Screen.width / 3f;
 		float __buttonHeight = Screen.height / 3f;
-		float __startX = -1300f;
+		float __startX = -700f;
 		float __margin = 100f;
 		Vector2[] __buttonPositions = new Vector2[sceneNames.Length];
 		for (int i = 0; i < __buttonPositions.Length; i++) 
@@ -104,8 +116,10 @@ public class GameSelectionScript : Overlay
 		
 		#if UNITY_PRO
 		// Set movie textures to loop and start playing them
-		for (int i = 0; i < buttonTextures.Length; i++) {
-			if (buttonTextures[i] != null) {
+		for (int i = 0; i < buttonTextures.Length; i++) 
+		{
+			if (buttonTextures[i] != null) 
+			{
 				((MovieTexture)buttonTextures[i]).loop = true;
 				((MovieTexture)buttonTextures[i]).Play();
 			}
@@ -146,18 +160,22 @@ public class GameSelectionScript : Overlay
 		if (_leftScrollRegion.Contains (__mouse)) 
 		{
 			float __force = 1f - __mouse.x / _leftScrollRegion.width;
-			_currentPivotOffset += Time.deltaTime * scrollingSpeed * __force;
+			float __movement = Time.deltaTime * scrollingSpeed * __force;
+			_currentPivotOffset += __movement;
+			_moveBack += __movement / _slowBackMovement;
 		}
 		
 		if (_rightScrollRegion.Contains (__mouse) ) 
 		{
 			float __force = 1f - (Screen.width-__mouse.x) / _rightScrollRegion.width;
-			_currentPivotOffset -= Time.deltaTime * scrollingSpeed * __force;
+			float __movement = Time.deltaTime * scrollingSpeed * __force;
+			_currentPivotOffset -= __movement;
+			_moveBack -= __movement / _slowBackMovement;
 		}
 		
 		_currentPivotOffset = Mathf.Clamp (_currentPivotOffset, 
 			-Mathf.Abs(centerPivotOffset), Mathf.Abs(centerPivotOffset));
-		
+		_moveBack = Mathf.Clamp (_moveBack,-500f,0f);
 		for (int i = 0; i < _gameButtons.Length; i++) 
 		{
 			_gameButtons [i].horizontalOffset = _currentPivotOffset;
@@ -177,7 +195,7 @@ public class GameSelectionScript : Overlay
 	void OnGUI ()
 	{
 		// Draw background
-		_backgroundRect = new Rect (centerPivotOffset + _currentPivotOffset, -200f, Screen.width * 4f , Screen.height * 2f);
+		_backgroundRect.x = _moveBack;
 		GUI.DrawTexture (_backgroundRect, hugeBackground);
 		
 		#if UNITY_EDITOR
