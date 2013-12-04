@@ -25,7 +25,6 @@ public class GameManager : Overlay
             SetGameState(GameState.Tutorial);
 		else
             SetGameState(GameState.Pregame); //reset the game state set by previous game, TODO  why do we need static gameState?
-
 		Time.timeScale = 1;
 		
 		Camera[] cams = (Camera[])FindObjectsOfType(typeof(Camera));

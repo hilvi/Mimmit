@@ -6,14 +6,12 @@ public class PictureSelector
 {
 	#region MEMBERS
 	private ColoringGameManager _manager;
-#if UNITY_EDITOR
-	private Rect _pictureSelectRegion;		// 20,200,160,380
-#endif
 	private Rect _selectUpBtnRegion;		// 20,200,160,40
 	private Rect _selectDownBtnRegion;		// 20,540,160,40
 	private Rect[] _selectPictureRegion;	// 
 	
 	private int _pictureIndexOffset = 0;
+    private int _visiblePictures = 2;
 	private const int _pictureCount = 10;
 	private List<string> _pictureNames = new List<string>();
 	private Texture2D[] _thumbnails;
@@ -22,9 +20,9 @@ public class PictureSelector
 	#endregion
 	
 	#region UNITY_METHODS
-	public void OnGui() 
-	{	
-		for (int i = 0; i < 2; i++) 
+	public void OnGUI() 
+	{
+        for (int i = 0; i < _visiblePictures; i++) 
 		{
 			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
 		}
@@ -42,8 +40,8 @@ public class PictureSelector
 		_upArrowTexture = upArrowTexture;
 		_downArrowTexture = downArrowTexture;
 
-		_selectUpBtnRegion = new Rect(120, 100, 40, 30);
-		_selectDownBtnRegion = new Rect(120, 565, 40, 30);
+		_selectUpBtnRegion = new Rect(120, 140, 40, 30);
+		_selectDownBtnRegion = new Rect(120, 520, 40, 30);
 		
 		for (int i = 0; i < _pictureCount; i++) 
 		{
@@ -57,7 +55,7 @@ public class PictureSelector
 		for (int i = 0; i < 2; i++) 
 		{
 			_selectPictureRegion[i] = new Rect(75f, __v, 140, 160);
-			__v += 150;
+			__v += 170;
 		}
 		
 		// TODO, load picture thumbnails here
@@ -76,7 +74,7 @@ public class PictureSelector
 		}
 		
 		// Prevent index overflow
-		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 4);
+        _pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - _visiblePictures);
 		
 		// Picture selection
 		for (int i = 0; i < 2; i++) 
@@ -94,7 +92,7 @@ public class PictureSelector
 		// Navigation buttons
 		_pictureIndexOffset += modifier < 0 ? 1 : -1; 
 		// Prevent index overflow
-		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 3);
+        _pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - _visiblePictures);
 		
 	}
 	#endregion

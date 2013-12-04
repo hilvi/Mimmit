@@ -35,6 +35,7 @@ public class InGameMenuGUI : Overlay
 		float __width = Screen.width;
 		float __height = Screen.height;
 		float __sizeButton = __width / 15;
+<<<<<<< HEAD
 		float __margin = 100f;
 		/*_tutorialButtonRegion = new Rect(__width - __sizeButton * 2f - __margin * 2f,__margin,
 		                                 __sizeButton, __sizeButton);
@@ -45,6 +46,11 @@ public class InGameMenuGUI : Overlay
 		float __heightPos= 0;
 		_pauseButtonRegion = new Rect(__margin,__heightPos,__sizeButton,__sizeButton);
 		_tutorialButtonRegion = new Rect(__margin + __sizeButton , __heightPos, __sizeButton,__sizeButton);
+=======
+		float __margin = 5f;
+		_pauseButtonRegion = new Rect(__margin + 100f, __margin, __sizeButton, __sizeButton);
+		_tutorialButtonRegion = new Rect(__margin + + 100f + __sizeButton , __margin, __sizeButton, __sizeButton);
+>>>>>>> 30a5bf19ee3101873c9494c87ab8d036f9362b47
 
 		float __widthA = __width / 6;
 		float __widthB = __width / 7;
@@ -252,6 +258,11 @@ public class InGameMenuGUI : Overlay
 				_tutorialRegion = new Rect(320,150,320,290);
 				_tutorialFrame = new Rect(290,120,380,360);
 				_crossRect = new Rect(580,295,50,50);
+				break;
+			case "Panda_":
+				_tutorialRegion = new Rect(320,160,320,290);
+				_tutorialFrame = new Rect(285,135,395,360);
+				_crossRect = new Rect(580,180,50,50);	
 				break;
 		}
 	}

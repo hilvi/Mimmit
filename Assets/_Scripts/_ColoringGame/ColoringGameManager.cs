@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class ColoringGameManager : GameManager {
 	
 	#region PUBLIC
-	public Rect chosenCharRegion;		// 20,20,160,160
+	//public Rect chosenCharRegion;		// 20,20,160,160
 	public Rect pictureSelectRegion;	// 20,200,160,380
 	public Rect pictureRegion;			// 200,20,560,560
 	public Rect toolbarRegion;			// 780,100,160,480
@@ -100,11 +100,7 @@ public class ColoringGameManager : GameManager {
 	
 	void OnGUI () 
 	{
-		#if UNITY_EDITOR
-		GUI.Box(chosenCharRegion, "chosenChar");
-		#endif
-		
-		_pictureSelector.OnGui();
+		_pictureSelector.OnGUI();
 		_frame.OnGUI();
 		_toolbar.OnGUI();
 
@@ -144,13 +140,9 @@ public class ColoringGameManager : GameManager {
 	
 	private void _HandleMouseClick() {
 		Vector3 __p = InputManager.MouseScreenToGUI();
-		print(__p);
-		if (chosenCharRegion.Contains(__p)) 
-		{
-			_HandleChosenCharClick(__p);
-		} 
+
 		// Click on the preview section
-		else if (pictureSelectRegion.Contains(__p)) 
+		if (pictureSelectRegion.Contains(__p)) 
 		{
 			audio.clip = clickButton;
 			audio.volume = 0.5f;
