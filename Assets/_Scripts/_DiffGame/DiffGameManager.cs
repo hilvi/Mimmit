@@ -23,7 +23,6 @@ public class DiffGameManager : GameManager
 	private AudioSource _audioSource;
 	private Dictionary<Rect, float> _misses = new Dictionary<Rect, float> ();
 	private List<Rect> _hits = new List<Rect> ();
-	//private Rect _gameArea;
 	private Rect _leftFrame, _rightFrame;
 	
 	private CircularCounterScript _counter;
@@ -40,7 +39,8 @@ public class DiffGameManager : GameManager
 		//300 is half of picture size
 		//Vector2 picturePos = new Vector2 (Screen.width / 2 - 300, Screen.height / 2 - 300);
 		//_gameArea = new Rect (picturePos.x, picturePos.y + 300, 600, 300);
-		foreach (Rect rect in errors) {
+		foreach (Rect rect in errors) 
+		{
 			//Rect err = rect;
 			//err.x += picturePos.x;
 			//err.y += picturePos.y;
@@ -48,7 +48,8 @@ public class DiffGameManager : GameManager
 			errs.Add(rect, false);
 		}
 		
-		if (InGameMenuGUI.music == null) {
+		if (InGameMenuGUI.music == null) 
+		{
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
 			InGameMenuGUI.music.audio.clip = music;
 			InGameMenuGUI.music.audio.Play ();
