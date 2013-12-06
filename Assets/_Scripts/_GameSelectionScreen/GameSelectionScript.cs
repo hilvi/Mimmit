@@ -62,21 +62,23 @@ public class GameSelectionScript : Overlay
 		// Manual placement will replace this in future.
 		float __buttonWidth = Screen.width / 3f;
 		float __buttonHeight = Screen.height / 3f;
-		float __startX = -500;
+		float __startX = -1300f;
 		float __margin = 100f;
 		Vector2[] __buttonPositions = new Vector2[sceneNames.Length];
 		for (int i = 0; i < __buttonPositions.Length; i++) 
 		{
 			__buttonPositions [i].x = __startX + i * __buttonWidth + i * __margin;
+			__buttonPositions [i].y = (Screen.height/2f);
 
 		}
+		/*
 		__buttonPositions [0].y = (Screen.height / 2f) + 0.4f * Screen.height / 3.5f;
 		__buttonPositions [1].y = (Screen.height / 2f) - 0.15f * Screen.height / 3.5f;
 		__buttonPositions [2].y = (Screen.height / 2f) + 0f * Screen.height / 3.5f;
 		__buttonPositions [3].y = (Screen.height / 2f) - 0.27f * Screen.height / 3.5f;
-		
+		*/
 		// Construct game buttons
-		_gameButtons = new GameSelectionButton[4];
+		_gameButtons = new GameSelectionButton[sceneNames.Length];
 		for (int i = 0; i < _gameButtons.Length; i++) 
 		{
 			_gameButtons [i] = new GameSelectionButton (
@@ -103,8 +105,10 @@ public class GameSelectionScript : Overlay
 		#if UNITY_PRO
 		// Set movie textures to loop and start playing them
 		for (int i = 0; i < buttonTextures.Length; i++) {
-			((MovieTexture)buttonTextures[i]).loop = true;
-			((MovieTexture)buttonTextures[i]).Play();
+			if (buttonTextures[i] != null) {
+				((MovieTexture)buttonTextures[i]).loop = true;
+				((MovieTexture)buttonTextures[i]).Play();
+			}
 		}
 		#endif
 		float __marginArrow = 0;
@@ -173,7 +177,7 @@ public class GameSelectionScript : Overlay
 	void OnGUI ()
 	{
 		// Draw background
-		_backgroundRect = new Rect (centerPivotOffset + _currentPivotOffset, -200f, Screen.width * 2f , Screen.height * 1.7f);
+		_backgroundRect = new Rect (centerPivotOffset + _currentPivotOffset, -200f, Screen.width * 4f , Screen.height * 2f);
 		GUI.DrawTexture (_backgroundRect, hugeBackground);
 		
 		#if UNITY_EDITOR
@@ -192,8 +196,11 @@ public class GameSelectionScript : Overlay
 			__frameRect.width += 45;
 			__frameRect.height += 25;
 			#if UNITY_PRO
-			//GUI.DrawTexture(_gameButtons[i].CalcRect(), _gameButtons[i].texture);
-			GUI.Box(_gameButtons[i].CalcRect(),_gameButtons[i].texture,_noStyle);
+			if (_gameButtons[i].texture != null) {
+				GUI.Box(_gameButtons[i].CalcRect(),_gameButtons[i].texture,_noStyle);
+			} else {
+				GUI.Box(_gameButtons[i].CalcRect(), _gameButtons[i].startSceneName);
+			}
 			#else
 			GUI.Box (gameButtons [i].CalcRect (), gameButtons [i].startSceneName);
 			#endif
@@ -211,10 +218,7 @@ public class GameSelectionScript : Overlay
 	IEnumerator _FadeOutAndLoad (string scene)
 	{
 		AudioSource source = _localCamera.audio;
-		if(Application.CanStreamedLevelBeLoaded(scene))
-		{
-			Application.LoadLevel(scene);
-		}
+		LoadLevel(scene);
 		while (source.volume > 0.2f || _localAudioSource.isPlaying) 
 		{
 			source.volume -= Time.deltaTime * 0.2f;

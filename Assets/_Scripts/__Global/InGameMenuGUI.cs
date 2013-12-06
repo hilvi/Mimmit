@@ -13,6 +13,7 @@ public class InGameMenuGUI : Overlay
 	public static GameObject music;
 	public MovieTexture tutorial;
 	public Texture2D frame;
+	public Texture2D cross;
 	private GameManager _gameManager;
 	private Rect _tutorialButtonRegion;
 	private Rect _pauseButtonRegion;
@@ -21,6 +22,7 @@ public class InGameMenuGUI : Overlay
 	private Rect _nextLevelButtonRegion;
 	private Rect _tutorialRegion;
 	private Rect _tutorialFrame;
+	private Rect _crossRect;
 	private GUIStyle noStyle = new GUIStyle();
 	private GameState _previousState;
 	#endregion
@@ -34,13 +36,8 @@ public class InGameMenuGUI : Overlay
 		float __height = Screen.height;
 		float __sizeButton = __width / 15;
 		float __margin = 5f;
-		_tutorialButtonRegion = new Rect(__width - __sizeButton * 2f - __margin * 2f,__margin,
-		                                 __sizeButton, __sizeButton);
-
-		_pauseButtonRegion = new Rect (
-            __width - __sizeButton - __margin, __margin,
-            __sizeButton, __sizeButton);
-
+		_pauseButtonRegion = new Rect(__margin + 100f, __margin, __sizeButton, __sizeButton);
+		_tutorialButtonRegion = new Rect(__margin + + 100f + __sizeButton , __margin, __sizeButton, __sizeButton);
 
 		float __widthA = __width / 6;
 		float __widthB = __width / 7;
@@ -62,19 +59,8 @@ public class InGameMenuGUI : Overlay
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
-
-		float __tutWidth = Screen.width / 3;
-		float __tutHeight = Screen.height / 2;
-		_tutorialRegion = new Rect(__width / 2 - __tutWidth / 2, 
-		                           __height / 2 - __tutHeight / 2,
-		                           __tutWidth, __tutHeight-10
-			);
-		float __offside = 60;
-		_tutorialFrame = new Rect(__width / 2 - __tutWidth / 2 - __offside / 2, 
-		                          __height / 2 - __tutHeight / 2- __offside /2,
-		                          __tutWidth + __offside, __tutHeight + __offside
-		                          );
 		_previousState = _gameManager.GetGameState ();
+		SetTutorialRect();
 	}
 	
 	void OnGUI ()
@@ -102,6 +88,7 @@ public class InGameMenuGUI : Overlay
 				else
 					_gameManager.SetGameState(_previousState);
 			}
+			GUI.Box(_crossRect,cross,noStyle);
 			return;
 		}
 		// While the game is in progress, only display the pause button
@@ -132,15 +119,15 @@ public class InGameMenuGUI : Overlay
 		ScreenChoice __choice = Manager.GetScreenChoice ();
 		if (__choice == ScreenChoice.Map) 
 		{
-			_LoadNewLevel ("MapWorld");
+			LoadLevel ("MapWorld");
 		} 
 		else if (__choice == ScreenChoice.Button) 
 		{
-			_LoadNewLevel ("GameSelectionScene");
+			LoadLevel ("GameSelectionScene");
 		} 
 		else 
 		{
-			_LoadNewLevel ("GameSelectionScene");
+			LoadLevel ("GameSelectionScene");
 		}
 		
 		if (source != null) {
@@ -166,18 +153,12 @@ public class InGameMenuGUI : Overlay
 				yield return null;
 			}
 		}
-		_LoadNewLevel ("WinScene");
+		LoadLevel ("WinScene");
 		Time.timeScale = 1.0f;
 		music = null;
 		Destroy (source.gameObject);
 	}
-	private void _LoadNewLevel(string scene)
-	{
-		if(Application.CanStreamedLevelBeLoaded(scene))
-		{
-			Application.LoadLevel(scene);
-		}
-	}	
+
 	private void _ShowBottomMenu ()
 	{
 		switch (_gameManager.GetGameState ()) 
@@ -205,7 +186,7 @@ public class InGameMenuGUI : Overlay
 			else 
 			{
 				Time.timeScale = 1.0f;
-				_LoadNewLevel ("GameSelectionScene");
+				LoadLevel ("GameSelectionScene");
 			}
 		} 
 		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
@@ -248,6 +229,28 @@ public class InGameMenuGUI : Overlay
 		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
 		{
 			_gameManager.RestartGame ();
+		}
+	}
+	private void SetTutorialRect()
+	{
+		string __str = _gameManager.gameName;
+		switch(__str)
+		{
+			case "Flip_":
+				_tutorialRegion = new Rect(320,170,360,290);
+				_tutorialFrame = new Rect(295,145,400,360);
+				_crossRect = new Rect(615,345,50,50);
+				break;
+			case "Horse_":
+				_tutorialRegion = new Rect(320,150,320,290);
+				_tutorialFrame = new Rect(290,120,380,360);
+				_crossRect = new Rect(580,295,50,50);
+				break;
+			case "Panda_":
+				_tutorialRegion = new Rect(320,160,320,290);
+				_tutorialFrame = new Rect(285,135,395,360);
+				_crossRect = new Rect(580,180,50,50);	
+				break;
 		}
 	}
 	#endregion
