@@ -108,7 +108,7 @@ public class PuzzleGameManager : GameManager
         }
     }
 
-    IEnumerator LerpToPos(GameObject obj, Vector3 pos)
+    IEnumerator LerpToPos(GameObject obj, Vector3 pos, bool removeZ = false)
     {
         float __time = 0;
 		pos.z = obj.transform.position.z;
@@ -118,6 +118,8 @@ public class PuzzleGameManager : GameManager
             obj.transform.position = Vector3.Lerp(obj.transform.position, pos, __time);
             yield return null;
         }
+		if (removeZ)
+			pos = (Vector2)pos;
 		obj.transform.position = pos;
     }
 	IEnumerator LerpToSize(GameObject obj, Vector3 size)
@@ -209,8 +211,7 @@ public class PuzzleGameManager : GameManager
 				if (__slotScript.puzzlePiece == _picked && distance < snapDistance)
 				{
 					_picked.collider.enabled = false;
-					_picked.transform.position = (Vector2)_picked.transform.position;
-					StartCoroutine(LerpToPos(_picked, hit.collider.gameObject.transform.position));
+					StartCoroutine(LerpToPos(_picked, hit.collider.gameObject.transform.position, true));
 				}
 			}
 		}
