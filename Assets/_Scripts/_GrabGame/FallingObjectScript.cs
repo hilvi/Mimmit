@@ -7,6 +7,7 @@ public class FallingObjectScript : MonoBehaviour {
 	public GrabGameManager manager;
 	public int id;
 	public bool collect;
+	public bool falling = false;
 	
 	public float oscillation;
 	
@@ -24,12 +25,14 @@ public class FallingObjectScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		_pos = transform.position;
-		_pos.y -= fallingSpeed * Time.deltaTime;
-		_pos.x = startX+Mathf.Sin(Time.time * 3)*oscillation;
-		transform.position = _pos;
+		if(falling) {
+			_pos = transform.position;
+			_pos.y -= fallingSpeed * Time.deltaTime;
+			_pos.x = startX+Mathf.Sin(Time.time * 3)*oscillation;
+			transform.position = _pos;
+		}
 	}
-	
+
 	void OnTriggerEnter (Collider col)
 	{
 		if (col.gameObject.name == "Player") {
