@@ -14,6 +14,12 @@ public class PuzzleGameManager : GameManager
     public float snapDistance = 10;
     public GameObject musicObject;
     public AudioClip music;
+	public Vector3 completedPosition = new Vector3(0, 0, 0);
+
+	GameObject _completed;
+	Vector3 _completedPositionOrg;
+	Vector3 _completedScaleOrg;
+	Vector3 _puzzleSize;
 
     GameObject _picked = null;
 
@@ -38,6 +44,12 @@ public class PuzzleGameManager : GameManager
             _pieces.Add(piece);
         }
 
+		_puzzleSize = GetPuzzleSize();
+		_completed = GameObject.Find("Completed");
+		_completedPositionOrg = _completed.transform.position;
+		_completedScaleOrg = _completed.transform.localScale;
+		completedPosition.z = -2;
+
         CreatePuzzle();
         SetGameState(GameState.Running);
     }
@@ -59,6 +71,30 @@ public class PuzzleGameManager : GameManager
         ShufflePieces();
     }
 
+	Vector2 GetPuzzleSize()
+	{
+		float xMax, xMin;
+		float yMax, yMin;
+
+		yMin = xMin = float.MaxValue;
+		xMax = yMax = float.MinValue;
+
+		foreach(GameObject piece in _pieces)
+		{
+			Vector2 pos = piece.transform.position;
+			Vector2 scale = piece.transform.localScale/2;
+			Vector2 max = pos+scale;
+			Vector2 min = pos-scale;
+
+			xMax = Mathf.Max(max.x, xMax);
+			xMin = Mathf.Min (min.x, xMin);
+
+			yMax = Mathf.Max(max.y, yMax);
+			yMin = Mathf.Min (min.y, yMin);
+		}
+		return new Vector2(xMax - xMin, yMax - yMin);
+	}
+
     void ShufflePieces()
     {
         foreach (GameObject piece in _pieces)
@@ -66,13 +102,13 @@ public class PuzzleGameManager : GameManager
             Vector2 __randPos = Random.insideUnitCircle;
             Vector3 __pos = puzzlePiece.transform.position;
             __pos.x += 1.5f * __randPos.x;
-            __pos.y += 2.5f * __randPos.y;
+            __pos.y += 1.5f * __randPos.y;
             __pos.z = -Random.value - 5;
             piece.transform.position = __pos;
         }
     }
 
-    IEnumerator LerpToPos(GameObject obj, Vector3 pos)
+    IEnumerator LerpToPos(GameObject obj, Vector3 pos, bool removeZ = false)
     {
         float __time = 0;
 		pos.z = obj.transform.position.z;
@@ -82,8 +118,22 @@ public class PuzzleGameManager : GameManager
             obj.transform.position = Vector3.Lerp(obj.transform.position, pos, __time);
             yield return null;
         }
-		obj.transform.position = (Vector2)pos;
+		if (removeZ)
+			pos = (Vector2)pos;
+		obj.transform.position = pos;
     }
+	IEnumerator LerpToSize(GameObject obj, Vector3 size)
+	{
+		float __time = 0;
+		while (Vector3.Distance(obj.transform.localScale, size) > 0.05f)
+		{
+			__time += Time.deltaTime;
+			obj.transform.localScale = Vector3.Lerp(obj.transform.localScale, size, __time);
+			yield return null;
+		}
+		obj.transform.localScale = size;
+	}
+
 
     void PutPickedOnTop()
     {
@@ -124,6 +174,22 @@ public class PuzzleGameManager : GameManager
 				_picked = hit.collider.gameObject;
 				PutPickedOnTop();
 			}
+			if (hit.collider.gameObject.name == "Completed")
+			{
+				if(hit.collider.gameObject.transform.localScale == _puzzleSize
+				   && hit.collider.gameObject.transform.position == completedPosition)
+				{
+					StartCoroutine(LerpToPos(hit.collider.gameObject, _completedPositionOrg));
+					StartCoroutine (LerpToSize(hit.collider.gameObject, _completedScaleOrg));
+				}
+				else if(hit.collider.gameObject.transform.localScale == _completedScaleOrg
+				        && hit.collider.gameObject.transform.position == _completedPositionOrg)
+				{
+					StartCoroutine(LerpToPos(hit.collider.gameObject, new Vector3(0,0,-2)));
+					StartCoroutine(LerpToSize(hit.collider.gameObject, _puzzleSize));
+				}
+			}
+
 		}
 	}
 
@@ -145,7 +211,7 @@ public class PuzzleGameManager : GameManager
 				if (__slotScript.puzzlePiece == _picked && distance < snapDistance)
 				{
 					_picked.collider.enabled = false;
-					StartCoroutine(LerpToPos(_picked, hit.collider.gameObject.transform.position));
+					StartCoroutine(LerpToPos(_picked, hit.collider.gameObject.transform.position, true));
 				}
 			}
 		}
@@ -179,7 +245,7 @@ public class PuzzleGameManager : GameManager
             }
         }
 
-		if(_picked != null && Input.GetMouseButtonUp(0) && _timer > 0.2f)
+		if(_picked != null && Input.GetMouseButtonUp(0) && _timer > 0.15f)
 			DropDown();
     }
 }
