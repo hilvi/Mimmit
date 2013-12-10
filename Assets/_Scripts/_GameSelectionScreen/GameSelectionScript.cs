@@ -72,16 +72,27 @@ public class GameSelectionScript : Overlay
 		
 		// Some hardcore magic number wizardry, dont try this at home.
 		// Manual placement will replace this in future.
-		float __buttonWidth = Screen.width / 3f;
-		float __buttonHeight = Screen.height / 3f;
-		float __startX = -700f;
+		float __buttonWidth = Screen.width / 3.5f;
+		float __buttonHeight = Screen.height / 3.5f;
+
 		float __margin = 100f;
 		Vector2[] __buttonPositions = new Vector2[sceneNames.Length];
 		for (int i = 0; i < __buttonPositions.Length; i++) 
 		{
-			__buttonPositions [i].x = __startX + i * __buttonWidth + i * __margin;
-			__buttonPositions [i].y = (Screen.height/2f);
-
+			int __offset = (int)Mathf.Ceil ((float)__buttonPositions.Length / 2f);
+			if(i < __offset)
+			{
+				float __startX =  -200;
+				__buttonPositions [i].x = __startX + i * __buttonWidth + i * __margin;
+				__buttonPositions [i].y = 230;
+			}
+			else 
+			{
+				float __startX = -200 - __buttonWidth / 2f;
+				
+				__buttonPositions [i].x = __startX + (i -__offset) * __buttonWidth + i * __margin;
+				__buttonPositions [i].y = 450;
+			}
 		}
 		/*
 		__buttonPositions [0].y = (Screen.height / 2f) + 0.4f * Screen.height / 3.5f;
@@ -140,7 +151,6 @@ public class GameSelectionScript : Overlay
 		Vector2 __mouse = InputManager.MouseScreenToGUI ();
 		
 		// Check if player is hovering any button
-		//bool __buttonHovering = false;
 		for (int i = 0; i < _gameButtons.Length; i++) 
 		{
 			bool __contains = (_gameButtons [i].CalcStaticRect ().Contains (__mouse));
@@ -214,9 +224,12 @@ public class GameSelectionScript : Overlay
 			__frameRect.width += 45;
 			__frameRect.height += 25;
 			#if UNITY_PRO
-			if (_gameButtons[i].texture != null) {
+			if (_gameButtons[i].texture != null) 
+			{
 				GUI.Box(_gameButtons[i].CalcRect(),_gameButtons[i].texture,_noStyle);
-			} else {
+			} 
+			else 
+			{
 				GUI.Box(_gameButtons[i].CalcRect(), _gameButtons[i].startSceneName);
 			}
 			#else
