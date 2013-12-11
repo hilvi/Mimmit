@@ -59,7 +59,7 @@ public class ColoringGameManager : GameManager
             upArrowTexture, downArrowTexture);
 
         // Initialize frame
-        _frame = new PaintFrame(this, pictureRegion, cachedPictures[0]);
+        _frame = new PaintFrame(pictureRegion, cachedPictures[0]);
 
         // Initialize toolbar
         _toolbar = new PaintToolbar(this);
@@ -80,19 +80,6 @@ public class ColoringGameManager : GameManager
 
         if (Input.GetMouseButtonDown(0))
             _HandleMouseClick();
-
-        if (pictureSelectRegion.Contains(InputManager.MouseScreenToGUI()))
-        {
-            float __mouse = Input.GetAxis("Mouse ScrollWheel");
-            if (__mouse > 0)
-            {
-                _pictureSelector.HandleMouseWheel(1);
-            }
-            else if (__mouse < 0)
-            {
-                _pictureSelector.HandleMouseWheel(-1);
-            }
-        }
     }
 
     /* Yes, these names are really bad. Didn't think it through.
@@ -119,11 +106,11 @@ public class ColoringGameManager : GameManager
     #region METHODS
     public void ResetPictureToOriginal()
     {
-        #if DEVELOPER_MODE
+#if DEVELOPER_MODE
 		_frame.VolatilePicture = _CreateDebugGridTexture(560, 560, 40, 40);
-        #else
+#else
         _frame.VolatilePicture = cachedPictures[_currentPictureIndex];
-        #endif
+#endif
     }
 
     public Texture2D GetPictureFromFrame()
@@ -155,16 +142,9 @@ public class ColoringGameManager : GameManager
 
     private void _HandleMouseClick()
     {
-        Vector3 __p = InputManager.MouseScreenToGUI();
-
-        // Click on the preview section
-        if (pictureSelectRegion.Contains(__p))
-        {
-            PlayClickSound();
-            _pictureSelector.HandleMouse(__p);
-        }
         // Click on the drawing
-        else if (pictureRegion.Contains(__p))
+        Vector3 __p = InputManager.MouseScreenToGUI();
+        if (pictureRegion.Contains(__p))
         {
             _frame.Paint(__p, _toolbar.selectedColor);
         }
