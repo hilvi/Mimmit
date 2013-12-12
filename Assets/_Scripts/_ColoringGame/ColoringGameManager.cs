@@ -6,36 +6,27 @@ using System.Collections.Generic;
 
 public class ColoringGameManager : GameManager
 {
-
-    #region PUBLIC
-    public Rect pictureSelectRegion;	// 20,200,160,380
-    public Rect pictureRegion;			// 200,20,560,560
-
-    public GameObject musicObject;
-    public AudioClip music;
-
+    #region MEMBERS
+    // Textures
     /*
-     * These pictures will be read/write unlocked, so we always 
+     * CachedPictures will be read/write unlocked, so we always 
      * have to make a copy before modifying any of them.
      */
     public Texture2D[] cachedPictures;
-    // Textures
-    public Texture2D tickTexture;
-    public Texture2D upArrowTexture;
-    public Texture2D downArrowTexture;
     public Texture2D cursor;
-    // Audioclips
+    // Audio objects
+    public GameObject musicObject;
+    public AudioClip music;
     public AudioClip clickColor;
     public AudioClip clickErase;
     public AudioClip clickButton;
-    #endregion
-
-    #region PRIVATE
-    private PictureSelector _pictureSelector;
-    private PaintFrame _frame;
-    private PaintToolbar _toolbar;
-
+    // References
+    public PictureSelector _pictureSelector;
+    public PaintFrame _frame;
+    public PaintToolbar _toolbar;
+    // Used to reference current active picture
     private int _currentPictureIndex = 0;
+    // Custom cursor
     private Vector2 _hotSpot = Vector2.zero;
     private CursorMode _cursorMode = CursorMode.Auto;
     #endregion
@@ -55,21 +46,19 @@ public class ColoringGameManager : GameManager
         }
 
         // Initialize picture selector
-        _pictureSelector = new PictureSelector(this, pictureSelectRegion, cachedPictures,
-            upArrowTexture, downArrowTexture);
+        _pictureSelector.SetManager(this);
+        _pictureSelector.SetThumbnails(cachedPictures);
+        _pictureSelector.Initialize();
 
         // Initialize frame
-        _frame = new PaintFrame(pictureRegion, cachedPictures[0]);
+        //_frame = new PaintFrame(pictureRegion, cachedPictures[0]);
+        _frame.VolatilePicture = cachedPictures[0];
 
         // Initialize toolbar
-        _toolbar = new PaintToolbar(this);
+        _toolbar.SetManager(this);
         _toolbar.colorRegionArray = colorArray;
-        _toolbar.eraseToolRegion = new Rect(787, 344, 50, 50);
-        _toolbar.resetToolRegion = new Rect(847, 344, 50, 50);
-        _toolbar.saveToolRegion = new Rect(904, 344, 50, 50);
         _toolbar.colorArray = colArray;
         _toolbar.ChangeColor(colArray[0], colorArray[0]);
-        _toolbar.tickTexture = tickTexture;
     }
 
     void Update()
@@ -96,7 +85,7 @@ public class ColoringGameManager : GameManager
         _toolbar.OnGUI();
 
         // Change cursor texture depending on current region
-        if (pictureRegion.Contains(Event.current.mousePosition))
+        if (_frame.pictureRegion.Contains(Event.current.mousePosition))
             Cursor.SetCursor(null, _hotSpot, _cursorMode);
         else
             Cursor.SetCursor(cursor, _hotSpot, _cursorMode);
@@ -144,7 +133,7 @@ public class ColoringGameManager : GameManager
     {
         // Click on the drawing
         Vector3 __p = InputManager.MouseScreenToGUI();
-        if (pictureRegion.Contains(__p))
+        if (_frame.pictureRegion.Contains(__p))
         {
             _frame.Paint(__p, _toolbar.selectedColor);
         }

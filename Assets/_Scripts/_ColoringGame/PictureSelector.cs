@@ -1,26 +1,26 @@
 using System;
 using UnityEngine;
 
+[System.Serializable]
 public class PictureSelector
 {
     #region MEMBERS
-    // Reference
-    private ColoringGameManager _manager;
     // Regions
-    private Rect _scrollRegion;
-    private Rect _selectUpBtnRegion;
-    private Rect _selectDownBtnRegion;
+    public Rect _scrollRegion;
+    public Rect _selectUpBtnRegion;
+    public Rect _selectDownBtnRegion;
     private Rect[] _selectPictureRegion;
-
     // Keeps track of which picture is being selected
     private int _pictureIndexOffset = 0;
     private int _visiblePictures = 2;
     // Textures
+    public Texture2D _upArrowTexture;
+    public Texture2D _downArrowTexture;
     private Texture2D[] _thumbnails;
-    private Texture2D _upArrowTexture;
-    private Texture2D _downArrowTexture;
     // Style for buttons
     private GUIStyle _defaultStyle = new GUIStyle();
+    // References
+    private ColoringGameManager _manager;
     #endregion
 
     #region UNITY_METHODS
@@ -55,20 +55,18 @@ public class PictureSelector
     #endregion
 
     #region METHODS
-    public PictureSelector(ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
-        Texture2D upArrowTexture, Texture2D downArrowTexture)
+    public void SetManager(ColoringGameManager manager)
     {
-        // Set references and textures
         _manager = manager;
+    }
+
+    public void SetThumbnails(Texture2D[] thumbnails)
+    {
         _thumbnails = thumbnails;
-        _upArrowTexture = upArrowTexture;
-        _downArrowTexture = downArrowTexture;
+    }
 
-        // Set regions
-        _scrollRegion = region;
-        _selectUpBtnRegion = new Rect(90f, 140f, 40f, 30f);
-        _selectDownBtnRegion = new Rect(90f, 520f, 40f, 30f);
-
+    public void Initialize()
+    {
         // Set visible thumbnails
         float __v = 180; // Vertical coordinate
         _selectPictureRegion = new Rect[2];
