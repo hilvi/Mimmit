@@ -11,7 +11,6 @@ public class PictureSelector
     private Rect _selectUpBtnRegion;
     private Rect _selectDownBtnRegion;
     private Rect[] _selectPictureRegion;
-    private Rect _scrollBarRegion;
 
     // Keeps track of which picture is being selected
     private int _pictureIndexOffset = 0;
@@ -69,12 +68,6 @@ public class PictureSelector
         _scrollRegion = region;
         _selectUpBtnRegion = new Rect(90f, 140f, 40f, 30f);
         _selectDownBtnRegion = new Rect(90f, 520f, 40f, 30f);
-
-        _scrollBarRegion = new Rect(
-            region.x + region.width - 30f, 
-            region.y, 
-            15f, 
-            2f*160f/5f);
 
         // Set visible thumbnails
         float __v = 180; // Vertical coordinate
