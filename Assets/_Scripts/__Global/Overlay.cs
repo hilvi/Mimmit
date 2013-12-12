@@ -4,12 +4,13 @@ using System.Collections;
 public class Overlay : MonoBehaviour
 {
 	#region MEMBERS
-	protected FadeScreen _fade;
+	protected static FadeScreen _fade;
 	#endregion
 	#region UNITY_METHODS
 	public virtual void Awake ()
 	{
-		_fade = gameObject.AddComponent<FadeScreen> ();
+		if(_fade == null)
+			_fade = gameObject.AddComponent<FadeScreen> ();
 	}
 	#endregion
 	#region METHODS
@@ -25,7 +26,10 @@ public class Overlay : MonoBehaviour
 
 	public void LoadLevel (string level)
 	{
-		StartCoroutine (_LoadLevel (level));
+		if(Application.CanStreamedLevelBeLoaded(level))
+		{
+			StartCoroutine (_LoadLevel (level));
+		}
 	}
 
 	public void LoadLevelAndPlaySound (string level, AudioSource audio)

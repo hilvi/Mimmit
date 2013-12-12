@@ -1,104 +1,106 @@
 using System;
 using UnityEngine;
-using System.Collections.Generic;
 
 public class PictureSelector
 {
-	#region MEMBERS
-	private ColoringGameManager _manager;
-	
-	private Rect _pictureSelectRegion;		// 20,200,160,380
-	private Rect _selectUpBtnRegion;		// 20,200,160,40
-	private Rect _selectDownBtnRegion;		// 20,540,160,40
-	private Rect[] _selectPictureRegion;	// 
-	
-	private int _pictureIndexOffset = 0;
-	private const int _pictureCount = 10;
-	private List<string> _pictureNames = new List<string>();
-	private Texture2D[] _thumbnails;
-	private Texture2D _upArrowTexture;
-	private Texture2D _downArrowTexture;
-	#endregion
-	
-	#region UNITY_METHODS
-	public void OnGui() {
-		#if UNITY_EDITOR
-		GUI.Box(_pictureSelectRegion, "pictureSelect");
-		for (int i = 0; i < 3; i++) {
-			GUI.Box(_selectPictureRegion[i], _pictureNames[_pictureIndexOffset + i]);	
-		}
-		#endif
-		
-		for (int i = 0; i < 3; i++) {
-			GUI.DrawTexture(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i]);	
-		}
-		
-		GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
-		GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
-	}
-	#endregion
-	
-	#region METHODS
-	public PictureSelector (ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
-		Texture2D upArrowTexture, Texture2D downArrowTexture) {
-		_manager = manager;
-		_pictureSelectRegion = region;
-		_thumbnails = thumbnails;
-		_upArrowTexture = upArrowTexture;
-		_downArrowTexture = downArrowTexture;
-		
-		_pictureSelectRegion = new Rect(20,200,160,380);
-		_selectUpBtnRegion = new Rect(80, 200, 40, 30);
-		_selectDownBtnRegion = new Rect(80, 550, 40, 30);
-		
-		for (int i = 0; i < _pictureCount; i++) 
-		{
-			_pictureNames.Add("Picture"+i.ToString());
-		}
-		
-		// TODO, possibly make more elegant, ugly constants and non-integer values
-		float __v = 240f; // Vertical coordinate
-		_selectPictureRegion = new Rect[4];
+    #region MEMBERS
+    // Reference
+    private ColoringGameManager _manager;
+    // Regions
+    private Rect _scrollRegion;
+    private Rect _selectUpBtnRegion;
+    private Rect _selectDownBtnRegion;
+    private Rect[] _selectPictureRegion;
+    private Rect _scrollBarRegion;
 
-		for (int i = 0; i < 3; i++) 
-		{
-			_selectPictureRegion[i] = new Rect(52.5f, __v, 95, 95);
-			__v += 100f;
-		}
-		
-		// TODO, load picture thumbnails here
-	}
-	
-	public void HandleMouse(Vector2 position) 
-	{
-		// Navigation buttons
-		if (_selectUpBtnRegion.Contains(position)) {
-			_pictureIndexOffset--;
-		} else if (_selectDownBtnRegion.Contains(position)) {
-			_pictureIndexOffset++;
-		}
-		
-		// Prevent index overflow
-		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 4);
-		
-		// Picture selection
-		for (int i = 0; i < 3; i++) {
-			if (_selectPictureRegion[i].Contains(position)) {
-				// TODO load new picture
-				//Debug.Log("selected picture"+_pictureNames[_pictureIndexOffset + i]);
-				_manager.LoadPictureByIndex(_pictureIndexOffset + i);
-			}
-		}
-	}
-	public void HandleMouseWheel(int modifier) 
-	{
-		// Navigation buttons
-		_pictureIndexOffset += modifier < 0 ? 1 : -1; 
-		// Prevent index overflow
-		_pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _pictureNames.Count - 3);
-		
-	}
-	#endregion
+    // Keeps track of which picture is being selected
+    private int _pictureIndexOffset = 0;
+    private int _visiblePictures = 2;
+    // Textures
+    private Texture2D[] _thumbnails;
+    private Texture2D _upArrowTexture;
+    private Texture2D _downArrowTexture;
+    // Style for buttons
+    private GUIStyle _defaultStyle = new GUIStyle();
+    #endregion
+
+    #region UNITY_METHODS
+    public void OnGUI()
+    {
+        // If cursor is within scroll region, enable image scrolling
+        if (_scrollRegion.Contains(Event.current.mousePosition))
+        {
+            if (Event.current.type == EventType.scrollWheel)
+            {
+                float __delta = Event.current.delta.y;
+                if (__delta < 0)
+                    ScrollImages(ScrollDirection.Up);
+                else if (__delta > 0)
+                    ScrollImages(ScrollDirection.Down);
+            }
+        }
+
+        // Draw thumbnails
+        for (int i = 0; i < _visiblePictures; i++)
+        {
+            if (GUI.Button(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i], _defaultStyle))
+                _manager.LoadPictureByIndex(_pictureIndexOffset + i);
+        }
+
+        // Draw image scrolling buttons
+        if (GUI.Button(_selectUpBtnRegion, _upArrowTexture, _defaultStyle))
+            ScrollImages(ScrollDirection.Up);
+        if (GUI.Button(_selectDownBtnRegion, _downArrowTexture, _defaultStyle))
+            ScrollImages(ScrollDirection.Down);
+    }
+    #endregion
+
+    #region METHODS
+    public PictureSelector(ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
+        Texture2D upArrowTexture, Texture2D downArrowTexture)
+    {
+        // Set references and textures
+        _manager = manager;
+        _thumbnails = thumbnails;
+        _upArrowTexture = upArrowTexture;
+        _downArrowTexture = downArrowTexture;
+
+        // Set regions
+        _scrollRegion = region;
+        _selectUpBtnRegion = new Rect(90f, 140f, 40f, 30f);
+        _selectDownBtnRegion = new Rect(90f, 520f, 40f, 30f);
+
+        _scrollBarRegion = new Rect(
+            region.x + region.width - 30f, 
+            region.y, 
+            15f, 
+            2f*160f/5f);
+
+        // Set visible thumbnails
+        float __v = 180; // Vertical coordinate
+        _selectPictureRegion = new Rect[2];
+        for (int i = 0; i < 2; i++)
+        {
+            _selectPictureRegion[i] = new Rect(40f, __v, 140f, 160f);
+            __v += 170;
+        }
+
+        // Set default style
+        _defaultStyle.alignment = TextAnchor.MiddleCenter;
+    }
+
+    public enum ScrollDirection { Up, Down }
+    public void ScrollImages(ScrollDirection direction)
+    {
+        if (direction == ScrollDirection.Up)
+            _pictureIndexOffset--;
+        else
+            _pictureIndexOffset++;
+
+        // Prevent index overflow
+        _pictureIndexOffset = Mathf.Clamp(_pictureIndexOffset, 0, _thumbnails.Length - _visiblePictures);
+    }
+    #endregion
 }
 
 

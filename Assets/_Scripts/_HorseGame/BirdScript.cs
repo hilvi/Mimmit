@@ -23,11 +23,12 @@ public class BirdScript : MonoBehaviour
 	{	
 		// Allow bird to flap its wings even when stationary,
 		// because birds can't hover.
-		_anim.PlayAnimation ("Bird");
-		
-		if (_gameManager.GetGameState() != GameState.Running)
+		GameState __currentState = _gameManager.GetGameState();
+		if(__currentState == GameState.Tutorial)
 			return;
-		
+		_anim.PlayAnimation ("Bird");
+		if (__currentState != GameState.Running)
+			return;
 		_transform.Translate (_translation * Time.deltaTime);
 	}
 	#endregion

@@ -7,20 +7,24 @@ public class CarrotScript : MonoBehaviour
 	public HorseCharacterController _controller;
 	private Renderer _renderer;
 	private Transform _particle;
+	private Transform _transform;
+	private string player = "Player";
 	#endregion
 	
 	#region UNITY_METHODS
 	void Start ()
 	{
-		_controller = GameObject.Find ("Player").GetComponent<HorseCharacterController> ();
+		_controller = GameObject.FindGameObjectWithTag ("Player").GetComponent<HorseCharacterController> ();
 		_renderer = GetComponentInChildren<Renderer> ();
 		_particle = transform.Find ("Particle");
+		_transform = GetComponent<Transform>();
 	}
-	
+
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.gameObject.name == "Player") {
-			StartCoroutine (DoubleSpeed (2f));
+		if (col.gameObject.tag == player) 
+		{
+			StartCoroutine (DoubleSpeed());
 			_renderer.enabled = false;
 			_particle.gameObject.SetActive (false);
 			_controller.particle.gameObject.SetActive (true);
@@ -29,10 +33,11 @@ public class CarrotScript : MonoBehaviour
 	#endregion
 	
 	#region METHODS
-	public IEnumerator DoubleSpeed (float addSpeed)
+	public IEnumerator DoubleSpeed ()
 	{
 		_controller.SetSpeed (_controller.GetSpeed () + 2f);
-		while (_controller.GetSpeed() > _controller.runningSpeed) {
+		while (_controller.GetSpeed() > _controller.runningSpeed) 
+		{
 			_controller.SetSpeed (_controller.GetSpeed () - Time.deltaTime);
 			yield return null;
 		}
