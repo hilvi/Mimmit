@@ -173,12 +173,14 @@ public class DiffGameManager : GameManager
     {
         // Begin level transition
         StartCoroutine(LevelTransition());
+        Time.timeScale = 1f;
     }
 
     public override void RestartGame()
     {
         // Begin level restart
         StartCoroutine(LevelRestart());
+        Time.timeScale = 1f;
     }
 
     /* 
