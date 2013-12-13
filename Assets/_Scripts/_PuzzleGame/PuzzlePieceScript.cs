@@ -4,22 +4,27 @@ using System.Collections;
 [ExecuteInEditMode]
 public class PuzzlePieceScript : MonoBehaviour
 {
-    Texture _previous;
-    Material _mat;
     public float ratio = 256;
     public Texture texture;
+
+	Texture _previous;
+	float _ratioPrevious;
+	Material _mat;
 
     // Use this for initialization
     void Start()
     {
         _mat = new Material(Shader.Find("Transparent/Diffuse"));
+		_ratioPrevious = ratio;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (texture != _previous)
+        if (texture != _previous || _ratioPrevious != ratio)
         {
+			if(texture == null || ratio == 0)
+				return;
             _mat.mainTexture = texture;
             float __height = texture.height;
             float __width = texture.width;

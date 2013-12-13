@@ -26,6 +26,12 @@ public class PuzzleGameManager : GameManager
     List<GameObject> _pieces = new List<GameObject>();
 	float _timer = 0;
 
+	public override void GoToNextLevel()
+	{
+		Time.timeScale = 1;
+		LoadLevel("PuzzleMenu");
+	}
+
     // Use this for initialization
     public override void Start()
     {
@@ -108,7 +114,7 @@ public class PuzzleGameManager : GameManager
         }
     }
 
-    IEnumerator LerpToPos(GameObject obj, Vector3 pos, bool removeZ = false)
+    IEnumerator LerpToPos(GameObject obj, Vector3 pos, bool removeZ)
     {
         float __time = 0;
 		pos.z = obj.transform.position.z;
@@ -179,13 +185,13 @@ public class PuzzleGameManager : GameManager
 				if(hit.collider.gameObject.transform.localScale == _puzzleSize
 				   && hit.collider.gameObject.transform.position == completedPosition)
 				{
-					StartCoroutine(LerpToPos(hit.collider.gameObject, _completedPositionOrg));
+					StartCoroutine(LerpToPos(hit.collider.gameObject, _completedPositionOrg, false));
 					StartCoroutine (LerpToSize(hit.collider.gameObject, _completedScaleOrg));
 				}
 				else if(hit.collider.gameObject.transform.localScale == _completedScaleOrg
 				        && hit.collider.gameObject.transform.position == _completedPositionOrg)
 				{
-					StartCoroutine(LerpToPos(hit.collider.gameObject, new Vector3(0,0,-2)));
+					StartCoroutine(LerpToPos(hit.collider.gameObject, new Vector3(0,0,-2), false));
 					StartCoroutine(LerpToSize(hit.collider.gameObject, _puzzleSize));
 				}
 			}

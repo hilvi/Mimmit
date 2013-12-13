@@ -36,7 +36,7 @@ public class PuzzleMenu : MonoBehaviour {
 	
 	// Update is called once per frame
 	void OnGUI () {
-		_value = (Pieces)GUI.HorizontalSlider(_sliderPosition, (int)_value, 0, 2);
+		/*_value = (Pieces)GUI.HorizontalSlider(_sliderPosition, (int)_value, 0, 2);
 
 		switch(_value) {
 		case Pieces.Six:
@@ -50,7 +50,7 @@ public class PuzzleMenu : MonoBehaviour {
 			break;
 		}
 
-		GUI.Box(_sliderTextPosition, _sliderText, guiStyle);
+		GUI.Box(_sliderTextPosition, _sliderText, guiStyle);*/
 		DrawButtons();
 	}
 
@@ -81,16 +81,26 @@ public class PuzzleMenu : MonoBehaviour {
 					return;
 
 				Rect rect = new Rect(position.x, position.y, _buttonWidth, _buttonHeight);
-				if(GUI.Button(rect, levels[i].texture, guiStyle))
-					Application.LoadLevel(levels[i].scene);
+				if(GUI.Button(rect, levels[count].texture, guiStyle))
+					Application.LoadLevel(levels[count].scene);
 
-				float frameWidth = (float)_buttonWidth / frame.width * levels[i].texture.width * 1.1f;
-				float frameHeight = frameWidth * levels[i].texture.height / levels[i].texture.width * 1.07f;
-				float framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 - frameHeight * 0.015f;
-				float framePositionX = position.x - frameWidth * 0.07f;
+				float frameWidth, frameHeight, framePositionY, framePositionX;
+				if(_buttonWidth < _buttonHeight) {
+					frameWidth = (float)_buttonWidth / frame.width * levels[count].texture.width * 1.1f;
+					frameHeight = frameWidth * levels[count].texture.height / levels[count].texture.width * 1.07f;
 
-				Debug.Log (_buttonHeight);
-				Debug.Log (_buttonWidth);
+					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 - frameHeight * 0.015f;
+					framePositionX = position.x - frameWidth * 0.07f;
+				} else {
+					frameHeight = (float)_buttonHeight / frame.height * levels[count].texture.height * 1.17f;
+					frameWidth = frameHeight * levels[count].texture.width / levels[count].texture.height * 0.94f;
+
+					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 - frameHeight * 0.02f;
+					framePositionX = position.x + frameWidth * 0.05f;
+				}
+
+
+
 
 				GUI.DrawTexture(new Rect(framePositionX, framePositionY, frameWidth, frameHeight), frame);
 
