@@ -9,17 +9,21 @@ public class DiffPictureObject
     public Texture2D errorPicture;
     public Texture2D background;
     public Rect[] errors;
+    public Color frameColor;
 }
 
 public class DiffGameManager : GameManager
 {
     #region MEMBERS
+    #if UNITY_EDITOR
+    // Debug controls
+    public bool showCheats = false;
+    #endif
     // Textures
     public Texture2D tick;
     public Texture2D cross;
-    public Texture2D originalPicture;
-    public Texture2D errorPicture;
-    private Texture2D _borderTexture;
+    public Texture2D frame;
+    private Texture2D _tempFrame;
     // Size of the click
     public float clickSize;
     // Music members
@@ -39,7 +43,7 @@ public class DiffGameManager : GameManager
     // Fading miss sticks
     private Dictionary<Rect, float> _misses = new Dictionary<Rect, float>();
     // Regions
-    private Rect _leftFrame, _rightFrame;
+    public Rect leftFrame, rightFrame;
     // References
     private CircularCounterScript _counter;
     private GUITexture _backgroundTexture;
@@ -63,18 +67,7 @@ public class DiffGameManager : GameManager
 
         // Set references
         _backgroundTexture = GameObject.Find("Background").GetComponent<GUITexture>();
-
-        // Init regions
-        _leftFrame = new Rect(20f, 20f + (560f / 2.25f) - (321f / 2f), 450f, 321f);
-        _rightFrame = _leftFrame;
-        _rightFrame.x += _leftFrame.width + 20f;
-
-        // Create border texture
-        _borderTexture = _CreateBorderTexture(450, 321, Color.black, 10);
-
-        // Init counter
         _counter = GetComponent<CircularCounterScript>();
-        _counter.SetPosition(Screen.width / 2f - 50f, 40f);
 
         // Generate level order indices
         for (int i = 0; i < pictureObjects.Length; i++)
@@ -92,31 +85,8 @@ public class DiffGameManager : GameManager
         // Set first level as zeroth element in order list
         currentLevel = _levelOrder[_levelsFinished];
 
-        // Init background
-        _backgroundTexture.texture = pictureObjects[currentLevel].background;
-
-        // For debugging purposes, generate fake errors 
-        for (int i = 0; i < pictureObjects.Length; i++)
-        {
-            if (pictureObjects[i].errors.Length == 0)
-            {
-                pictureObjects[i].errors = new Rect[7];
-                for (int j = 0; j < 7; j++)
-                {
-                    Rect __r = new Rect();
-                    __r.x = 490f + j * 50f;
-                    __r.y = 120f;
-                    __r.width = 50f;
-                    __r.height = 50f;
-                    pictureObjects[i].errors[j] = __r;
-                }
-            }
-        }
-
-        // Init errors
-        _errorsLeft = 7;
-        foreach (Rect rect in pictureObjects[currentLevel].errors)
-            _errorsFound.Add(rect, false);
+        // Construct the level
+        ConstructLevel();
     }
 
     void Update()
@@ -127,7 +97,7 @@ public class DiffGameManager : GameManager
             Vector2 pos = InputManager.MouseScreenToGUI();
             if (GetGameState() != GameState.Paused &&
                 GetGameState() != GameState.Won &&
-                _rightFrame.Contains(pos))
+                rightFrame.Contains(pos))
             {
                 _Hit(pos);
             }
@@ -160,11 +130,8 @@ public class DiffGameManager : GameManager
     void OnGUI()
     {
         // Draw pictures
-        GUI.DrawTexture(_leftFrame, pictureObjects[currentLevel].originalPicture);
-        GUI.DrawTexture(_rightFrame, pictureObjects[currentLevel].errorPicture);
-        // Draw borders
-        GUI.DrawTexture(_leftFrame, _borderTexture);
-        GUI.DrawTexture(_rightFrame, _borderTexture);
+        GUI.DrawTexture(leftFrame, pictureObjects[currentLevel].originalPicture);
+        GUI.DrawTexture(rightFrame, pictureObjects[currentLevel].errorPicture);
 
         // Draw misses
         foreach (var m in _misses)
@@ -184,10 +151,17 @@ public class DiffGameManager : GameManager
 
         // Draw cheat/debug boxes
         #if UNITY_EDITOR
-        int __index = 0;
-        foreach (var o in pictureObjects[currentLevel].errors)
-            GUI.Box(o, (__index++).ToString());
+        // Cheats are disabled by default, please enable them in inspector
+        if (showCheats)
+        {
+            int __index = 0;
+            foreach (var o in pictureObjects[currentLevel].errors)
+                GUI.Box(o, (__index++).ToString());
+        }
         #endif
+
+        // Draw frame
+        GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), _tempFrame);
 
         // Draw circular counter
         _counter.Draw();
@@ -199,6 +173,59 @@ public class DiffGameManager : GameManager
     {
         // Begin level transition
         StartCoroutine(LevelTransition());
+    }
+
+    public override void RestartGame()
+    {
+        // Begin level restart
+        StartCoroutine(LevelRestart());
+    }
+
+    /* 
+     * Levels are always constructed using ConstructLevel-method.
+     * It takes care of every little critical detail related to
+     * each individual level
+     */ 
+    private void ConstructLevel()
+    {
+        // Swap background
+        _backgroundTexture.texture = pictureObjects[currentLevel].background;
+
+        // Re-paint frame and counter
+        _counter.Create(pictureObjects[currentLevel].frameColor);
+        _counter.SetPosition(Screen.width / 2f - 50f, 50f);
+
+        // Init frame
+        Color __themeColor = pictureObjects[currentLevel].frameColor;
+        _tempFrame = new Texture2D(frame.width, frame.height);
+        for (int y = 0; y < frame.height; y++)
+        {
+            for (int x = 0; x < frame.width; x++)
+            {
+                Color __pixel = frame.GetPixel(x, y);
+                // The reason why pixels is compared to Color.blue, is because
+                // frame is defaulted to Color(0, 0, 255). This works like a 
+                // green screen, every blue pixel will be replaced to unique color
+                // that is defined by individual levels.
+                Color __replacement = (__pixel == Color.blue) ? __themeColor : Color.clear;
+                _tempFrame.SetPixel(x, y, __replacement);
+            }
+        }
+        _tempFrame.Apply();
+
+        // Reload all errors
+        _errorsFound.Clear();
+        foreach (Rect r in pictureObjects[currentLevel].errors)
+            _errorsFound.Add(r, false);
+
+        // Empty misses
+        _misses.Clear();
+
+        // Reset error counter
+        _errorsLeft = 7;
+
+        // Reset state
+        SetGameState(GameState.Running);
     }
 
     private IEnumerator LevelTransition()
@@ -218,24 +245,20 @@ public class DiffGameManager : GameManager
         // Update current level index
         currentLevel = _levelOrder[_levelsFinished];
 
-        // Swap background
-        _backgroundTexture.texture = pictureObjects[currentLevel].background;
+        // Construct level
+        ConstructLevel();
 
-        // Reload all errors
-        _errorsFound.Clear();
-        foreach (Rect r in pictureObjects[currentLevel].errors)
-        {
-            _errorsFound.Add(r, false);
-        }
+        // Start fading in
+        yield return StartCoroutine(_fade.FadeIn());
+    }
 
-        // Empty misses
-        _misses.Clear();
+    private IEnumerator LevelRestart()
+    {
+        // Start fading out
+        yield return StartCoroutine(_fade.FadeOut());
 
-        // Reset error counter
-        _errorsLeft = 7;
-
-        // Reset state
-        SetGameState(GameState.Running);
+        // Construct level
+        ConstructLevel();
 
         // Start fading in
         yield return StartCoroutine(_fade.FadeIn());
@@ -268,31 +291,6 @@ public class DiffGameManager : GameManager
 
         _audioSource.clip = missSound;
         _audioSource.Play();
-    }
-
-    private Texture2D _CreateBorderTexture(int width, int height, Color borderColor, int borderThickness)
-    {
-        Texture2D __newTexture = new Texture2D(width, height);
-        for (int y = 0; y < height; y++)
-        {
-            for (int x = 0; x < width; x++)
-            {
-                if (y < borderThickness ||
-                    y > height - borderThickness ||
-                    x < borderThickness ||
-                    x > width - borderThickness)
-                {
-                    __newTexture.SetPixel(x, y, borderColor);
-                }
-                else
-                {
-                    __newTexture.SetPixel(x, y, Color.clear);
-                }
-            }
-        }
-
-        __newTexture.Apply();
-        return __newTexture;
     }
     #endregion
 }
