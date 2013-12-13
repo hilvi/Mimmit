@@ -82,7 +82,7 @@ public class GameManager : Overlay
 		return false;
 	}
 	
-	public void GoToNextLevel() 
+	public virtual void GoToNextLevel() 
 	{
 		//Reset global time scale
 		Time.timeScale = 1;

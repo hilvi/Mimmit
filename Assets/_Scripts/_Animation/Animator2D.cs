@@ -66,6 +66,11 @@ public class Animator2D : MonoBehaviour {
 		_currentFrameX = 0;
 		SetFrame (_currentFrameX,_currentFrameY);
 	}
+
+	public bool IsPlaying()
+	{
+		return _playing;
+	}
 	
 	public Animation2D GetCurrentAnimation() 
 	{

@@ -37,6 +37,7 @@ public class GrabGameManager : GameManager
 	private bool patternFinished = true;
 	private GUIStyle _counterStyle = new GUIStyle();
     private int _spawnCounter = 0;
+	private HarakkaScript _harakka;
 
     private List<FallingObjectSettings> _fallOrder;
 	
@@ -48,6 +49,8 @@ public class GrabGameManager : GameManager
 		_diffuse = Shader.Find ("Diffuse");
 		_audioSource = GetComponent<AudioSource> ();
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
+
+		_harakka = GameObject.Find ("Harakka").GetComponent<HarakkaScript>();
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -163,7 +166,7 @@ public class GrabGameManager : GameManager
 	{
 		for(int i = 0; i < spawnLanes; i++)
 		{
-			InstantiateFallingObject(GetObjectId(), i);
+			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
 			yield return new WaitForSeconds(frequency/2);
 		}
 	}
@@ -172,7 +175,7 @@ public class GrabGameManager : GameManager
 	{
 		for(int i = spawnLanes-1; i >= 0; i--)
 		{
-			InstantiateFallingObject(GetObjectId(), i);
+			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
 			yield return new WaitForSeconds(frequency/2);
 		}
 	}
@@ -186,14 +189,14 @@ public class GrabGameManager : GameManager
 			yield return null;
 		} while(!CheckIfLaneFree(__lane));
 
-		InstantiateFallingObject (GetObjectId(), __lane);
+		StartCoroutine(InstantiateFallingObject (GetObjectId(), __lane));
 	}
 
 	IEnumerator SpawnAllAtOnce()
 	{
 		for(int i = 0; i < spawnLanes; i++)
 		{
-			InstantiateFallingObject(GetObjectId(), i);
+			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
 			yield return null;
 		}
 		yield return new WaitForSeconds(frequency);
@@ -248,13 +251,15 @@ public class GrabGameManager : GameManager
 		}
 	}
 	
-	void InstantiateFallingObject (int id, int lane)
+	IEnumerator InstantiateFallingObject (int id, int lane)
 	{
 		if(GetGameState() != GameState.Running)
-			return;
-		GameObject __obj = Instantiate (fallingObjectPrefab) as GameObject;
+			yield break;
+
 		FallingObjectSettings settings = fallingObjects[id];
-		
+
+
+		GameObject __obj = Instantiate (fallingObjectPrefab) as GameObject;
 		FallingObjectScript __script = __obj.GetComponent<FallingObjectScript> ();
 		__script.fallingSpeed = Random.Range (settings.minSpeed, settings.maxSpeed)*speedMultiplier;
 		__script.oscillation = Random.Range (settings.minOscillationAmplitude, settings.maxOscillationAmplitude);
@@ -266,14 +271,18 @@ public class GrabGameManager : GameManager
 		__mat.mainTexture = settings.texture;
 		__obj.renderer.material = __mat;
 
-
-		float __size = __obj.transform.localScale.x;
+		float __size = __obj.transform.localScale.x*20;
 		if(spawnLanes == 0) {
 			__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
 		} else {
 			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, 0);
 		}
-		
+
+		while(_harakka.moving)
+			yield return null;
+
+		StartCoroutine(_harakka.MoveToPosAndThrow(_lanes[lane], __obj));
+
 		_objectsOnScreen.Add(__obj);
 	}
 	

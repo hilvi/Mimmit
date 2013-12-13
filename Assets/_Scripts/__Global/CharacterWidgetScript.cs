@@ -21,7 +21,8 @@ public class CharacterWidgetScript : MonoBehaviour {
 		_roster.Add(Character.Brune, brune);
 		_roster.Add(Character.Fox, fox);
 		_roster.Add(Character.Boy, boy);
-        _characterBoxRect = new Rect(0,0,100,100);
+		float __size = 90f;
+        _characterBoxRect = new Rect(0,0,__size,__size);
 	}
 
 	void OnGUI() 

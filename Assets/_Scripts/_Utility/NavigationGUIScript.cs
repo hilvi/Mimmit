@@ -4,14 +4,18 @@ using System.Collections;
 public class NavigationGUIScript : Overlay {
 	#region MEMBERS
 	public Texture PlayButton,homeButton,PauseButton;
-	private Rect _buttonRect;
+	private Rect _pauseButtonRegion;
 	#endregion
 	
 	#region UNITY_METHODS
 	public override void Awake () {
 		base.Awake();
-		float screenUnitW = Screen.width/10;
-		_buttonRect = new Rect(Screen.width - screenUnitW, 0, (Screen.width/10), (Screen.width/10));
+		float __width = Screen.width;
+		float __sizeButton = __width / 15;
+		
+		float __margin = 5f;
+		float __offset = 85f;
+		_pauseButtonRegion = new Rect(__margin + __offset, __margin, __sizeButton, __sizeButton);
 	}
 	#endregion
 	
@@ -22,7 +26,7 @@ public class NavigationGUIScript : Overlay {
 		// While the game is in progress, only display the pause button
 		if (currentState == NavigationState.Running) 
 		{
-			if (GUI.Button(_buttonRect, PauseButton, MGUI.noStyle)) 
+			if (GUI.Button(_pauseButtonRegion, PauseButton, MGUI.noStyle)) 
 			{	
 				Manager.SetNavigationState(NavigationState.Pause);
 			}
