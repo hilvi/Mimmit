@@ -19,7 +19,7 @@ public class PuzzleSolver : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		Debug.Log(FindMatch(pieces[0], Edge.Right));
+		Debug.Log(FindMatch(pieces[1], Edge.Right));
 	}
 	
 	// Update is called once per frame
