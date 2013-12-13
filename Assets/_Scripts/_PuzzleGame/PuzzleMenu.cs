@@ -26,12 +26,15 @@ public class PuzzleMenu : MonoBehaviour {
 	Rect _sliderTextPosition;
 	string _sliderText = "6";
 
+	GameManager _manager;
+
 	// Use this for initialization
 	void Start () {
 		CountButtonSize();
 		_sliderPosition = new Rect(Screen.width/2-_sliderWidth/2, 15, _sliderWidth, 30);
 		_sliderTextPosition = new Rect(Screen.width/2+_sliderWidth/2, 0, 45, 45);
 
+		_manager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 	}
 	
 	// Update is called once per frame
@@ -82,7 +85,7 @@ public class PuzzleMenu : MonoBehaviour {
 
 				Rect rect = new Rect(position.x, position.y, _buttonWidth, _buttonHeight);
 				if(GUI.Button(rect, levels[count].texture, guiStyle))
-					Application.LoadLevel(levels[count].scene);
+					_manager.LoadLevel(levels[count].scene);
 
 				float frameWidth, frameHeight, framePositionY, framePositionX;
 				if(_buttonWidth < _buttonHeight) {
