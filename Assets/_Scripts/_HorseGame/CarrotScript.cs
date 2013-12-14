@@ -7,7 +7,6 @@ public class CarrotScript : MonoBehaviour
 	public HorseCharacterController _controller;
 	private Renderer _renderer;
 	private Transform _particle;
-	private Transform _transform;
 	private string player = "Player";
 	#endregion
 	
@@ -17,7 +16,6 @@ public class CarrotScript : MonoBehaviour
 		_controller = GameObject.FindGameObjectWithTag ("Player").GetComponent<HorseCharacterController> ();
 		_renderer = GetComponentInChildren<Renderer> ();
 		_particle = transform.Find ("Particle");
-		_transform = GetComponent<Transform>();
 	}
 
 	void OnTriggerEnter (Collider col)
