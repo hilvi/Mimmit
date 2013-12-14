@@ -29,13 +29,13 @@ public class HarakkaScript : MonoBehaviour {
 		else
 			_anim.PlayAnimation ("right");
 
-		Vector2 targetPos = transform.position;
+		Vector3 targetPos = transform.position;
 		targetPos.x = position;
 
 		float time = 0;
 
 		while(Vector2.Distance(targetPos, transform.position) > 0.05f) {
-			transform.position = Vector2.MoveTowards(transform.position, targetPos, speed*time);
+			transform.position = Vector3.MoveTowards(transform.position, targetPos, speed*time);
 			time += Time.deltaTime;
 			yield return null;
 		}

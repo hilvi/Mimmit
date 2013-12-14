@@ -8,15 +8,18 @@ public class FallingObjectScript : MonoBehaviour {
 	public int id;
 	public bool collect;
 	public bool falling = false;
+	public int lane = -1;
 	
 	public float oscillation;
 	
 	private Vector3 _pos;
 	private float startX;
+	private float _startPhase;
 	
 	// Use this for initialization
 	void Start () {
 		startX = transform.position.x;
+		_startPhase = Random.value * 10;
 	}
 	
 	public void SetTexture(Texture2D texture) {
@@ -28,7 +31,7 @@ public class FallingObjectScript : MonoBehaviour {
 		if(falling) {
 			_pos = transform.position;
 			_pos.y -= fallingSpeed * Time.deltaTime;
-			_pos.x = startX+Mathf.Sin(Time.time * 3)*oscillation;
+			_pos.x = startX+Mathf.Sin(Time.time*3+_startPhase)*oscillation;
 			transform.position = _pos;
 		}
 	}

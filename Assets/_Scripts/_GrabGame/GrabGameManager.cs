@@ -144,6 +144,7 @@ public class GrabGameManager : GameManager
 		_counterStyle.normal.textColor = Color.white;
 		_counterStyle.alignment = TextAnchor.MiddleCenter;
 
+		_level = currentLevel - 1;
 		InitiateLevel();
 
 		SetGameState(GameState.Running);
@@ -295,8 +296,10 @@ public class GrabGameManager : GameManager
 	bool CheckIfLaneFree(int lane)
 	{
 		foreach(GameObject obj in _objectsOnScreen) {
-			if(_lanes[lane] == obj.transform.position.x) {
-				return false;
+			FallingObjectScript script;
+			if((script = obj.GetComponent<FallingObjectScript>()) != null) {
+				if(script.lane == lane)
+					return false;
 			}
 		}
 		return true;
@@ -328,6 +331,8 @@ public class GrabGameManager : GameManager
 		__script.manager = this;
 		__script.collect = settings.collect;
         __script.id = id;
+		__script.lane = lane;
+
 		
 		Material __mat = new Material (_diffuse);
 		__mat.mainTexture = settings.texture;
