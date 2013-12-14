@@ -6,30 +6,29 @@ public enum Pattern
 {
 	Random,
 	LeftToRight,
-	RightToLeft,
-	AllAtOnce
+	RightToLeft
 }
 
 public class GrabGameManager : GameManager
 {
 	public GameObject musicObject;
 	public AudioClip music;
-	public FallingObjectSettings[] fallingObjects;
 	public GameObject fallingObjectPrefab;
-	public float frequency = 3;
+	float _frequency = 3;
 	public float missesAllowed = 3;
 	public Texture2D tick;
 	public Texture2D cross;
 	public AudioClip hitSound;
 	public AudioClip missSound;
-	public float speedMultiplier = 2;
-	public int spawnLanes;
-	public Pattern[] patterns;
+	public float speedMultiplier = 1;
+	int _spawnLanes;
+	Pattern[] _patterns;
 	public GrabLevel[] levels;
 	public GrabObjects objects;
 	Shader _diffuse;
 	float _worldWidth;
 	float _worldHeight;
+	FallingObjectSettings[] _fallingObjects;
 	private float _timer;
 	private int _collectables = 0;
 	private AudioSource _audioSource;
@@ -51,7 +50,7 @@ public class GrabGameManager : GameManager
 		if(_level < levels.Length)
 			StartCoroutine (FadeAndLoad());
 		else
-			LoadLevel ("WinScene");
+			StartCoroutine (LoadWinScene ());
 	}
 
 	public override void RestartGame ()
@@ -60,6 +59,24 @@ public class GrabGameManager : GameManager
 		Time.timeScale = 1;
 
 		StartCoroutine(FadeAndLoad());
+	}
+
+	IEnumerator LoadWinScene ()
+	{
+		AudioSource source = InGameMenuGUI.music.GetComponent<AudioSource>();
+		Time.timeScale = 1.0f;
+		if (source != null) 
+		{
+			while (source.volume > 0) 
+			{
+				Debug.Log("Foo");
+				source.volume -= 0.02f;	
+				yield return null;
+			}
+		}
+		LoadLevel ("WinScene");
+		Time.timeScale = 1.0f;
+		InGameMenuGUI.music = null;
 	}
 
 	IEnumerator FadeAndLoad() {
@@ -74,23 +91,23 @@ public class GrabGameManager : GameManager
 
 	void InitiateLevel() {
 		levels[_level]._objects = objects;
-		fallingObjects = levels[_level].GetFallingObjects();
-		spawnLanes = levels[_level].lanes;
-		frequency = levels[_level].frequency;
+		_fallingObjects = levels[_level].GetFallingObjects();
+		_spawnLanes = levels[_level].lanes;
+		_frequency = levels[_level].frequency;
 		missesAllowed = levels[_level].missesAllowed;
-		patterns = levels[_level].patterns;
+		_patterns = levels[_level].patterns;
 		
 		_collectables = 0;
-		for(int i = 0; i < fallingObjects.Length; i++) {
-			if (fallingObjects[i].collect) {
-				_collectables += fallingObjects[i].numberToCollect;
+		for(int i = 0; i < _fallingObjects.Length; i++) {
+			if (_fallingObjects[i].collect) {
+				_collectables += _fallingObjects[i].numberToCollect;
 			}
-			fallingObjects[i].id = i;
+			_fallingObjects[i].id = i;
 		}
 		
-		_fallOrder = new List<FallingObjectSettings>(fallingObjects);
+		_fallOrder = new List<FallingObjectSettings>(_fallingObjects);
 		
-		InitiateLanes(spawnLanes);
+		InitiateLanes(_spawnLanes);
 
 		ShuffleFallingObjects();
 
@@ -154,7 +171,7 @@ public class GrabGameManager : GameManager
 		float __counterPos = Screen.width - __width * 2 - __offset;
 		float __picturePos = Screen.width - __width - __offset;
 
-		foreach (FallingObjectSettings settings in fallingObjects) {
+		foreach (FallingObjectSettings settings in _fallingObjects) {
 			if (settings.collect) {
 				__pos.x = __picturePos;
 				GUI.DrawTexture (__pos, settings.texture);
@@ -191,8 +208,8 @@ public class GrabGameManager : GameManager
 	IEnumerator Spawner ()
 	{
 		patternFinished = false;
-		yield return new WaitForSeconds(frequency);
-		Pattern pattern = patterns[Random.Range (0, patterns.Length)];
+		yield return new WaitForSeconds(_frequency);
+		Pattern pattern = _patterns[Random.Range (0, _patterns.Length)];
 		switch(pattern) {
 		case Pattern.Random:
 			yield return StartCoroutine(SpawnRandomObject());
@@ -203,28 +220,25 @@ public class GrabGameManager : GameManager
 		case Pattern.RightToLeft:
 			yield return StartCoroutine (SpawnRightToLeftPattern());
 			break;
-		case Pattern.AllAtOnce:
-			yield return StartCoroutine (SpawnAllAtOnce());
-			break;
 		}
 		patternFinished = true;
 	}
 
 	IEnumerator SpawnLeftToRightPattern ()
 	{
-		for(int i = 0; i < spawnLanes; i++)
+		for(int i = 0; i < _spawnLanes; i++)
 		{
 			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
-			yield return new WaitForSeconds(frequency/2);
+			yield return new WaitForSeconds(_frequency/2);
 		}
 	}
 
 	IEnumerator SpawnRightToLeftPattern ()
 	{
-		for(int i = spawnLanes-1; i >= 0; i--)
+		for(int i = _spawnLanes-1; i >= 0; i--)
 		{
 			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
-			yield return new WaitForSeconds(frequency/2);
+			yield return new WaitForSeconds(_frequency/2);
 		}
 	}
 
@@ -233,7 +247,7 @@ public class GrabGameManager : GameManager
 		//Not very efficient..
 		int __lane;
 		do {
-			__lane = Random.Range (0, spawnLanes);
+			__lane = Random.Range (0, _spawnLanes);
 			yield return null;
 		} while(!CheckIfLaneFree(__lane));
 
@@ -242,12 +256,12 @@ public class GrabGameManager : GameManager
 
 	IEnumerator SpawnAllAtOnce()
 	{
-		for(int i = 0; i < spawnLanes; i++)
+		for(int i = 0; i < _spawnLanes; i++)
 		{
 			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
 			yield return null;
 		}
-		yield return new WaitForSeconds(frequency);
+		yield return new WaitForSeconds(_frequency);
 	}
 
 	int GetObjectId()
@@ -304,7 +318,7 @@ public class GrabGameManager : GameManager
 		if(GetGameState() != GameState.Running)
 			yield break;
 
-		FallingObjectSettings settings = fallingObjects[id];
+		FallingObjectSettings settings = _fallingObjects[id];
 
 
 		GameObject __obj = Instantiate (fallingObjectPrefab) as GameObject;
@@ -320,7 +334,7 @@ public class GrabGameManager : GameManager
 		__obj.renderer.material = __mat;
 
 		float __size = __obj.transform.localScale.x*20;
-		if(spawnLanes == 0) {
+		if(_spawnLanes == 0) {
 			__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
 		} else {
 			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, 0);
@@ -336,7 +350,7 @@ public class GrabGameManager : GameManager
 	
 	void GameOver()
 	{
-		frequency = 0;
+		_frequency = 0;
 		foreach(GameObject obj in _objectsOnScreen)
 		{
 			Destroy(obj);
@@ -349,9 +363,9 @@ public class GrabGameManager : GameManager
 	public void ObjectCollected (int id, bool collect)
 	{
 		if (GetGameState () == GameState.Running) {
-			if (fallingObjects [id].collect) {
-				if (fallingObjects [id].numberToCollect != 0) {
-					fallingObjects [id].numberToCollect--;
+			if (_fallingObjects [id].collect) {
+				if (_fallingObjects [id].numberToCollect != 0) {
+					_fallingObjects [id].numberToCollect--;
 					_collectables--;
 				}
 				if (hitSound != null) {
