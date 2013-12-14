@@ -119,7 +119,7 @@ public class GrabGameManager : GameManager
 	{
 		base.Start ();
 		
-		_diffuse = Shader.Find ("Diffuse");
+		_diffuse = Shader.Find ("Transparent/Diffuse");
 		_audioSource = GetComponent<AudioSource> ();
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 
@@ -338,7 +338,7 @@ public class GrabGameManager : GameManager
 		__mat.mainTexture = settings.texture;
 		__obj.renderer.material = __mat;
 
-		float __size = __obj.transform.localScale.x*20;
+		float __size = __obj.transform.localScale.x*2;
 		if(_spawnLanes == 0) {
 			__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
 		} else {
