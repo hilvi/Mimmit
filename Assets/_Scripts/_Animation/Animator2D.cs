@@ -129,5 +129,13 @@ public class Animator2D : MonoBehaviour {
 		_currentFrameX = 0;
 		_currentFrameY = _currentAnimation.frameY - 1;
 	}
+
+	public int CurrentFrame() {
+		int frame = 0;
+		frame =  _currentAnimation.frameX * (_currentAnimation.frameY - _currentFrameY - 1);
+		frame += _currentFrameX;
+
+		return frame;
+	}
 	#endregion
 }

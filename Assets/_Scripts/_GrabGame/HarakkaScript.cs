@@ -35,7 +35,7 @@ public class HarakkaScript : MonoBehaviour {
 		float time = 0;
 
 		while(Vector2.Distance(targetPos, transform.position) > 0.05f) {
-			transform.position = Vector2.MoveTowards(transform.position, targetPos, 5*time);
+			transform.position = Vector2.MoveTowards(transform.position, targetPos, speed*time);
 			time += Time.deltaTime;
 			yield return null;
 		}
@@ -53,12 +53,13 @@ public class HarakkaScript : MonoBehaviour {
 		script.fallingObject = fallingObject;
 		
 		while(_anim.IsPlaying()) {
+			if(_anim.CurrentFrame() == 8)
+				script.moving = true;
 			yield return null;
 		}
 		
 		_anim.PlayAnimation("idle");
-		
-		script.moving = true;
+
 		moving = false;
 	}
 
