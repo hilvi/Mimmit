@@ -20,7 +20,8 @@ public class HarakkaItemScript : MonoBehaviour {
 	}
 
 	void OnBecameInvisible() {
-		fallingObject.GetComponent<FallingObjectScript>().falling = true;
+		if(fallingObject != null)
+			fallingObject.GetComponent<FallingObjectScript>().falling = true;
 		Destroy(gameObject);
 	}
 }

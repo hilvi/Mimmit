@@ -25,6 +25,8 @@ public class GrabGameManager : GameManager
 	public float speedMultiplier = 2;
 	public int spawnLanes;
 	public Pattern[] patterns;
+	public GrabLevel[] levels;
+	public GrabObjects objects;
 	Shader _diffuse;
 	float _worldWidth;
 	float _worldHeight;
@@ -38,8 +40,62 @@ public class GrabGameManager : GameManager
 	private GUIStyle _counterStyle = new GUIStyle();
     private int _spawnCounter = 0;
 	private HarakkaScript _harakka;
+	private int _level = 0;
+	private GameObject _player;
 
     private List<FallingObjectSettings> _fallOrder;
+
+	public override void GoToNextLevel ()
+	{
+		_level++;
+		if(_level < levels.Length)
+			StartCoroutine (FadeAndLoad());
+		else
+			LoadLevel ("WinScene");
+	}
+
+	public override void RestartGame ()
+	{
+		GameOver ();
+		Time.timeScale = 1;
+
+		StartCoroutine(FadeAndLoad());
+	}
+
+	IEnumerator FadeAndLoad() {
+		yield return StartCoroutine (_fade.FadeOut());
+		SetGameState(GameState.Pregame);
+		InitiateLevel();
+		yield return StartCoroutine (_fade.FadeIn());
+
+		Time.timeScale = 1;
+		SetGameState(GameState.Running);
+	}
+
+	void InitiateLevel() {
+		levels[_level]._objects = objects;
+		fallingObjects = levels[_level].GetFallingObjects();
+		spawnLanes = levels[_level].lanes;
+		frequency = levels[_level].frequency;
+		missesAllowed = levels[_level].missesAllowed;
+		patterns = levels[_level].patterns;
+		
+		_collectables = 0;
+		for(int i = 0; i < fallingObjects.Length; i++) {
+			if (fallingObjects[i].collect) {
+				_collectables += fallingObjects[i].numberToCollect;
+			}
+			fallingObjects[i].id = i;
+		}
+		
+		_fallOrder = new List<FallingObjectSettings>(fallingObjects);
+		
+		InitiateLanes(spawnLanes);
+
+		ShuffleFallingObjects();
+
+		_player.SetActive(true);
+	}
 	
 	// Use this for initialization
 	public override void Start ()
@@ -51,6 +107,7 @@ public class GrabGameManager : GameManager
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 
 		_harakka = GameObject.Find ("Harakka").GetComponent<HarakkaScript>();
+		_player = GameObject.Find ("Player");
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -62,26 +119,17 @@ public class GrabGameManager : GameManager
 		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width - 150, Screen.height, 0));
 		_worldWidth = __worldSize.x;
 		_worldHeight = __worldSize.y;
-		
-		for(int i = 0; i < fallingObjects.Length; i++) {
-			if (fallingObjects[i].collect) {
-				_collectables += fallingObjects[i].numberToCollect;
-			}
-            fallingObjects[i].id = i;
-		}
 
-        _fallOrder = new List<FallingObjectSettings>(fallingObjects);
 
-		InitiateLanes(spawnLanes);
 
 		_counterStyle.font = (Font)Resources.Load ("Fonts/Gretoon");
 		_counterStyle.fontSize = 50;
 		_counterStyle.normal.textColor = Color.white;
 		_counterStyle.alignment = TextAnchor.MiddleCenter;
 
-        ShuffleFallingObjects();
+		InitiateLevel();
 
-		SetGameState (GameState.Running);
+		SetGameState(GameState.Running);
 	}
 	
 	// Update is called once per frame
@@ -281,7 +329,7 @@ public class GrabGameManager : GameManager
 		while(_harakka.moving)
 			yield return null;
 
-		StartCoroutine(_harakka.MoveToPosAndThrow(_lanes[lane], __obj));
+		_harakka.StartCoroutine("MoveToPosAndThrow", __obj);
 
 		_objectsOnScreen.Add(__obj);
 	}
@@ -294,7 +342,8 @@ public class GrabGameManager : GameManager
 			Destroy(obj);
 		}
 		_objectsOnScreen.Clear();
-		GameObject.Find("Player").SetActive(false);
+		_harakka.End();
+		_player.SetActive(false);
 	}
 	
 	public void ObjectCollected (int id, bool collect)
