@@ -289,7 +289,9 @@ public class DiffGameManager : GameManager
         }
         click.width = click.height = clickSize;
         click.center = pos;
-        _misses.Add(click, 2f);
+
+        if (!_misses.ContainsKey(click))
+            _misses.Add(click, 2f);
 
         _audioSource.clip = missSound;
         _audioSource.Play();
