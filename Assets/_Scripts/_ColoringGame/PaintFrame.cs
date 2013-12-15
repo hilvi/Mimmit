@@ -5,6 +5,8 @@ using UnityEngine;
 public class PaintFrame
 {
     #region MEMBERS
+    // Debug controls
+    public FilterMode filterMode;
     public Texture2D VolatilePicture
     {
         get
@@ -18,6 +20,7 @@ public class PaintFrame
             // avoid modifying cached images.
             Color[] __c = value.GetPixels();
             Texture2D __t = new Texture2D(value.width, value.height);
+            __t.filterMode = filterMode;
             __t.SetPixels(__c);
             __t.Apply();
             _volatilePicture = __t;
