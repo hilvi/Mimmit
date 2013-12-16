@@ -1,19 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-enum Pieces {
-	Six = 0,
-	Twelve = 1,
-	Twenty = 2
-}
 
 public class PuzzleMenu : MonoBehaviour {
 	public PuzzleMenuItem[] levels;
 	public GUIStyle guiStyle;
 	public Texture2D frame;
-
-	Pieces _value = 0;
-	int _sliderWidth = 100;
 
 	public int maxWidth = 3;
 	public int maxHeight = 3;
@@ -22,38 +14,16 @@ public class PuzzleMenu : MonoBehaviour {
 	int _buttonWidth;
 	int _buttonHeight;
 
-	Rect _sliderPosition;
-	Rect _sliderTextPosition;
-	string _sliderText = "6";
-
 	GameManager _manager;
 
 	// Use this for initialization
 	void Start () {
 		CountButtonSize();
-		_sliderPosition = new Rect(Screen.width/2-_sliderWidth/2, 15, _sliderWidth, 30);
-		_sliderTextPosition = new Rect(Screen.width/2+_sliderWidth/2, 0, 45, 45);
-
 		_manager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 	}
 	
 	// Update is called once per frame
 	void OnGUI () {
-		/*_value = (Pieces)GUI.HorizontalSlider(_sliderPosition, (int)_value, 0, 2);
-
-		switch(_value) {
-		case Pieces.Six:
-			_sliderText = "6";
-			break;
-		case Pieces.Twelve:
-			_sliderText = "12";
-			break;
-		case Pieces.Twenty:
-			_sliderText = "20";
-			break;
-		}
-
-		GUI.Box(_sliderTextPosition, _sliderText, guiStyle);*/
 		DrawButtons();
 	}
 
@@ -101,9 +71,6 @@ public class PuzzleMenu : MonoBehaviour {
 					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 - frameHeight * 0.02f;
 					framePositionX = position.x + frameWidth * 0.05f;
 				}
-
-
-
 
 				GUI.DrawTexture(new Rect(framePositionX, framePositionY, frameWidth, frameHeight), frame);
 
