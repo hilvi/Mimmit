@@ -69,7 +69,6 @@ public class GrabGameManager : GameManager
 		{
 			while (source.volume > 0) 
 			{
-				Debug.Log("Foo");
 				source.volume -= 0.02f;	
 				yield return null;
 			}
