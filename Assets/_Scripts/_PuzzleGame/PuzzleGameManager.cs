@@ -251,7 +251,7 @@ public class PuzzleGameManager : GameManager
             }
         }
 
-		if(_picked != null && Input.GetMouseButtonUp(0) && _timer > 0.15f)
+		if(_picked != null && Input.GetMouseButtonUp(0) && _timer > 0.2f)
 			DropDown();
     }
 }
