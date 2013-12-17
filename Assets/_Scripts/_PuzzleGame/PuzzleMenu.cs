@@ -75,8 +75,8 @@ public class PuzzleMenu : MonoBehaviour {
 				Rect frameRect = new Rect(framePositionX, framePositionY, frameWidth, frameHeight);
 				GUI.DrawTexture(frameRect, frame);
 
-				frameRect.x -= 10;
-				frameRect.y += 10;
+				frameRect.x -= 20;
+				frameRect.y += 20;
 				GUI.Box(frameRect, levels[count].size.ToString(), guiStyle);
 
 				position.x += space + _buttonWidth;
