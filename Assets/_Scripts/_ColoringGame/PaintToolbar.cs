@@ -33,7 +33,7 @@ public class PaintToolbar
             if (GUI.Button(colorRegionArray[i], "", _noStyle))
             {
                 ChangeColor(colorArray[i], colorRegionArray[i]);
-                _manager.PlayClickSound();
+                _manager.PlayChooseSound();
             }
         }
 

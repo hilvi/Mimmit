@@ -17,9 +17,9 @@ public class ColoringGameManager : GameManager
     // Audio objects
     public GameObject musicObject;
     public AudioClip music;
-    public AudioClip clickColor;
-    public AudioClip clickErase;
-    public AudioClip clickButton;
+    public AudioClip paintSound;
+    public AudioClip chooseEraserSound;
+    public AudioClip chooseColorSound;
     // References
     public PictureSelector _pictureSelector;
     public PaintFrame _frame;
@@ -43,6 +43,9 @@ public class ColoringGameManager : GameManager
             InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
             InGameMenuGUI.music.audio.clip = music;
             InGameMenuGUI.music.audio.Play();
+
+            // Reduce volume of bg music, so other effects can be heard.
+            InGameMenuGUI.music.audio.volume = 0.5f;
         }
 
         // Initialize picture selector
@@ -115,17 +118,21 @@ public class ColoringGameManager : GameManager
         _currentPictureIndex = index;
     }
 
-    public void PlayClickSound()
+    public void PlayPaintSound()
     {
-        audio.clip = clickColor;
-        audio.volume = 0.5f;
+        audio.clip = paintSound;
+        audio.Play();
+    }
+
+    public void PlayChooseSound()
+    {
+        audio.clip = chooseColorSound;
         audio.Play();
     }
 
     public void PlayEraseSound()
     {
-        audio.clip = clickErase;
-        audio.volume = 0.5f;
+        audio.clip = chooseEraserSound;
         audio.Play();
     }
 
@@ -136,6 +143,7 @@ public class ColoringGameManager : GameManager
         if (_frame.pictureRegion.Contains(__p))
         {
             _frame.Paint(__p, _toolbar.selectedColor);
+            PlayPaintSound();
         }
     }
 
