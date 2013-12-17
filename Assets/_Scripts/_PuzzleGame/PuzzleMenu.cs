@@ -14,12 +14,12 @@ public class PuzzleMenu : MonoBehaviour {
 	int _buttonWidth;
 	int _buttonHeight;
 
-	GameManager _manager;
+	PuzzleMenuManager _manager;
 
 	// Use this for initialization
 	void Start () {
 		CountButtonSize();
-		_manager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+		_manager = GameObject.Find ("GameManager").GetComponent<PuzzleMenuManager> ();
 	}
 	
 	// Update is called once per frame
@@ -55,7 +55,7 @@ public class PuzzleMenu : MonoBehaviour {
 
 				Rect rect = new Rect(position.x, position.y, _buttonWidth, _buttonHeight);
 				if(GUI.Button(rect, levels[count].texture, guiStyle))
-					_manager.LoadLevel(levels[count].scene);
+					StartCoroutine(_manager.LoadGame(levels[count].scene));
 
 				float frameWidth, frameHeight, framePositionY, framePositionX;
 				if(_buttonWidth < _buttonHeight) {
