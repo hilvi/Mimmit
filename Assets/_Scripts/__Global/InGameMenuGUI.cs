@@ -140,7 +140,7 @@ public class InGameMenuGUI : Overlay
 		if (source != null) {
 			while (source.volume > 0) 
 			{
-				source.volume -= 0.02f;	
+				source.volume -= 0.04f;	
 				yield return null;
 			}
 		}
