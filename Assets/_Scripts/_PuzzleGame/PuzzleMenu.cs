@@ -32,21 +32,21 @@ public class PuzzleMenu : MonoBehaviour {
 		space /= width;
 
 		if(levels.Length <= maxWidth) {
-			_buttonWidth = (Screen.width - space * (levels.Length + 1)) / levels.Length;
-			_buttonHeight = Screen.height - space * 2;
+			_buttonWidth = (960 - space * (levels.Length + 1)) / levels.Length;
+			_buttonHeight = 600 - space - 150;
 		}
 		else {
-			_buttonWidth = (Screen.width - space * (maxWidth + 1)) / maxWidth;
+			_buttonWidth = (960 - space * (maxWidth + 1)) / maxWidth;
 			int ratio = levels.Length / maxHeight;
 			if(levels.Length % maxHeight == 0)
-				_buttonHeight = (Screen.height - (ratio + 1) * space) / ratio;
+				_buttonHeight = (600 - (ratio + 1) * space) / ratio;
 			else
-				_buttonHeight = (Screen.height - (ratio + 2) * space) / (ratio + 1);
+				_buttonHeight = (600 - (ratio + 1) * space) / (ratio + 1);
 		}
 	}
 
 	void DrawButtons() {
-		Vector2 position = new Vector2(space, space*1.5f);
+		Vector2 position = new Vector2(space, 150);
 		for(int i = 0, count = 0; i < maxHeight; i++) {
 			position.x = space;
 			for(int j = 0; j < maxWidth; j++, count++) {
@@ -59,20 +59,25 @@ public class PuzzleMenu : MonoBehaviour {
 
 				float frameWidth, frameHeight, framePositionY, framePositionX;
 				if(_buttonWidth < _buttonHeight) {
-					frameWidth = (float)_buttonWidth / frame.width * levels[count].texture.width * 1.1f;
-					frameHeight = frameWidth * levels[count].texture.height / levels[count].texture.width * 1.07f;
+					frameWidth = (float)_buttonWidth / frame.width * levels[count].texture.width;
+					frameHeight = frameWidth * levels[count].texture.height / levels[count].texture.width * 0.75f;
 
-					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 - frameHeight * 0.015f;
-					framePositionX = position.x - frameWidth * 0.07f;
+					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 ;//- frameHeight * 0.015;
+					framePositionX = position.x + frameWidth * 0.2f;
 				} else {
-					frameHeight = (float)_buttonHeight / frame.height * levels[count].texture.height * 1.17f;
-					frameWidth = frameHeight * levels[count].texture.width / levels[count].texture.height * 0.94f;
+					frameHeight = (float)_buttonHeight / frame.height * levels[count].texture.height * 0.75f;
+					frameWidth = frameHeight * levels[count].texture.width / levels[count].texture.height;
 
-					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 - frameHeight * 0.02f;
-					framePositionX = position.x + frameWidth * 0.05f;
+					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2; // - frameHeight * 0.02f;
+					framePositionX = position.x + frameWidth * 0.15f;
 				}
 
-				GUI.DrawTexture(new Rect(framePositionX, framePositionY, frameWidth, frameHeight), frame);
+				Rect frameRect = new Rect(framePositionX, framePositionY, frameWidth, frameHeight);
+				GUI.DrawTexture(frameRect, frame);
+
+				frameRect.x -= 10;
+				frameRect.y += 10;
+				GUI.Box(frameRect, levels[count].size.ToString(), guiStyle);
 
 				position.x += space + _buttonWidth;
 			}

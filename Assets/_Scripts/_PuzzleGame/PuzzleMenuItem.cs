@@ -5,4 +5,5 @@ using System.Collections;
 public class PuzzleMenuItem {
 	public Texture2D texture;
 	public string scene;
+	public int size;
 }
