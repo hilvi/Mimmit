@@ -37,13 +37,13 @@ public class PuzzleGameManager : GameManager
     {
         base.Start();
 
-        if (InGameMenuGUI.music == null)
+        /*if (InGameMenuGUI.music == null)
         {
             InGameMenuGUI.music = (GameObject)Instantiate(musicObject);
             InGameMenuGUI.music.audio.clip = music;
             InGameMenuGUI.music.audio.Play();
             InGameMenuGUI.music.audio.loop = true;
-        }
+        }*/
 
         foreach (GameObject piece in GameObject.FindGameObjectsWithTag("PuzzlePiece"))
         {

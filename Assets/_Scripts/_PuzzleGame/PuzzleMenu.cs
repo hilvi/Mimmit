@@ -55,7 +55,7 @@ public class PuzzleMenu : MonoBehaviour {
 
 				Rect rect = new Rect(position.x, position.y, _buttonWidth, _buttonHeight);
 				if(GUI.Button(rect, levels[count].texture, guiStyle))
-					StartCoroutine(_manager.LoadGame(levels[count].scene));
+					_manager.LoadLevel(levels[count].scene);
 
 				float frameWidth, frameHeight, framePositionY, framePositionX;
 				if(_buttonWidth < _buttonHeight) {
