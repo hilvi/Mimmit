@@ -12,6 +12,7 @@ public class GameManager : Overlay
 	public bool isLastLevel = true;
 	public int currentLevel = 1;
 	public string gameName;
+	public string exitScene;
 	
 	public static GameState gameState;
 	public static GameState prevGameState;

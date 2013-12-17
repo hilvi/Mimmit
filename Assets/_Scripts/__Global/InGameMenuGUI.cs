@@ -118,6 +118,11 @@ public class InGameMenuGUI : Overlay
 	IEnumerator _LoadMainMenu (AudioSource source)
 	{
 		Time.timeScale = 1.0f;
+
+		string __exitScene = "GameSelectionScene";
+		if(!string.IsNullOrEmpty(_gameManager.exitScene))
+			__exitScene = _gameManager.exitScene;
+
 		ScreenChoice __choice = Manager.GetScreenChoice ();
 		if (__choice == ScreenChoice.Map) 
 		{
@@ -125,11 +130,11 @@ public class InGameMenuGUI : Overlay
 		} 
 		else if (__choice == ScreenChoice.Button) 
 		{
-			LoadLevel ("GameSelectionScene");
+			LoadLevel (__exitScene);
 		} 
 		else 
 		{
-			LoadLevel ("GameSelectionScene");
+			LoadLevel (__exitScene);
 		}
 		
 		if (source != null) {
