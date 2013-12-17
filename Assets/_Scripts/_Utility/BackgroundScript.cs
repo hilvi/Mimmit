@@ -8,9 +8,9 @@ public class BackgroundScript : MonoBehaviour {
 	{
 		background = GetComponent<GUITexture>();
 		// Setting background to full screen
-		float width = Screen.width;
-		float height = Screen.height;
-		Rect rect = new Rect(-width / 2, - height / 2, width, height);
+		float width = 960;
+        float height = 600;
+        Rect rect = new Rect(-width / 2, -height / 2, width, height);
 		background.pixelInset = rect;
 	}
 }

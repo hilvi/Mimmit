@@ -5,11 +5,15 @@ using UnityEngine;
 public class PictureSelector
 {
     #region MEMBERS
+    #if UNITY_EDITOR
+    // Debug controls
+    public bool drawRegions;
+    #endif
     // Regions
     public Rect _scrollRegion;
     public Rect _selectUpBtnRegion;
     public Rect _selectDownBtnRegion;
-    private Rect[] _selectPictureRegion;
+    public Rect[] _selectPictureRegion;
     // Keeps track of which picture is being selected
     private int _pictureIndexOffset = 0;
     private int _visiblePictures = 2;
@@ -26,6 +30,19 @@ public class PictureSelector
     #region UNITY_METHODS
     public void OnGUI()
     {
+        #if UNITY_EDITOR
+        if (drawRegions)
+        {
+            GUI.Box(_scrollRegion, "scroll");
+            GUI.Box(_selectUpBtnRegion, "up");
+            GUI.Box(_selectDownBtnRegion, "down");
+            foreach (Rect r in _selectPictureRegion)
+            {
+                GUI.Box(r, "lol");
+            }
+        }
+        #endif
+
         // If cursor is within scroll region, enable image scrolling
         if (_scrollRegion.Contains(Event.current.mousePosition))
         {
@@ -67,15 +84,6 @@ public class PictureSelector
 
     public void Initialize()
     {
-        // Set visible thumbnails
-        float __v = 180; // Vertical coordinate
-        _selectPictureRegion = new Rect[2];
-        for (int i = 0; i < 2; i++)
-        {
-            _selectPictureRegion[i] = new Rect(40f, __v, 140f, 160f);
-            __v += 170;
-        }
-
         // Set default style
         _defaultStyle.alignment = TextAnchor.MiddleCenter;
     }

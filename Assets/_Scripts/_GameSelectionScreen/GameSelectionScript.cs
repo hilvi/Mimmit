@@ -69,9 +69,7 @@ public class GameSelectionScript : Overlay
 	void Start ()
 	{
 		FadeIn ();
-		
-		// Some hardcore magic number wizardry, dont try this at home.
-		// Manual placement will replace this in future.
+	
 		float __buttonWidth = Screen.width / 3.5f;
 		float __buttonHeight = Screen.height / 3.5f;
 

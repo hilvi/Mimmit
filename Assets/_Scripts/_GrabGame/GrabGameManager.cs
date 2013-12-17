@@ -6,28 +6,29 @@ public enum Pattern
 {
 	Random,
 	LeftToRight,
-	RightToLeft,
-	AllAtOnce
+	RightToLeft
 }
 
 public class GrabGameManager : GameManager
 {
 	public GameObject musicObject;
 	public AudioClip music;
-	public FallingObjectSettings[] fallingObjects;
 	public GameObject fallingObjectPrefab;
-	public float frequency = 3;
+	float _frequency = 3;
 	public float missesAllowed = 3;
 	public Texture2D tick;
 	public Texture2D cross;
 	public AudioClip hitSound;
 	public AudioClip missSound;
-	public float speedMultiplier = 2;
-	public int spawnLanes;
-	public Pattern[] patterns;
+	public float speedMultiplier = 1;
+	int _spawnLanes;
+	Pattern[] _patterns;
+	public GrabLevel[] levels;
+	public GrabObjects objects;
 	Shader _diffuse;
 	float _worldWidth;
 	float _worldHeight;
+	FallingObjectSettings[] _fallingObjects;
 	private float _timer;
 	private int _collectables = 0;
 	private AudioSource _audioSource;
@@ -38,19 +39,91 @@ public class GrabGameManager : GameManager
 	private GUIStyle _counterStyle = new GUIStyle();
     private int _spawnCounter = 0;
 	private HarakkaScript _harakka;
+	private int _level = 0;
+	private GameObject _player;
 
     private List<FallingObjectSettings> _fallOrder;
+
+	public override void GoToNextLevel ()
+	{
+		_level++;
+		if(_level < levels.Length)
+			StartCoroutine (FadeAndLoad());
+		else
+			StartCoroutine (LoadWinScene ());
+	}
+
+	public override void RestartGame ()
+	{
+		GameOver ();
+		Time.timeScale = 1;
+
+		StartCoroutine(FadeAndLoad());
+	}
+
+	IEnumerator LoadWinScene ()
+	{
+		AudioSource source = InGameMenuGUI.music.GetComponent<AudioSource>();
+		Time.timeScale = 1.0f;
+		if (source != null) 
+		{
+			while (source.volume > 0) 
+			{
+				source.volume -= 0.02f;	
+				yield return null;
+			}
+		}
+		LoadLevel ("WinScene");
+		Time.timeScale = 1.0f;
+		InGameMenuGUI.music = null;
+	}
+
+	IEnumerator FadeAndLoad() {
+		yield return StartCoroutine (_fade.FadeOut());
+		SetGameState(GameState.Pregame);
+		InitiateLevel();
+		yield return StartCoroutine (_fade.FadeIn());
+
+		Time.timeScale = 1;
+		SetGameState(GameState.Running);
+	}
+
+	void InitiateLevel() {
+		levels[_level]._objects = objects;
+		_fallingObjects = levels[_level].GetFallingObjects();
+		_spawnLanes = levels[_level].lanes;
+		_frequency = levels[_level].frequency;
+		missesAllowed = levels[_level].missesAllowed;
+		_patterns = levels[_level].patterns;
+		
+		_collectables = 0;
+		for(int i = 0; i < _fallingObjects.Length; i++) {
+			if (_fallingObjects[i].collect) {
+				_collectables += _fallingObjects[i].numberToCollect;
+			}
+			_fallingObjects[i].id = i;
+		}
+		
+		_fallOrder = new List<FallingObjectSettings>(_fallingObjects);
+		
+		InitiateLanes(_spawnLanes);
+
+		ShuffleFallingObjects();
+
+		_player.SetActive(true);
+	}
 	
 	// Use this for initialization
 	public override void Start ()
 	{
 		base.Start ();
 		
-		_diffuse = Shader.Find ("Diffuse");
+		_diffuse = Shader.Find ("Transparent/Diffuse");
 		_audioSource = GetComponent<AudioSource> ();
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 
 		_harakka = GameObject.Find ("Harakka").GetComponent<HarakkaScript>();
+		_player = GameObject.Find ("Player");
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -62,26 +135,18 @@ public class GrabGameManager : GameManager
 		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width - 150, Screen.height, 0));
 		_worldWidth = __worldSize.x;
 		_worldHeight = __worldSize.y;
-		
-		for(int i = 0; i < fallingObjects.Length; i++) {
-			if (fallingObjects[i].collect) {
-				_collectables += fallingObjects[i].numberToCollect;
-			}
-            fallingObjects[i].id = i;
-		}
 
-        _fallOrder = new List<FallingObjectSettings>(fallingObjects);
 
-		InitiateLanes(spawnLanes);
 
 		_counterStyle.font = (Font)Resources.Load ("Fonts/Gretoon");
 		_counterStyle.fontSize = 50;
 		_counterStyle.normal.textColor = Color.white;
 		_counterStyle.alignment = TextAnchor.MiddleCenter;
 
-        ShuffleFallingObjects();
+		_level = currentLevel - 1;
+		InitiateLevel();
 
-		SetGameState (GameState.Running);
+		SetGameState(GameState.Running);
 	}
 	
 	// Update is called once per frame
@@ -106,7 +171,7 @@ public class GrabGameManager : GameManager
 		float __counterPos = Screen.width - __width * 2 - __offset;
 		float __picturePos = Screen.width - __width - __offset;
 
-		foreach (FallingObjectSettings settings in fallingObjects) {
+		foreach (FallingObjectSettings settings in _fallingObjects) {
 			if (settings.collect) {
 				__pos.x = __picturePos;
 				GUI.DrawTexture (__pos, settings.texture);
@@ -143,8 +208,8 @@ public class GrabGameManager : GameManager
 	IEnumerator Spawner ()
 	{
 		patternFinished = false;
-		yield return new WaitForSeconds(frequency);
-		Pattern pattern = patterns[Random.Range (0, patterns.Length)];
+		yield return new WaitForSeconds(_frequency);
+		Pattern pattern = _patterns[Random.Range (0, _patterns.Length)];
 		switch(pattern) {
 		case Pattern.Random:
 			yield return StartCoroutine(SpawnRandomObject());
@@ -155,28 +220,25 @@ public class GrabGameManager : GameManager
 		case Pattern.RightToLeft:
 			yield return StartCoroutine (SpawnRightToLeftPattern());
 			break;
-		case Pattern.AllAtOnce:
-			yield return StartCoroutine (SpawnAllAtOnce());
-			break;
 		}
 		patternFinished = true;
 	}
 
 	IEnumerator SpawnLeftToRightPattern ()
 	{
-		for(int i = 0; i < spawnLanes; i++)
+		for(int i = 0; i < _spawnLanes; i++)
 		{
 			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
-			yield return new WaitForSeconds(frequency/2);
+			yield return new WaitForSeconds(_frequency/2);
 		}
 	}
 
 	IEnumerator SpawnRightToLeftPattern ()
 	{
-		for(int i = spawnLanes-1; i >= 0; i--)
+		for(int i = _spawnLanes-1; i >= 0; i--)
 		{
 			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
-			yield return new WaitForSeconds(frequency/2);
+			yield return new WaitForSeconds(_frequency/2);
 		}
 	}
 
@@ -185,7 +247,7 @@ public class GrabGameManager : GameManager
 		//Not very efficient..
 		int __lane;
 		do {
-			__lane = Random.Range (0, spawnLanes);
+			__lane = Random.Range (0, _spawnLanes);
 			yield return null;
 		} while(!CheckIfLaneFree(__lane));
 
@@ -194,12 +256,12 @@ public class GrabGameManager : GameManager
 
 	IEnumerator SpawnAllAtOnce()
 	{
-		for(int i = 0; i < spawnLanes; i++)
+		for(int i = 0; i < _spawnLanes; i++)
 		{
 			StartCoroutine(InstantiateFallingObject(GetObjectId(), i));
 			yield return null;
 		}
-		yield return new WaitForSeconds(frequency);
+		yield return new WaitForSeconds(_frequency);
 	}
 
 	int GetObjectId()
@@ -233,8 +295,10 @@ public class GrabGameManager : GameManager
 	bool CheckIfLaneFree(int lane)
 	{
 		foreach(GameObject obj in _objectsOnScreen) {
-			if(_lanes[lane] == obj.transform.position.x) {
-				return false;
+			FallingObjectScript script;
+			if((script = obj.GetComponent<FallingObjectScript>()) != null) {
+				if(script.lane == lane)
+					return false;
 			}
 		}
 		return true;
@@ -256,7 +320,7 @@ public class GrabGameManager : GameManager
 		if(GetGameState() != GameState.Running)
 			yield break;
 
-		FallingObjectSettings settings = fallingObjects[id];
+		FallingObjectSettings settings = _fallingObjects[id];
 
 
 		GameObject __obj = Instantiate (fallingObjectPrefab) as GameObject;
@@ -266,13 +330,15 @@ public class GrabGameManager : GameManager
 		__script.manager = this;
 		__script.collect = settings.collect;
         __script.id = id;
+		__script.lane = lane;
+
 		
 		Material __mat = new Material (_diffuse);
 		__mat.mainTexture = settings.texture;
 		__obj.renderer.material = __mat;
 
-		float __size = __obj.transform.localScale.x*20;
-		if(spawnLanes == 0) {
+		float __size = __obj.transform.localScale.x*2;
+		if(_spawnLanes == 0) {
 			__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
 		} else {
 			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, 0);
@@ -281,28 +347,29 @@ public class GrabGameManager : GameManager
 		while(_harakka.moving)
 			yield return null;
 
-		StartCoroutine(_harakka.MoveToPosAndThrow(_lanes[lane], __obj));
+		_harakka.StartCoroutine("MoveToPosAndThrow", __obj);
 
 		_objectsOnScreen.Add(__obj);
 	}
 	
 	void GameOver()
 	{
-		frequency = 0;
+		_frequency = 0;
 		foreach(GameObject obj in _objectsOnScreen)
 		{
 			Destroy(obj);
 		}
 		_objectsOnScreen.Clear();
-		GameObject.Find("Player").SetActive(false);
+		_harakka.End();
+		_player.SetActive(false);
 	}
 	
 	public void ObjectCollected (int id, bool collect)
 	{
 		if (GetGameState () == GameState.Running) {
-			if (fallingObjects [id].collect) {
-				if (fallingObjects [id].numberToCollect != 0) {
-					fallingObjects [id].numberToCollect--;
+			if (_fallingObjects [id].collect) {
+				if (_fallingObjects [id].numberToCollect != 0) {
+					_fallingObjects [id].numberToCollect--;
 					_collectables--;
 				}
 				if (hitSound != null) {

@@ -24,6 +24,7 @@ public class MaahalainenScript : MonoBehaviour {
 	{
 		if(inventory.InventoryContains(item))
 		{
+            inventory.RemoveItem(item);
             StartCoroutine(_MoveForward(2f));
 			return;
 		}

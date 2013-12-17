@@ -8,7 +8,7 @@ public class ItemScript : MonoBehaviour {
 	
 	void OnTriggerEnter()
 	{
-		inventory.AddToInventory(item);
+		inventory.AddToInventory(item, renderer.material.mainTexture);
 		Destroy (gameObject);
 	}
 }
