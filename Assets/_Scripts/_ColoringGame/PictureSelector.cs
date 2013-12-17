@@ -64,10 +64,12 @@ public class PictureSelector
         }
 
         // Draw image scrolling buttons
-        if (GUI.Button(_selectUpBtnRegion, _upArrowTexture, _defaultStyle))
+        if (GUI.Button(_selectUpBtnRegion, "", _defaultStyle))
             ScrollImages(ScrollDirection.Up);
-        if (GUI.Button(_selectDownBtnRegion, _downArrowTexture, _defaultStyle))
+        if (GUI.Button(_selectDownBtnRegion, "", _defaultStyle))
             ScrollImages(ScrollDirection.Down);
+        GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
+        GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
     }
     #endregion
 
