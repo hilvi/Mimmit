@@ -62,6 +62,9 @@ public class DiffGameManager : GameManager
             InGameMenuGUI.music.audio.clip = music;
             InGameMenuGUI.music.audio.Play();
             InGameMenuGUI.music.audio.loop = true;
+
+            // Reduce volume of bg music, so other effects can be heard.
+            InGameMenuGUI.music.audio.volume = 0.5f;
         }
         _audioSource = GetComponent<AudioSource>();
 
