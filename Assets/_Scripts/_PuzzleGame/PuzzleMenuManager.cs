@@ -27,11 +27,13 @@ public class PuzzleMenuManager : GameManager {
 	public override void Start () {
 		base.Start();
 
-		if (InGameMenuGUI.music == null) {
+		if (InGameMenuGUI.music == null) 
+		{
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
 			InGameMenuGUI.music.audio.clip = music;
 			InGameMenuGUI.music.audio.Play ();
 			InGameMenuGUI.music.audio.loop = true;
+			InGameMenuGUI.music.audio.volume = 1.0f;
 		}
 	}
 	

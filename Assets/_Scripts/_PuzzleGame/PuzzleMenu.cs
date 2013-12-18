@@ -47,9 +47,11 @@ public class PuzzleMenu : MonoBehaviour {
 
 	void DrawButtons() {
 		Vector2 position = new Vector2(space, 150);
-		for(int i = 0, count = 0; i < maxHeight; i++) {
+		for(int i = 0, count = 0; i < maxHeight; i++) 
+		{
 			position.x = space;
-			for(int j = 0; j < maxWidth; j++, count++) {
+			for(int j = 0; j < maxWidth; j++, count++) 
+			{
 				if(levels.Length <= count)
 					return;
 
@@ -58,13 +60,16 @@ public class PuzzleMenu : MonoBehaviour {
 					_manager.LoadLevel(levels[count].scene);
 
 				float frameWidth, frameHeight, framePositionY, framePositionX;
-				if(_buttonWidth < _buttonHeight) {
+				if(_buttonWidth < _buttonHeight) 
+				{
 					frameWidth = (float)_buttonWidth / frame.width * levels[count].texture.width;
 					frameHeight = frameWidth * levels[count].texture.height / levels[count].texture.width * 0.75f;
 
 					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 ;//- frameHeight * 0.015;
 					framePositionX = position.x + frameWidth * 0.2f;
-				} else {
+				} 
+				else 
+				{
 					frameHeight = (float)_buttonHeight / frame.height * levels[count].texture.height * 0.75f;
 					frameWidth = frameHeight * levels[count].texture.width / levels[count].texture.height;
 
