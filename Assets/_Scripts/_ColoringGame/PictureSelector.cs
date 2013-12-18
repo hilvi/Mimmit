@@ -1,32 +1,48 @@
 using System;
 using UnityEngine;
 
+[System.Serializable]
 public class PictureSelector
 {
     #region MEMBERS
-    // Reference
-    private ColoringGameManager _manager;
+    #if UNITY_EDITOR
+    // Debug controls
+    public bool drawRegions;
+    #endif
     // Regions
-    private Rect _scrollRegion;
-    private Rect _selectUpBtnRegion;
-    private Rect _selectDownBtnRegion;
-    private Rect[] _selectPictureRegion;
-    private Rect _scrollBarRegion;
-
+    public Rect _scrollRegion;
+    public Rect _selectUpBtnRegion;
+    public Rect _selectDownBtnRegion;
+    public Rect[] _selectPictureRegion;
     // Keeps track of which picture is being selected
     private int _pictureIndexOffset = 0;
     private int _visiblePictures = 2;
     // Textures
+    public Texture2D _upArrowTexture;
+    public Texture2D _downArrowTexture;
     private Texture2D[] _thumbnails;
-    private Texture2D _upArrowTexture;
-    private Texture2D _downArrowTexture;
     // Style for buttons
     private GUIStyle _defaultStyle = new GUIStyle();
+    // References
+    private ColoringGameManager _manager;
     #endregion
 
     #region UNITY_METHODS
     public void OnGUI()
     {
+        #if UNITY_EDITOR
+        if (drawRegions)
+        {
+            GUI.Box(_scrollRegion, "scroll");
+            GUI.Box(_selectUpBtnRegion, "up");
+            GUI.Box(_selectDownBtnRegion, "down");
+            foreach (Rect r in _selectPictureRegion)
+            {
+                GUI.Box(r, "lol");
+            }
+        }
+        #endif
+
         // If cursor is within scroll region, enable image scrolling
         if (_scrollRegion.Contains(Event.current.mousePosition))
         {
@@ -48,43 +64,28 @@ public class PictureSelector
         }
 
         // Draw image scrolling buttons
-        if (GUI.Button(_selectUpBtnRegion, _upArrowTexture, _defaultStyle))
+        if (GUI.Button(_selectUpBtnRegion, "", _defaultStyle))
             ScrollImages(ScrollDirection.Up);
-        if (GUI.Button(_selectDownBtnRegion, _downArrowTexture, _defaultStyle))
+        if (GUI.Button(_selectDownBtnRegion, "", _defaultStyle))
             ScrollImages(ScrollDirection.Down);
+        GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
+        GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
     }
     #endregion
 
     #region METHODS
-    public PictureSelector(ColoringGameManager manager, Rect region, Texture2D[] thumbnails,
-        Texture2D upArrowTexture, Texture2D downArrowTexture)
+    public void SetManager(ColoringGameManager manager)
     {
-        // Set references and textures
         _manager = manager;
+    }
+
+    public void SetThumbnails(Texture2D[] thumbnails)
+    {
         _thumbnails = thumbnails;
-        _upArrowTexture = upArrowTexture;
-        _downArrowTexture = downArrowTexture;
+    }
 
-        // Set regions
-        _scrollRegion = region;
-        _selectUpBtnRegion = new Rect(90f, 140f, 40f, 30f);
-        _selectDownBtnRegion = new Rect(90f, 520f, 40f, 30f);
-
-        _scrollBarRegion = new Rect(
-            region.x + region.width - 30f, 
-            region.y, 
-            15f, 
-            2f*160f/5f);
-
-        // Set visible thumbnails
-        float __v = 180; // Vertical coordinate
-        _selectPictureRegion = new Rect[2];
-        for (int i = 0; i < 2; i++)
-        {
-            _selectPictureRegion[i] = new Rect(40f, __v, 140f, 160f);
-            __v += 170;
-        }
-
+    public void Initialize()
+    {
         // Set default style
         _defaultStyle.alignment = TextAnchor.MiddleCenter;
     }

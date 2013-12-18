@@ -27,6 +27,7 @@ public class PandaBallScript : MonoBehaviour
     private Rigidbody2D _rigidBody;
     private CircleCollider2D _circleCollider;
     private MeshRenderer _meshRenderer;
+    private AudioSource _pandaMoveSound;
 
     #region UNITY_METHODS
     void Awake()
@@ -34,6 +35,7 @@ public class PandaBallScript : MonoBehaviour
         _rigidBody = GetComponent<Rigidbody2D>();
         _circleCollider = GetComponent<CircleCollider2D>();
         _meshRenderer = GetComponent<MeshRenderer>();
+        _pandaMoveSound = GetComponent<AudioSource>();
 
         SelectActiveMaterial(PandaState.Standing);
     }
@@ -67,6 +69,23 @@ public class PandaBallScript : MonoBehaviour
                 {
                     // If ball moves after staying still for a while, reset stuck timer
                     _stuckTime = 0f;
+                }
+            }
+
+            // If ball is moving fast enough, play rolling sound
+            if (Vector2.SqrMagnitude(_rigidBody.velocity) > 1f)
+            {
+                // This condition is necessary, because Play() will reset sound
+                if (!_pandaMoveSound.isPlaying)
+                {
+                    _pandaMoveSound.Play();
+                }
+            }
+            else
+            {
+                if (_pandaMoveSound.isPlaying)
+                {
+                    _pandaMoveSound.Stop();
                 }
             }
 
@@ -158,5 +177,8 @@ public class PandaBallScript : MonoBehaviour
 
         // Reset texture
         SelectActiveMaterial(PandaState.Standing);
+
+        // Stop sounds
+        _pandaMoveSound.Stop();
     }
 }

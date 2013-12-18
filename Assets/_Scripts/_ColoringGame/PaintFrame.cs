@@ -1,9 +1,12 @@
 using System;
 using UnityEngine;
 
+[System.Serializable]
 public class PaintFrame
 {
     #region MEMBERS
+    // Debug controls
+    public FilterMode filterMode;
     public Texture2D VolatilePicture
     {
         get
@@ -17,6 +20,7 @@ public class PaintFrame
             // avoid modifying cached images.
             Color[] __c = value.GetPixels();
             Texture2D __t = new Texture2D(value.width, value.height);
+            __t.filterMode = filterMode;
             __t.SetPixels(__c);
             __t.Apply();
             _volatilePicture = __t;
@@ -24,21 +28,15 @@ public class PaintFrame
     }
 
     // Defines region where the picture is
-    private Rect _pictureRegion;
+    public Rect pictureRegion;
     private Texture2D _volatilePicture;
     #endregion
 
     #region METHODS
-    public PaintFrame(Rect region, Texture2D picture)
-    {
-        _pictureRegion = region;
-        VolatilePicture = picture;
-    }
-
     public void OnGUI()
     {
         if (VolatilePicture != null)
-            GUI.DrawTexture(_pictureRegion, VolatilePicture, ScaleMode.StretchToFill, true);
+            GUI.DrawTexture(pictureRegion, VolatilePicture, ScaleMode.StretchToFill, true);
     }
 
     public void Paint(Vector2 position, Color color)
@@ -47,11 +45,11 @@ public class PaintFrame
 
         // Convert global cursor position to local texture position
         Vector2 __p = position -
-            new Vector2(_pictureRegion.x, _pictureRegion.y); // Offset origin
+            new Vector2(pictureRegion.x, pictureRegion.y); // Offset origin
 
         // Map coordinates to range [0,1] ..
-        float __newX = __p.x / _pictureRegion.width;
-        float __newY = __p.y / _pictureRegion.height;
+        float __newX = __p.x / pictureRegion.width;
+        float __newY = __p.y / pictureRegion.height;
         // .. then map back to texture size
         __newX *= VolatilePicture.width;
         __newY *= VolatilePicture.height;

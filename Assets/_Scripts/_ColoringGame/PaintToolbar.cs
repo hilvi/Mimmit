@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Collections;
 
+[System.Serializable]
 public class PaintToolbar
 {
     #region MEMBERS
@@ -24,12 +25,6 @@ public class PaintToolbar
     private GUIStyle _noStyle = new GUIStyle();
     #endregion
 
-    public PaintToolbar (ColoringGameManager manager)
-	{
-        // Set reference
-		_manager = manager;
-	}
-
 	public void OnGUI ()
 	{
         // Draw color pallette buttons
@@ -38,7 +33,7 @@ public class PaintToolbar
             if (GUI.Button(colorRegionArray[i], "", _noStyle))
             {
                 ChangeColor(colorArray[i], colorRegionArray[i]);
-                _manager.PlayClickSound();
+                _manager.PlayChooseSound();
             }
         }
 
@@ -65,6 +60,11 @@ public class PaintToolbar
     {
         selectedColor = color;
         _tickRect = rect;
+    }
+
+    public void SetManager(ColoringGameManager manager)
+    {
+        _manager = manager;
     }
 
 	private void _SavePicture ()
