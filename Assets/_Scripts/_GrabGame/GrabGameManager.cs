@@ -42,6 +42,8 @@ public class GrabGameManager : GameManager
 	private int _level = 0;
 	private GameObject _player;
 
+	public GameObject bird, brune, blonde, fox, boy;
+
     private List<FallingObjectSettings> _fallOrder;
 
 	public override void GoToNextLevel ()
@@ -123,7 +125,12 @@ public class GrabGameManager : GameManager
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 
 		_harakka = GameObject.Find ("Harakka").GetComponent<HarakkaScript>();
-		_player = GameObject.Find ("Player");
+
+		switch(Manager.GetCharacter()) {
+		default:
+			_player = Instantiate(bird) as GameObject;
+			break;
+		}
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
