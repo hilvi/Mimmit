@@ -7,7 +7,7 @@ public class FoodGameManager : GameManager
     #region MEMBERS
     public GameObject musicObject;
     public AudioClip music;
-
+    public GameObject recipe;
     #endregion
 
     #region UNITY_METHODS
@@ -23,7 +23,26 @@ public class FoodGameManager : GameManager
             InGameMenuGUI.music.audio.clip = music;
             InGameMenuGUI.music.audio.Play();
         }
+
+        recipe = new GameObject();
+        recipe.AddComponent<AppleRecipe>().Build();
     }
 
+    void OnEnable()
+    {
+        FoodRecipe.OnRecipeDone += _EndGame;
+    }
+
+    void OnDisable()
+    {
+        FoodRecipe.OnRecipeDone -= _EndGame;
+    }
+    #endregion
+
+    #region METHODS
+    private void _EndGame()
+    {
+        SetGameState(GameState.Won);
+    }
     #endregion
 }
