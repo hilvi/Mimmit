@@ -42,7 +42,7 @@ public class GrabGameManager : GameManager
 	private int _level = 0;
 	private GameObject _player;
 
-	public GameObject bird, brune, blonde, fox, boy;
+	public GameObject brune, blonde, fox, boy;
 
     private List<FallingObjectSettings> _fallOrder;
 
@@ -127,8 +127,11 @@ public class GrabGameManager : GameManager
 		_harakka = GameObject.Find ("Harakka").GetComponent<HarakkaScript>();
 
 		switch(Manager.GetCharacter()) {
+		case Character.Blonde:
+			_player = Instantiate(blonde) as GameObject;
+			break;
 		default:
-			_player = Instantiate(bird) as GameObject;
+			_player = Instantiate(blonde) as GameObject;
 			break;
 		}
 		
@@ -348,7 +351,7 @@ public class GrabGameManager : GameManager
 		if(_spawnLanes == 0) {
 			__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
 		} else {
-			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, 0);
+			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, -1);
 		}
 
 		while(_harakka.moving)

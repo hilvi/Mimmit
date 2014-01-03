@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
 	{
 		_pos.x = Camera.main.ScreenToWorldPoint (Input.mousePosition).x;
 
-		transform.position = Vector3.Lerp (transform.position, _pos, Time.deltaTime * speed);
+		transform.position = Vector2.Lerp (transform.position, _pos, Time.deltaTime * speed);
 
 		float distance = transform.position.x - _pos.x;
 		if(Mathf.Abs(distance) < 2f)
