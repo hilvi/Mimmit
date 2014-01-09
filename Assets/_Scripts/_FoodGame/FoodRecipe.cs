@@ -8,6 +8,12 @@ public abstract class FoodRecipe : MonoBehaviour
     public delegate void RecipeDone();
     public static event RecipeDone OnRecipeDone;
 
+    public delegate void PushGUIInstruction(string name);
+    public static event PushGUIInstruction OnPushInstruction;
+
+    public delegate void PopGUIInstruction();
+    public static event PopGUIInstruction OnInstructionDone;
+
     protected Queue<FoodInstruction> _instructions = new Queue<FoodInstruction>();
     protected FoodHandler _foodHandler;
     #endregion
@@ -67,13 +73,18 @@ public abstract class FoodRecipe : MonoBehaviour
     {
         instruction.OnInstructionDone += _RemoveInstruction;
         _instructions.Enqueue(instruction);
+
+        OnPushInstruction(instruction.type.ToString());
     }
 
     // Everytime instruction is done, this is called once.
     private void _RemoveInstruction()
     {
-        if (_instructions.Count > 0)
+        if (_instructions.Count > 0) {
             _instructions.Dequeue();
+
+            OnInstructionDone();
+        }
         else
             Debug.LogError("Trying to complete non-existant instruction.");
     }

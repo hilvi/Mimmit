@@ -5,8 +5,10 @@ using System.Collections.Generic;
 public class FoodGameManager : GameManager
 {
     #region MEMBERS
+    // References
     public GameObject musicObject;
     public AudioClip music;
+    private InstructionGUIQueue igq;
     public GameObject recipe;
     #endregion
 
@@ -23,6 +25,8 @@ public class FoodGameManager : GameManager
             InGameMenuGUI.music.audio.clip = music;
             InGameMenuGUI.music.audio.Play();
         }
+
+        igq = GetComponent<InstructionGUIQueue>();
 
         recipe = new GameObject();
         recipe.AddComponent<AppleRecipe>().Build();
