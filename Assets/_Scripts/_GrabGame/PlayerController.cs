@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BirdController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
 	
 	public float speed = 5;
@@ -21,12 +21,15 @@ public class BirdController : MonoBehaviour
 	void Update ()
 	{
 		_pos.x = Camera.main.ScreenToWorldPoint (Input.mousePosition).x;
-		
-		if (transform.position.x - _pos.x > 0)
+
+		transform.position = Vector2.Lerp (transform.position, _pos, Time.deltaTime * speed);
+
+		float distance = transform.position.x - _pos.x;
+		if(Mathf.Abs(distance) < 2f)
+			_anim.PlayAnimation("idle");
+		else if (distance > 0)
 			_anim.PlayAnimation ("left");
 		else
 			_anim.PlayAnimation ("right");
-		
-		transform.position = Vector3.Lerp (transform.position, _pos, Time.deltaTime * speed);
 	}
 }

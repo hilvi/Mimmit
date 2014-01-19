@@ -38,7 +38,7 @@ public class FallingObjectScript : MonoBehaviour {
 
 	void OnTriggerEnter (Collider col)
 	{
-		if (col.gameObject.name == "Player") {
+		if (col.gameObject.tag == "Player") {
 			manager.ObjectCollected(id, collect);
 			manager.RemoveObject(gameObject);
 		}

@@ -42,6 +42,8 @@ public class GrabGameManager : GameManager
 	private int _level = 0;
 	private GameObject _player;
 
+	public GameObject brune, blonde, fox, boy;
+
     private List<FallingObjectSettings> _fallOrder;
 
 	public override void GoToNextLevel ()
@@ -123,7 +125,15 @@ public class GrabGameManager : GameManager
 		_characterWidget = GameObject.Find("CharacterWidget").GetComponent<CharacterWidgetScript>();
 
 		_harakka = GameObject.Find ("Harakka").GetComponent<HarakkaScript>();
-		_player = GameObject.Find ("Player");
+
+		switch(Manager.GetCharacter()) {
+		case Character.Blonde:
+			_player = Instantiate(blonde) as GameObject;
+			break;
+		default:
+			_player = Instantiate(blonde) as GameObject;
+			break;
+		}
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -341,7 +351,7 @@ public class GrabGameManager : GameManager
 		if(_spawnLanes == 0) {
 			__obj.transform.position = new Vector3 (Random.Range (__size - _worldWidth, _worldWidth - __size), _worldHeight + __size, 0);
 		} else {
-			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, 0);
+			__obj.transform.position = new Vector3(_lanes[lane], _worldHeight + __size, -1);
 		}
 
 		while(_harakka.moving)
