@@ -25,8 +25,12 @@ public class PlayerController : MonoBehaviour
 		transform.position = Vector2.Lerp (transform.position, _pos, Time.deltaTime * speed);
 
 		float distance = transform.position.x - _pos.x;
-		if(Mathf.Abs(distance) < 2f)
-			_anim.PlayAnimation("idle");
+		if(Mathf.Abs(distance) < 2f) {
+			if(Manager.GetCharacter() == Character.Fox)
+				_anim.StopAnimation();
+			else
+				_anim.PlayAnimation("idle");
+		}
 		else if (distance > 0)
 			_anim.PlayAnimation ("left");
 		else

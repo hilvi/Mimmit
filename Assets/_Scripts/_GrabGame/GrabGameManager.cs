@@ -130,6 +130,15 @@ public class GrabGameManager : GameManager
 		case Character.Blonde:
 			_player = Instantiate(blonde) as GameObject;
 			break;
+		case Character.Boy:
+			_player = Instantiate(boy) as GameObject;
+			break;
+		case Character.Fox:
+			_player = Instantiate(fox) as GameObject;
+			break;
+		case Character.Brune:
+			_player = Instantiate(brune) as GameObject;
+			break;
 		default:
 			_player = Instantiate(blonde) as GameObject;
 			break;
