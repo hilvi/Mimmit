@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(CharacterController))]
 public class HorseCharacterController : MonoBehaviour
@@ -7,7 +8,6 @@ public class HorseCharacterController : MonoBehaviour
 	#region MEMBERS
 	public float gravity = 20;
 	public float runningSpeed = 5;
-	public float jumpSpeed = 10;
 	public float mudSpeed = 2;
 	public float powerUpSpeed = 7;
 	public float powerUpTime = 2;
@@ -29,6 +29,7 @@ public class HorseCharacterController : MonoBehaviour
 	private string _jumpAnim = "Jump";
 	internal string _idleAnim = "Idle";
 	private string _jump = "Jump";
+	private float _jumpSpeed;
 		
 	#endregion
 	
@@ -36,14 +37,16 @@ public class HorseCharacterController : MonoBehaviour
 
 	void Start ()
 	{
+		_SetJumpSpeed();
+		
 		_controller = GetComponent<CharacterController> ();
 		particle = transform.Find ("Particle");
 		particle.gameObject.SetActive (false);
 		
 		_plane = transform.Find ("Plane");
 		_currentSpeed = runningSpeed;
-		_currentJumpSpeed = jumpSpeed;
-		_pondJumpSpeed = jumpSpeed / 2f;
+		_currentJumpSpeed = _jumpSpeed;
+		_pondJumpSpeed = _jumpSpeed / 2f;
 		_movement.x = _currentSpeed;
 		_gameManager = GameObject.Find("GameManager").GetComponent<HorseGameManager>();
 		
@@ -81,7 +84,7 @@ public class HorseCharacterController : MonoBehaviour
 				if(particleEmit.emit == true)
 					particleEmit.emit = false;
 			}
-			if (Input.GetButtonDown (_jump) && !_sideStepping) 
+			if (Input.GetButtonDown (_jump)) 
 			{	
 				_movement.y = _currentJumpSpeed;
 			}
@@ -94,10 +97,14 @@ public class HorseCharacterController : MonoBehaviour
 					particleEmit.emit = false;
 			_movement.y -= gravity * Time.deltaTime;
 		}
-
+		if(_controller.collisionFlags == CollisionFlags.Above)
+		{
+			_movement.y = -gravity;
+		}
 		// This part is due to the fact that the character controller has problem with slope
 		// This is a known problem they have not yet resolved. So I check the slope manually.
 		RaycastHit hit;
+		Debug.DrawRay(rayPosition.position,transform.right);
 		if(Physics.Raycast (rayPosition.position,transform.right, out hit,0.5f))
 		{
 			if(Vector3.Angle (hit.normal,-transform.right)< 30)
@@ -141,7 +148,7 @@ public class HorseCharacterController : MonoBehaviour
 			return;
 
 		_currentSpeed = runningSpeed;
-		_currentJumpSpeed = jumpSpeed;
+		_currentJumpSpeed = _jumpSpeed;
 		Animator2D __anim = GetComponentInChildren<Animator2D>();
 		__anim.speed *= 2;
 	}
@@ -179,6 +186,21 @@ public class HorseCharacterController : MonoBehaviour
 		__tmp.z += dir * sideStep.z;
 		transform.position = __tmp;
 		_sideStepping = !_sideStepping;
+	}
+
+	private void _SetJumpSpeed()
+	{
+		string __level = Application.loadedLevelName;
+		int __levelValue;
+		__levelValue = __level[6] - 48;	
+		if(__levelValue >= 4 )
+		{
+			_jumpSpeed = 9f;
+		}
+		else 
+		{
+			_jumpSpeed = 8f;
+		}
 	}
 	#endregion
 }

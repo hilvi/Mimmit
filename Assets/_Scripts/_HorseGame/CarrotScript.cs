@@ -8,6 +8,7 @@ public class CarrotScript : MonoBehaviour
 	private Renderer _renderer;
 	private Transform _particle;
 	private string player = "Player";
+	public float powerUpSpeed = 2f;
 	#endregion
 	
 	#region UNITY_METHODS
@@ -33,7 +34,7 @@ public class CarrotScript : MonoBehaviour
 	#region METHODS
 	public IEnumerator DoubleSpeed ()
 	{
-		_controller.SetSpeed (_controller.GetSpeed () + 2f);
+		_controller.SetSpeed (_controller.GetSpeed () + powerUpSpeed);
 		while (_controller.GetSpeed() > _controller.runningSpeed) 
 		{
 			_controller.SetSpeed (_controller.GetSpeed () - Time.deltaTime);

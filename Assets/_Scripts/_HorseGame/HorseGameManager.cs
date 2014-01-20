@@ -43,7 +43,7 @@ public class HorseGameManager : GameManager
 	public override void Awake()
 	{
 		base.Awake ();	
-		Vector3 __position = new Vector3(0,0.8f,0);
+		Vector3 __position = new Vector3(0,0.75f,0);
 		switch(Manager.GetCharacter())
 		{
 		case Character.Blonde:
