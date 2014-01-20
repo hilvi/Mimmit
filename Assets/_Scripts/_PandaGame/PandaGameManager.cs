@@ -23,6 +23,7 @@ public class PandaGameManager : GameManager
     {
         // Boilerplate
 		base.Awake();
+		base.Start();
 
 		// Hack to override tutorial for different levels
 		if (base.currentLevel == 1) 
