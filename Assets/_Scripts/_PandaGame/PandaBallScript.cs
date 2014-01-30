@@ -16,6 +16,8 @@ public class PandaBallScript : MonoBehaviour
     public float powerupBoostMultiplier = 1f;
     private const float BOOST_FACTOR = 100f;
 
+    private float _transformPCT = 0f;
+
     private bool _activated = false;
     private bool _stuck = false;
     private float _stuckTime = 0f;
@@ -91,29 +93,20 @@ public class PandaBallScript : MonoBehaviour
 
             // While ball is activated, check its angular velocity and calculate material transformation
             float __angularSpeed = Mathf.Abs(_rigidBody.angularVelocity);
-            if (__angularSpeed < 200f)
-            {
-                SelectActiveMaterial(PandaState.SlowRolling);
-            }
-            else
-            {
-                // Normalize angular speed between 0..1
-                __angularSpeed -= 200f;
-                float __transformPCT = __angularSpeed / 400f;
-                __transformPCT = Mathf.Clamp01(__transformPCT);
+            _transformPCT += __angularSpeed / 4800f;
+            _transformPCT = Mathf.Clamp01(_transformPCT);
 
-                // Create color mask and its inverse
-                Color __mask = new Color(1f, 1f, 1f, __transformPCT);
-                Color __inverseMask = new Color(1f, 1f, 1f, 1f - __transformPCT);
+            // Create color mask and its inverse
+            Color __mask = new Color(1f, 1f, 1f, _transformPCT);
+            Color __inverseMask = new Color(1f, 1f, 1f, 1f - _transformPCT);
 
-                // Reset all materials
-                SelectActiveMaterial(PandaState.SlowRolling);
+            // Reset all materials
+            SelectActiveMaterial(PandaState.SlowRolling);
 
-                // Apply masks
-                Material[] __mats = _meshRenderer.materials;
-                __mats[(int)PandaState.SlowRolling].color = __inverseMask;
-                __mats[(int)PandaState.FastRolling].color = __mask;
-            }
+            // Apply masks
+            Material[] __mats = _meshRenderer.materials;
+            __mats[(int)PandaState.SlowRolling].color = __inverseMask;
+            __mats[(int)PandaState.FastRolling].color = __mask;
         }
 
         // Check if user has pressed left mouse btn and ball is not already active
