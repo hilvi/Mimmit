@@ -2,41 +2,53 @@
 using System.Collections;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class PowerupScript : MonoBehaviour {
-	
-	public delegate void CaptureBall();
-	public static event CaptureBall OnBallCapture;
+public class PowerupScript : MonoBehaviour
+{
 
-	private bool _used = false;
+    public delegate void CaptureBall();
+    public static event CaptureBall OnBallCapture;
 
-	// References
-	private MeshRenderer _meshRenderer;
+    private bool _used = false;
 
-	void Awake () {
-		_meshRenderer = GetComponent<MeshRenderer> ();
-		_meshRenderer.materials [1].color = Color.clear;
-	}
+    // References
+    private MeshRenderer _meshRenderer;
 
-	void OnTriggerEnter2D(Collider2D col)
-	{
-		if (col.name == "Ball")
-		{
-			if (!_used) {
-				OnBallCapture();
-				RemoveLeaf();
-				DisableGlow();
-				_used = true;
-			}
-		}
-	}
+    void Awake()
+    {
+        _meshRenderer = GetComponent<MeshRenderer>();
+        _meshRenderer.materials[1].color = Color.clear;
+    }
 
-	private void RemoveLeaf() {
-		_meshRenderer.materials [0].color = Color.clear;
-		_meshRenderer.materials [1].color = Color.white;
-	}
+    void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.name == "Ball")
+        {
+            if (!_used)
+            {
+                OnBallCapture();
+                RemoveLeaf();
+                DisableGlow();
+                DisableLeaves();
+                _used = true;
+            }
+        }
+    }
 
-	private void DisableGlow() {
-		var __glow = transform.FindChild ("Glow");
-		__glow.gameObject.SetActive (false);
-	}
+    private void RemoveLeaf()
+    {
+        _meshRenderer.materials[0].color = Color.clear;
+        _meshRenderer.materials[1].color = Color.white;
+    }
+
+    private void DisableGlow()
+    {
+        var __glow = transform.FindChild("Glow");
+        __glow.gameObject.SetActive(false);
+    }
+
+    private void DisableLeaves()
+    {
+        var __sys = GetComponentInChildren<ParticleSystem>();
+        __sys.enableEmission = false;
+    }
 }
