@@ -1,18 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent(typeof(GUITexture))]
 public class VideoStreamScript : MonoBehaviour
 {
+    // Flags
+    public bool looping = false;
+    public bool displayProgress = false;
     // Location of the video being streamed
-    //private string url = "users.metropolia.fi/~vinht/test01.ogg";
-    private string url = "users.metropolia.fi/~vinht/test02.ogg";
+    public string url = "mimmit.com/game/";
+    public string videoName = "win_scene.ogv";
     // WWW-object retrieves contents of URL
     private WWW www;
 
     void Start ()
     {
         // Start downloading content
-        www = new WWW (url);
+        www = new WWW (url + videoName);
         guiTexture.texture = www.movie;
 
         // Fit the video on screen 
@@ -25,14 +29,16 @@ public class VideoStreamScript : MonoBehaviour
         // Play movie once it has enough data
         var m = guiTexture.texture as MovieTexture;
         if (!m.isPlaying && m.isReadyToPlay) {
-            m.loop = true;
+            m.loop = looping;
             m.Play ();
         }
     }
 
     void OnGUI () {
-        // Display download progress
-        Rect r = new Rect (0f, 0f, 300f, 20f);
-        GUI.Box (r, www.progress * 100f + "%");
+        if (displayProgress) {
+            // Display download progress
+            Rect r = new Rect (0f, 0f, 300f, 20f);
+            GUI.Box (r, www.progress * 100f + "%");
+        }
     }
 }
