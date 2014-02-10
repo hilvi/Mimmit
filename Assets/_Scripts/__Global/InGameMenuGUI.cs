@@ -14,6 +14,8 @@ public class InGameMenuGUI : Overlay
 	public MovieTexture tutorial;
 	public Texture2D frame;
 	public Texture2D cross;
+    public Texture2D backPause;
+
 	private GameManager _gameManager;
 	private Rect _tutorialButtonRegion;
 	private Rect _pauseButtonRegion;
@@ -26,6 +28,7 @@ public class InGameMenuGUI : Overlay
 	public Rect crossRect;
 	private GUIStyle noStyle = new GUIStyle();
 	private GameState _previousState;
+    private GUITexture backPauseTexture;
 	#endregion
 	
 	#region UNITY_METHODS
@@ -42,28 +45,37 @@ public class InGameMenuGUI : Overlay
 		_pauseButtonRegion = new Rect(__margin + __offset, __margin, __sizeButton, __sizeButton);
 		_tutorialButtonRegion = new Rect(__margin + __offset + __sizeButton , __margin, __sizeButton, __sizeButton);
 
-		float __widthA = __width / 6;
-		float __widthB = __width / 7;
+        float __widthA = 205f;
+		float __widthB = __width / 10;
+        float margin = 190f;
 
 		_mainMenuButtonRegion = new Rect (
-			MGUI.margin * 3, 
+			margin, 
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
 		
 		_restartButtonRegion = new Rect (
-			__width - (__width / 2 + __width / 14),
+			__width / 2f - __widthB / 2f,
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
 		
 		_nextLevelButtonRegion = new Rect (
-			__width - (__width / 3 - __width / 7),
+			__width - (margin + __widthB),
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
 		_previousState = _gameManager.GetGameState ();
-		//SetTutorialRect();
+
+        backPauseTexture = GetComponent<GUITexture>();
+        if (backPauseTexture == null)
+        {
+            backPauseTexture = gameObject.AddComponent<GUITexture>();
+        }
+        backPauseTexture.texture = backPause;
+        backPauseTexture.pixelInset = new Rect(0f, 0f, Screen.width, Screen.height);
+        transform.localScale = new Vector3(0f,0f,0f);
 	}
 	
 	void OnGUI ()
@@ -182,6 +194,7 @@ public class InGameMenuGUI : Overlay
 	
 	private void _HandlePauseState ()
 	{
+        
 		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
 		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
