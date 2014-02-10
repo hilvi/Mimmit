@@ -76,6 +76,7 @@ public class InGameMenuGUI : Overlay
         backPauseTexture.texture = backPause;
         backPauseTexture.pixelInset = new Rect(0f, 0f, Screen.width, Screen.height);
         transform.localScale = new Vector3(0f,0f,0f);
+        backPauseTexture.enabled = false;
 	}
 	
 	void OnGUI ()
@@ -108,6 +109,7 @@ public class InGameMenuGUI : Overlay
 		{
 			if (GUI.Button (_pauseButtonRegion, pauseButton, MGUI.noStyle)) 
 			{
+                backPauseTexture.enabled = true;
 				_gameManager.PauseGame ();
 			}
 			if (tutorial != null && GUI.Button (_tutorialButtonRegion, tutorialButton, MGUI.noStyle)) 
@@ -213,6 +215,7 @@ public class InGameMenuGUI : Overlay
 		} 
 		else if (MGUI.HoveredButton (_nextLevelButtonRegion, playButton)) 
 		{
+            backPauseTexture.enabled = false;
 			_gameManager.UnpauseGame ();
 		}
 	}
