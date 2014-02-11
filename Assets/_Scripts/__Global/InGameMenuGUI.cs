@@ -15,107 +15,100 @@ public class InGameMenuGUI : Overlay
 	public Texture2D frame;
 	public Texture2D cross;
     public Texture2D backPause;
+    public Texture2D storeButton;
+    public Rect tutorialVidRegion;
+    public Rect tutorialFrame;
+    public Rect crossRect;
 
-	private GameManager _gameManager;
-	private Rect _tutorialButtonRegion;
-	private Rect _pauseButtonRegion;
-	private Rect _mainMenuButtonRegion;
-	private Rect _restartButtonRegion;
-	private Rect _nextLevelButtonRegion;
-	// Tutorial rects
-	public Rect tutorialVidRegion;
-	public Rect tutorialFrame;
-	public Rect crossRect;
-	private GUIStyle noStyle = new GUIStyle();
-	private GameState _previousState;
-    private GUITexture backPauseTexture;
+	private GameManager m_gameManager;
+	private Rect r_tutorialButtonRegion;
+	private Rect r_pauseButtonRegion;
+	private Rect r_mainMenuButtonRegion;
+	private Rect r_restartButtonRegion;
+	private Rect r_nextLevelButtonRegion;
+    private Rect r_storeButtonRect;
+	private GUIStyle m_noStyle = new GUIStyle();
+	private GameState e_previousState;
 	#endregion
 	
 	#region UNITY_METHODS
 	void Start ()
 	{
 		FadeIn ();
-		_gameManager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
+		m_gameManager = GameObject.Find ("GameManager").GetComponent<GameManager> ();
 		float __width = Screen.width;
 		float __height = Screen.height;
 		float __sizeButton = __width / 15;
 
 		float __margin = 5f;
 		float __offset = 85f;
-		_pauseButtonRegion = new Rect(__margin + __offset, __margin, __sizeButton, __sizeButton);
-		_tutorialButtonRegion = new Rect(__margin + __offset + __sizeButton , __margin, __sizeButton, __sizeButton);
+		r_pauseButtonRegion = new Rect(__margin + __offset, __margin, __sizeButton, __sizeButton);
+		r_tutorialButtonRegion = new Rect(__margin + __offset + __sizeButton , __margin, __sizeButton, __sizeButton);
 
         float __widthA = 205f;
 		float __widthB = __width / 10;
         float margin = 190f;
 
-		_mainMenuButtonRegion = new Rect (
+		r_mainMenuButtonRegion = new Rect (
 			margin, 
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
 		
-		_restartButtonRegion = new Rect (
+		r_restartButtonRegion = new Rect (
 			__width / 2f - __widthB / 2f,
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
 		
-		_nextLevelButtonRegion = new Rect (
+		r_nextLevelButtonRegion = new Rect (
 			__width - (margin + __widthB),
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
-		_previousState = _gameManager.GetGameState ();
-
-        backPauseTexture = GetComponent<GUITexture>();
-        if (backPauseTexture == null)
-        {
-            backPauseTexture = gameObject.AddComponent<GUITexture>();
-        }
-        backPauseTexture.texture = backPause;
-        backPauseTexture.pixelInset = new Rect(0f, 0f, Screen.width, Screen.height);
-        transform.localScale = new Vector3(0f,0f,0f);
-        backPauseTexture.enabled = false;
+		e_previousState = m_gameManager.GetGameState ();
+        float storeButtonW = 400;
+        float storeButtonH = 80;
+        r_storeButtonRect = new Rect(__width / 2f - storeButtonW / 2f, 300f, storeButtonW, storeButtonH);
 	}
 	
 	void OnGUI ()
 	{
-		GameState __currentState = _gameManager.GetGameState ();
+		GameState __currentState = m_gameManager.GetGameState ();
 		if(__currentState == GameState.Tutorial)
 		{
             if (tutorial == null)
             {
-                _gameManager.SetGameState(GameState.Pregame);
+                m_gameManager.SetGameState(GameState.Pregame);
                 return;
             }
 			int __depth = GUI.depth;
 			GUI.depth = 0;
-			GUI.Box (tutorialVidRegion,tutorial,noStyle);
+			GUI.Box (tutorialVidRegion,tutorial,m_noStyle);
 			GUI.depth = __depth;
 			tutorial.Play ();
-			if(GUI.Button (tutorialFrame,frame, noStyle) || GUI.Button (crossRect, cross, noStyle))
+			if(GUI.Button (tutorialFrame,frame, m_noStyle) || GUI.Button (crossRect, cross, m_noStyle))
 			{
 				tutorial.Stop();
-				if(_previousState == GameState.Tutorial)
-					_gameManager.SetGameState(GameState.Pregame);
+				if(e_previousState == GameState.Tutorial)
+					m_gameManager.SetGameState(GameState.Pregame);
 				else
-					_gameManager.SetGameState(_previousState);
+					m_gameManager.SetGameState(e_previousState);
 			}
+            
 			return;
 		}
 		// While the game is in progress, only display the pause button
 		if (__currentState == GameState.Running || __currentState == GameState.Pregame) 
 		{
-			if (GUI.Button (_pauseButtonRegion, pauseButton, MGUI.noStyle)) 
+			if (GUI.Button (r_pauseButtonRegion, pauseButton, MGUI.noStyle)) 
 			{
-                backPauseTexture.enabled = true;
-				_gameManager.PauseGame ();
+				m_gameManager.PauseGame ();
 			}
-			if (tutorial != null && GUI.Button (_tutorialButtonRegion, tutorialButton, MGUI.noStyle)) 
+			if (tutorial != null && GUI.Button (r_tutorialButtonRegion, tutorialButton, MGUI.noStyle)) 
 			{
-				_previousState = __currentState;
-				_gameManager.SetGameState(GameState.Tutorial);
+				e_previousState = __currentState;
+				m_gameManager.SetGameState(GameState.Tutorial);
 				tutorial.Play();
 			}
 		} 
@@ -132,8 +125,8 @@ public class InGameMenuGUI : Overlay
 		Time.timeScale = 1.0f;
 
 		string __exitScene = "GameSelectionScene";
-		if(!string.IsNullOrEmpty(_gameManager.exitScene))
-			__exitScene = _gameManager.exitScene;
+		if(!string.IsNullOrEmpty(m_gameManager.exitScene))
+			__exitScene = m_gameManager.exitScene;
 
 		ScreenChoice __choice = Manager.GetScreenChoice ();
 		if (__choice == ScreenChoice.Map) 
@@ -180,7 +173,7 @@ public class InGameMenuGUI : Overlay
 
 	private void _ShowBottomMenu ()
 	{
-		switch (_gameManager.GetGameState ()) 
+		switch (m_gameManager.GetGameState ()) 
 		{
 			case GameState.Paused:
 				_HandlePauseState ();
@@ -196,8 +189,9 @@ public class InGameMenuGUI : Overlay
 	
 	private void _HandlePauseState ()
 	{
-        
-		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
+        Rect r = new Rect(0f, 0f, 960f, 600f);
+        GUI.DrawTexture(r, backPause);
+		if (MGUI.HoveredButton (r_mainMenuButtonRegion, mainMenuButton)) 
 		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			//Only for debug for horse game since SoundCam object is not there yet.
@@ -209,32 +203,37 @@ public class InGameMenuGUI : Overlay
 				LoadLevel ("GameSelectionScene");
 			}
 		} 
-		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
+		else if (MGUI.HoveredButton (r_restartButtonRegion, restart)) 
 		{
-			_gameManager.RestartGame ();
-		} 
-		else if (MGUI.HoveredButton (_nextLevelButtonRegion, playButton)) 
-		{
-            backPauseTexture.enabled = false;
-			_gameManager.UnpauseGame ();
+			m_gameManager.RestartGame ();
 		}
+        
+		else if (MGUI.HoveredButton (r_nextLevelButtonRegion, playButton)) 
+		{
+			m_gameManager.UnpauseGame ();
+		}
+        else if (GUI.Button(r_storeButtonRect, storeButton, m_noStyle))
+        {
+            Application.OpenURL(@"www.juniori.fi/mimmikoto/tuotteet.shtml");
+        }
 	}
 	
 	private void _HandleWonState ()
 	{
-		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
+        
+		if (MGUI.HoveredButton (r_mainMenuButtonRegion, mainMenuButton)) 
 		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			StartCoroutine (_LoadMainMenu (obj.audio));
 		} 
-		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
+		else if (MGUI.HoveredButton (r_restartButtonRegion, restart)) 
 		{
-			_gameManager.RestartGame ();
+			m_gameManager.RestartGame ();
 		} 
-		else if (MGUI.HoveredButton (_nextLevelButtonRegion, playButton)) 
+		else if (MGUI.HoveredButton (r_nextLevelButtonRegion, playButton)) 
 		{
-			if(!_gameManager.isLastLevel)
-				_gameManager.GoToNextLevel();
+			if(!m_gameManager.isLastLevel)
+				m_gameManager.GoToNextLevel();
 			else
 				StartCoroutine(_LoadWinScene(GameObject.FindGameObjectWithTag("SoundCam").audio));
 		}
@@ -242,14 +241,14 @@ public class InGameMenuGUI : Overlay
 	
 	private void _HandleLostState ()
 	{
-		if (MGUI.HoveredButton (_mainMenuButtonRegion, mainMenuButton)) 
+		if (MGUI.HoveredButton (r_mainMenuButtonRegion, mainMenuButton)) 
 		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("SoundCam");
 			StartCoroutine (_LoadMainMenu (obj.audio));
 		} 
-		else if (MGUI.HoveredButton (_restartButtonRegion, restart)) 
+		else if (MGUI.HoveredButton (r_restartButtonRegion, restart)) 
 		{
-			_gameManager.RestartGame ();
+			m_gameManager.RestartGame ();
 		}
 	}
 	#endregion
