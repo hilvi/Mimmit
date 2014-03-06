@@ -32,7 +32,7 @@ public class InGameMenuGUI : Overlay
 	private GameState e_previousState;
     private Texture2D t_storeButton;
 	#endregion
-	
+
 	#region UNITY_METHODS
 	void Start ()
 	{
@@ -68,14 +68,15 @@ public class InGameMenuGUI : Overlay
 			__height - (__widthA), 
 			__widthB, 
 			__widthB);
-		e_previousState = m_gameManager.GetGameState ();
-        float storeButtonW = 400;
-        float storeButtonH = 80;
-        r_storeButtonRect = new Rect(__width / 2f - storeButtonW / 2f, 300f, storeButtonW, storeButtonH);
+        e_previousState = m_gameManager.GetGameState ();
+
+        float storeButtonW = 479.4f;
+        float storeButtonH = 72f;
+        r_storeButtonRect = new Rect(__width / 2f - storeButtonW / 2f, 315f, storeButtonW, storeButtonH);
 	}
 	
 	void OnGUI ()
-	{
+    {
 		GameState __currentState = m_gameManager.GetGameState ();
 		if(__currentState == GameState.Tutorial)
 		{

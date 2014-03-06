@@ -12,6 +12,8 @@ MonoImporter:
   - frame: {fileID: 2800000, guid: f9f252d8e88d31f4d9e799b8686d67f1, type: 3}
   - cross: {fileID: 2800000, guid: 5b368d758bd5a0040bce579303f55f9f, type: 3}
   - backPause: {fileID: 2800000, guid: adf202001e114854a9187683a7ef031d, type: 3}
+  - storeButtonOff: {fileID: 2800000, guid: e403045792554a045892e1d3fd7214a0, type: 3}
+  - storeButtonOn: {fileID: 2800000, guid: 048563d838f108d49bcfc3ee8c6a8518, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
