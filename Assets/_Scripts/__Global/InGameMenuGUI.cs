@@ -15,7 +15,8 @@ public class InGameMenuGUI : Overlay
 	public Texture2D frame;
 	public Texture2D cross;
     public Texture2D backPause;
-    public Texture2D storeButton;
+    public Texture2D storeButtonOff;
+    public Texture2D storeButtonOn;
     public Rect tutorialVidRegion;
     public Rect tutorialFrame;
     public Rect crossRect;
@@ -29,6 +30,7 @@ public class InGameMenuGUI : Overlay
     private Rect r_storeButtonRect;
 	private GUIStyle m_noStyle = new GUIStyle();
 	private GameState e_previousState;
+    private Texture2D t_storeButton;
 	#endregion
 	
 	#region UNITY_METHODS
@@ -189,6 +191,14 @@ public class InGameMenuGUI : Overlay
 	
 	private void _HandlePauseState ()
 	{
+        if(r_storeButtonRect.Contains(InputManager.MouseScreenToGUI()))
+        {
+            t_storeButton = storeButtonOn;
+        } else
+        {
+            t_storeButton = storeButtonOff;
+        }
+
         Rect r = new Rect(0f, 0f, 960f, 600f);
         GUI.DrawTexture(r, backPause);
 		if (MGUI.HoveredButton (r_mainMenuButtonRegion, mainMenuButton)) 
@@ -212,7 +222,7 @@ public class InGameMenuGUI : Overlay
 		{
 			m_gameManager.UnpauseGame ();
 		}
-        else if (GUI.Button(r_storeButtonRect, storeButton, m_noStyle))
+        else if (GUI.Button(r_storeButtonRect, t_storeButton, m_noStyle))
         {
             Application.OpenURL(@"www.juniori.fi/mimmikoto/tuotteet.shtml");
         }
