@@ -27,6 +27,10 @@ public class PaintToolbar
 
 	public void OnGUI ()
 	{
+        // Forbid any interaction when game is not running
+        if (_manager.GetGameState() != GameState.Running)
+            return;
+
         // Draw color pallette buttons
         for (int i = 0; i < colorArray.Length; i++)
         {

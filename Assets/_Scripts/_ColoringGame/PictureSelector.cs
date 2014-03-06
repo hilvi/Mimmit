@@ -43,16 +43,26 @@ public class PictureSelector
         }
         #endif
 
+        // Forbid any interaction when game is not running
+        bool __isRunning = (_manager.GetGameState() == GameState.Running);
+
         // If cursor is within scroll region, enable image scrolling
-        if (_scrollRegion.Contains(Event.current.mousePosition))
+        if (__isRunning)
         {
-            if (Event.current.type == EventType.scrollWheel)
+            if (_scrollRegion.Contains(Event.current.mousePosition))
             {
-                float __delta = Event.current.delta.y;
-                if (__delta < 0)
-                    ScrollImages(ScrollDirection.Up);
-                else if (__delta > 0)
-                    ScrollImages(ScrollDirection.Down);
+                if (Event.current.type == EventType.scrollWheel)
+                {
+                    float __delta = Event.current.delta.y;
+                    if (__delta < 0) 
+                    {
+                        ScrollImages(ScrollDirection.Up);
+                    }
+                    else if (__delta > 0)
+                    {
+                        ScrollImages(ScrollDirection.Down);
+                    }
+                }
             }
         }
 
@@ -60,14 +70,29 @@ public class PictureSelector
         for (int i = 0; i < _visiblePictures; i++)
         {
             if (GUI.Button(_selectPictureRegion[i], _thumbnails[_pictureIndexOffset + i], _defaultStyle))
-                _manager.LoadPictureByIndex(_pictureIndexOffset + i);
+            {
+                if (__isRunning)
+                {
+                    _manager.LoadPictureByIndex(_pictureIndexOffset + i);
+                }
+            }
+        }
+
+        // Handle button events for scrolling
+        if (__isRunning)
+        {
+            if (GUI.Button(_selectUpBtnRegion, "", _defaultStyle))
+            {
+                ScrollImages(ScrollDirection.Up);
+            }
+
+            if (GUI.Button(_selectDownBtnRegion, "", _defaultStyle))
+            {
+                 ScrollImages(ScrollDirection.Down);
+            }
         }
 
         // Draw image scrolling buttons
-        if (GUI.Button(_selectUpBtnRegion, "", _defaultStyle))
-            ScrollImages(ScrollDirection.Up);
-        if (GUI.Button(_selectDownBtnRegion, "", _defaultStyle))
-            ScrollImages(ScrollDirection.Down);
         GUI.DrawTexture(_selectUpBtnRegion, _upArrowTexture);
         GUI.DrawTexture(_selectDownBtnRegion, _downArrowTexture);
     }
