@@ -1,92 +1,78 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
 public class PuzzleMenu : MonoBehaviour {
 	public PuzzleMenuItem[] levels;
 	public GUIStyle guiStyle;
 	public Texture2D frame;
 
-	public int maxWidth = 3;
-	public int maxHeight = 3;
-	public int space = 50;
+	public int gridWidth = 3;
+	public int gridHeight = 2;
+	public int spaceX = 50;
 
-	int _buttonWidth;
-	int _buttonHeight;
+	public Vector2 margin;
 
-	PuzzleMenuManager _manager;
+	Vector2 _usableScreen;
+	Vector2 _buttonSize;
+	int _spaceY;
+
+	void CalculateUsableScreen() {
+		_usableScreen.x = Screen.width - margin.x * 2;
+		_usableScreen.y = Screen.height - margin.y;
+	}
+
+	void CalculateButtonSize() {
+		float width = frame.width * gridWidth;
+		float height = frame.height * gridHeight;
+		width += (gridWidth - 1) * spaceX;
+
+		if (width > _usableScreen.x) {
+			height = height / width * _usableScreen.x;
+			width = _usableScreen.x;
+		}
+		if (height > _usableScreen.y) {
+			width = width / height * _usableScreen.y;
+			height = _usableScreen.y;
+		}
+
+		width -= (gridWidth - 1) * spaceX;
+		_spaceY = (int)((_usableScreen.y - height) / (float)(gridHeight));
+
+		width /= gridWidth;
+		height /= gridHeight;
+
+		_buttonSize.x = width;
+		_buttonSize.y = height;
+	}
 
 	// Use this for initialization
 	void Start () {
-		CountButtonSize();
-		_manager = GameObject.Find ("GameManager").GetComponent<PuzzleMenuManager> ();
+		CalculateUsableScreen ();
+		CalculateButtonSize ();
 	}
 	
-	// Update is called once per frame
-	void OnGUI () {
-		DrawButtons();
-	}
-
-	void CountButtonSize() {
-		int width = Mathf.Min(levels.Length, maxWidth);
-		space /= width;
-
-		if(levels.Length <= maxWidth) {
-			_buttonWidth = (960 - space * (levels.Length + 1)) / levels.Length;
-			_buttonHeight = 600 - space - 150;
-		}
-		else {
-			_buttonWidth = (960 - space * (maxWidth + 1)) / maxWidth;
-			int ratio = levels.Length / maxHeight;
-			if(levels.Length % maxHeight == 0)
-				_buttonHeight = (600 - (ratio + 1) * space) / ratio;
-			else
-				_buttonHeight = (600 - (ratio + 1) * space) / (ratio + 1);
-		}
-	}
-
-	void DrawButtons() {
-		Vector2 position = new Vector2(space, 150);
-		for(int i = 0, count = 0; i < maxHeight; i++) 
+	void OnGUI() {
+		Vector2 position = new Vector2(margin.x, margin.y);
+		for(int i = 0, count = 0; i < gridHeight; i++) 
 		{
-			position.x = space;
-			for(int j = 0; j < maxWidth; j++, count++) 
+			position.x = margin.x;
+			for(int j = 0; j < gridWidth; j++, count++) 
 			{
-				if(levels.Length <= count)
-					return;
+				PuzzleMenuItem level = levels[count];
 
-				Rect rect = new Rect(position.x, position.y, _buttonWidth, _buttonHeight);
-				if(GUI.Button(rect, levels[count].texture, guiStyle))
-					_manager.LoadLevel(levels[count].scene);
+				Rect button = new Rect(position.x, position.y, _buttonSize.x, _buttonSize.y);
+				Rect texture = new Rect(button);
+				texture.width *= 0.92f;
+				texture.height *= 0.86f;
+				texture.center = button.center;
 
-				float frameWidth, frameHeight, framePositionY, framePositionX;
-				if(_buttonWidth < _buttonHeight) 
-				{
-					frameWidth = (float)_buttonWidth / frame.width * levels[count].texture.width;
-					frameHeight = frameWidth * levels[count].texture.height / levels[count].texture.width * 0.75f;
+				GUI.DrawTexture(texture, level.texture);
+				GUI.Button(button, frame, guiStyle);
+				GUI.Box(texture, level.size.ToString(), guiStyle);
 
-					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2 ;//- frameHeight * 0.015;
-					framePositionX = position.x + frameWidth * 0.2f;
-				} 
-				else 
-				{
-					frameHeight = (float)_buttonHeight / frame.height * levels[count].texture.height * 0.75f;
-					frameWidth = frameHeight * levels[count].texture.width / levels[count].texture.height;
-
-					framePositionY = position.y + _buttonHeight / 2 - frameHeight / 2; // - frameHeight * 0.02f;
-					framePositionX = position.x + frameWidth * 0.15f;
-				}
-
-				Rect frameRect = new Rect(framePositionX, framePositionY, frameWidth, frameHeight);
-				GUI.DrawTexture(frameRect, frame);
-
-				frameRect.x -= 20;
-				frameRect.y += 20;
-				GUI.Box(frameRect, levels[count].size.ToString(), guiStyle);
-
-				position.x += space + _buttonWidth;
+				position.x += spaceX + _buttonSize.x;
 			}
-			position.y += space + _buttonHeight;
+			position.y += _spaceY + _buttonSize.y;
 		}
 	}
 }
