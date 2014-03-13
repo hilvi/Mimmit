@@ -247,7 +247,11 @@ public class InGameMenuGUI : Overlay
 
     private void _HandleWonState()
     {
+        bool __cursorInStoreButton = (_storeButtonRect.Contains(InputManager.MouseScreenToGUI()));
+        _storeButtonTexture = (__cursorInStoreButton) ? storeButtonOn : storeButtonOff;
 
+        Rect __screenRect = new Rect(0f, 0f, Screen.width, Screen.height);
+        GUI.DrawTexture(__screenRect, backPause);
         if (MGUI.HoveredButton(_mainMenuButtonRegion, mainMenuButton))
         {
             GameObject __soundCam = GameObject.FindGameObjectWithTag("SoundCam");
@@ -268,6 +272,10 @@ public class InGameMenuGUI : Overlay
                 GameObject __soundCam = GameObject.FindGameObjectWithTag("SoundCam");
                 StartCoroutine(_LoadWinScene(__soundCam.audio));
             }
+        }
+        else if (GUI.Button(_storeButtonRect, _storeButtonTexture, _noStyle))
+        {
+            Application.OpenURL(@"www.juniori.fi/mimmikoto/tuotteet.shtml");
         }
     }
 
