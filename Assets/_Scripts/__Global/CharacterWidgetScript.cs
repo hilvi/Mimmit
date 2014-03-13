@@ -36,13 +36,13 @@ public class CharacterWidgetScript : MonoBehaviour {
 	public void TriggerHappyEmotion()
 	{
 		// TODO, make this fancy
-		Debug.Log(_roster[Manager.GetCharacter()].name + ": I am happy");
+		//Debug.Log(_roster[Manager.GetCharacter()].name + ": I am happy");
 	}
 	
 	public void TriggerSadEmotion() 
 	{
 		// TODO, make this fancy
-		Debug.Log(_roster[Manager.GetCharacter()].name + ": I am sad");
+		//Debug.Log(_roster[Manager.GetCharacter()].name + ": I am sad");
 	}
 	#endregion
 }

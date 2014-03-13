@@ -88,9 +88,9 @@ public class Inventory : MonoBehaviour {
         {
             if (inventoryItem[i].item == item) break;
         }
-        InventoryItem __item = inventoryItem[i];
+        //InventoryItem __item = inventoryItem[i];
         inventoryItem.RemoveAt(i);
-        __item = null;
+        //__item = null;
         StartCoroutine(_RemoveItem(i));
     }
     IEnumerator _RemoveItem(int i)

@@ -9,7 +9,7 @@ public class WinScene : Overlay
 	#region MEMBERS
 	//public MovieTexture movie;
 	public Texture2D texture;
-	private GUIStyle _noStyle = new GUIStyle();
+	//private GUIStyle _noStyle = new GUIStyle();
 	//private Rect _textRect;
 	private Rect _buttonRect;
 	#endregion
