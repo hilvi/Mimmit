@@ -15,6 +15,7 @@ public class PuzzleMenu : MonoBehaviour {
 	Vector2 _usableScreen;
 	Vector2 _buttonSize;
 	int _spaceY;
+	PuzzleMenuManager _manager;
 
 	void CalculateUsableScreen() {
 		_usableScreen.x = Screen.width - margin.x * 2;
@@ -49,6 +50,8 @@ public class PuzzleMenu : MonoBehaviour {
 	void Start () {
 		CalculateUsableScreen ();
 		CalculateButtonSize ();
+
+		_manager = GameObject.Find ("GameManager").GetComponent<PuzzleMenuManager> ();
 	}
 	
 	void OnGUI() {
@@ -67,7 +70,10 @@ public class PuzzleMenu : MonoBehaviour {
 				texture.center = button.center;
 
 				GUI.DrawTexture(texture, level.texture);
-				GUI.Button(button, frame, guiStyle);
+
+				if(GUI.Button(button, frame, guiStyle))
+					_manager.LoadLevel(level.scene);
+
 				GUI.Box(texture, level.size.ToString(), guiStyle);
 
 				position.x += spaceX + _buttonSize.x;
