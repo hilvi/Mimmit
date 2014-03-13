@@ -35,7 +35,7 @@ public class GrabGameManager : GameManager
 	private CharacterWidgetScript _characterWidget;
 	private List<GameObject> _objectsOnScreen = new List<GameObject>();
 	private float[] _lanes;
-	private bool patternFinished = true;
+	private bool patternFinished = false;
 	private GUIStyle _counterStyle = new GUIStyle();
     private int _spawnCounter = 0;
 	private HarakkaScript _harakka;
@@ -155,8 +155,6 @@ public class GrabGameManager : GameManager
 		Vector3 __worldSize = Camera.main.ScreenToWorldPoint (new Vector3 (Screen.width - 150, Screen.height, 0));
 		_worldWidth = __worldSize.x;
 		_worldHeight = __worldSize.y;
-
-
 
 		_counterStyle.font = (Font)Resources.Load ("Fonts/Gretoon");
 		_counterStyle.fontSize = 50;
@@ -431,5 +429,6 @@ public class GrabGameManager : GameManager
 
 		InitiateLevel ();
 		GameManager.gameState = GameState.Running;
+		patternFinished = true;
 	}
 }

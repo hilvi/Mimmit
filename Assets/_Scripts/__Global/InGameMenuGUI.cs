@@ -115,6 +115,7 @@ public class InGameMenuGUI : Overlay
             if (GUI.Button(tutorialFrame, frame, _noStyle) || GUI.Button(crossRect, cross, _noStyle))
             {
                 tutorial.Stop();
+				Time.timeScale = 1;
                 if (_previousState == GameState.Tutorial)
                 {
                     _gameManager.SetGameState(GameState.Pregame);
@@ -136,6 +137,7 @@ public class InGameMenuGUI : Overlay
             {
                 _previousState = __currentState;
                 _gameManager.SetGameState(GameState.Tutorial);
+				Time.timeScale = 0;
                 tutorial.Play();
             }
         }
