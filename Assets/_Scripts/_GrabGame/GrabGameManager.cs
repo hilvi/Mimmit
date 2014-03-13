@@ -143,6 +143,7 @@ public class GrabGameManager : GameManager
 			_player = Instantiate(blonde) as GameObject;
 			break;
 		}
+		_player.SetActive (false);
 		
 		if (InGameMenuGUI.music == null) {
 			InGameMenuGUI.music = (GameObject)Instantiate (musicObject);
@@ -163,9 +164,9 @@ public class GrabGameManager : GameManager
 		_counterStyle.alignment = TextAnchor.MiddleCenter;
 
 		_level = currentLevel - 1;
-		InitiateLevel();
 
-		SetGameState(GameState.Running);
+		SetGameState(GameState.Tutorial);
+		StartCoroutine (WaitForTutorial());
 	}
 	
 	// Update is called once per frame
@@ -177,8 +178,10 @@ public class GrabGameManager : GameManager
 	
 	void OnGUI ()
 	{
-		DrawCollectable ();
-		DrawLife ();
+		if (GameManager.gameState == GameState.Running) {
+			DrawCollectable ();
+			DrawLife ();
+		}
 	}
 
 	void DrawCollectable ()
@@ -419,5 +422,14 @@ public class GrabGameManager : GameManager
 	{
 		_objectsOnScreen.Remove(go);
 		Destroy(go);
+	}
+
+	IEnumerator WaitForTutorial() {
+		while (GameManager.gameState == GameState.Tutorial) {
+			yield return null;
+		}
+
+		InitiateLevel ();
+		GameManager.gameState = GameState.Running;
 	}
 }
